@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=openfootprint
+POSTGRES_USER=hFjChVdnFoNcItffmisEwLUzQyIeqlbK
+POSTGRES_PASSWORD=uq9IkfAiPY11MxpmXE8AxLvQkHsEaK62tdQgaZmG0Wphh31Cjg72U6vZmkM9EeCo
