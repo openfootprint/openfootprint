@@ -3,12 +3,14 @@ import time
 import json
 from django.db import models
 from geopy.geocoders import Nominatim
-from .tasks import geocode_location
 
 geolocator = Nominatim(user_agent="openfootprint")
 
-def compute_footprint():
-    return
+def compute_footprint(project_json):
+    project_json["f"] = {
+        "co2e": 42
+    }
+    return project_json
 
 class Project(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -96,7 +98,7 @@ class Footprint(models.Model):
         raw_data = compute_footprint(project_json)
 
         self.footprint = raw_data["f"]["co2e"]
-        self.version = raw_data["f"]["version"]
+        # self.version = raw_data["f"]["version"]
 
         self.raw_json = json.dumps(raw_data)
 
@@ -167,8 +169,10 @@ class Location(models.Model):
             self.save()
 
     def save(self, *args, **kwargs):
+        from .tasks import geocode_location
+
         models.Model.save(self, *args, **kwargs)
-        geocode_location.delay()
+        geocode_location.delay(self.pk)
 
     def __str__(self):
         return "%s [%s]" % (self.source_name, self.source_country)

@@ -2,11 +2,11 @@
   <div>
     <h1>{{project.kind}}: {{project.name}}</h1>
 
-    <button @click="estimate()"><b-spinner v-if="loading_estimate" small type="grow" /> Estimate</button>
+    <button @click="computeFootprint()"><b-spinner v-if="loading_footprint" small type="grow" /> Compute footprint</button>
 
     <div v-if="total_co2e">
       Total footprint: {{total_co2e}} gCO2e
-      <a v-if="estimate_id" :href="'/report/'+estimate_id+'/'" target="_blank">Report</a>
+      <a v-if="footprint_id" :href="'/report/'+footprint_id+'/'" target="_blank">Report</a>
     </div>
 
     <h2>Transports</h2>
@@ -45,10 +45,10 @@ import UploadSheet from "../components/uploadsheet"
 export default {
   data () {
     return {
-      loading_estimate: false,
+      loading_footprint: false,
       project: {},
       total_co2e: false,
-      estimate_id:false,
+      footprint_id:false,
 
       transport_fields: [
         {
@@ -94,13 +94,13 @@ export default {
         this.refreshProject();
       });
     },
-    estimate() {
-      this.loading_estimate = true;
-      this.$http.post("/api/project/"+this.$route.params.id+"/estimate").then((response) => {
-        this.loading_estimate = false;
+    computeFootprint() {
+      this.loading_footprint = true;
+      this.$http.post("/api/project/"+this.$route.params.id+"/footprint").then((response) => {
+        this.loading_footprint = false;
         console.log(response);
         this.total_co2e = response.data.result.f.co2e;
-        this.estimate_id = response.data.estimate_id;
+        this.footprint_id = response.data.footprint_id;
       });
     }
   },

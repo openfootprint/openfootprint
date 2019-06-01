@@ -9,6 +9,8 @@ docker_build:
 	docker-compose -f local.yml build
 
 local_setup: docker_build migrate
+	echo
+	echo "Create your admin user:"
 	docker-compose -f local.yml run --rm django python manage.py createsuperuser
 
 local_webpack:
