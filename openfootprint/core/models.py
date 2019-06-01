@@ -6,8 +6,11 @@ from geopy.geocoders import Nominatim
 
 geolocator = Nominatim(user_agent="openfootprint")
 
-def compute_footprint():
-    return
+def compute_footprint(project_json):
+    project_json["f"] = {
+        "co2e": 42
+    }
+    return project_json
 
 class Project(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -95,7 +98,7 @@ class Footprint(models.Model):
         raw_data = compute_footprint(project_json)
 
         self.footprint = raw_data["f"]["co2e"]
-        self.version = raw_data["f"]["version"]
+        # self.version = raw_data["f"]["version"]
 
         self.raw_json = json.dumps(raw_data)
 
