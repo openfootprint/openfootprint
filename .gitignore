@@ -277,3 +277,7 @@ openfootprint/media/
 .env
 .envs/*
 !.envs/.local/
+
+
+# OpenFootprint
+frontend/webpack/local/

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# This will install from ./frontend/package.json
+npm install
+
+/node_modules/webpack-dev-server/bin/webpack-dev-server.js

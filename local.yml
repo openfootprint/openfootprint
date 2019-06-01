@@ -13,6 +13,7 @@ services:
     depends_on:
       - postgres
       - mailhog
+      - webpack
     volumes:
       - .:/app
     env_file:
@@ -67,3 +68,15 @@ services:
     ports:
       - "5555:5555"
     command: /start-flower
+
+  webpack:
+    build:
+      context: .
+      dockerfile: ./compose/local/webpack/Dockerfile
+    image: openfootprint_local_webpack
+    ports:
+      - "8001:8001"
+      - "8002:8002"
+    volumes:
+      - ./frontend:/frontend:rw
+    command: /start-webpack

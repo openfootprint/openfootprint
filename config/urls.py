@@ -5,6 +5,10 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
+from openfootprint.core import routers as openfootprint_routers
+from openfootprint.core import views as openfootprint_views
+
+
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
     path(
@@ -12,10 +16,19 @@ urlpatterns = [
     ),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
+
     # User management
-    path("users/", include("openfootprint.users.urls", namespace="users")),
+    # path("users/", include("openfootprint.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
-    # Your stuff: custom urls includes go here
+
+    # API
+    path('api/', include(openfootprint_routers.api_router.urls)),
+
+    # Live reports
+    path('report/<int:estimate_id>/', openfootprint_views.ReportView.as_view(), name="report"),
+    path('report/<int:estimate_id>/<path:static_path>', openfootprint_views.report_static_serve, name="report_static"),
+
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
