@@ -1,5 +1,8 @@
 <template>
   <div>
+
+    <a class="btn" href="/#/new">Create new project</a>
+
     <ul v-for="project in projects">
       <li><a :href="'/#/project/'+project.id">{{project.name}}</a></li>
     </ul>
