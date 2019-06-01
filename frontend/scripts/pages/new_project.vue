@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <img src="../../images/logo_openfootprint.svg" alt="Logo OpenFootprint" class="logo_create_project"/>
-                    <h1>Welcome to OpenFootprint, the footprint calculator</h1>
+                    <!--<h1>Welcome to OpenFootprint, the footprint calculator</h1>-->
                     <div class="create_project_wrapper">
                         <h2>Create your first project! Select what applies:</h2>
 
@@ -12,27 +12,27 @@
                             <b-form class="row">
                                 <span class="label col-lg-12">Project type</span>
                                 <label class="col-xxs-12 col-xs-6 col-md-6 col-lg-4" id="event_project">
-                                    <div class="project_type selected">
+                                    <div :class='{"project_type": 1, "selected":kind=="event"}'>
                                         <img src="https://unicons.iconscout.com/release/v0.0.4/svg/ticket.svg" class="icon"/>
-                                        <input type="radio" name="radio">
+                                        <input type="radio" name="radio" value="event" v-model="kind">
                                         <span class="radiobtn"></span>
                                         <p>Event</p>
                                     </div>
                                 </label>
 
                                 <label class="col-xxs-12 col-xs-6 col-md-6 col-lg-4" id="company_project">
-                                    <div class="project_type">
+                                    <div :class='{"project_type": 1, "selected":kind=="company"}'>
                                         <img src="https://unicons.iconscout.com/release/v0.0.4/svg/briefcase-alt.svg" class="icon"/>
-                                        <input type="radio" name="radio">
+                                        <input type="radio" name="radio" value="company" v-model="kind">
                                         <span class="radiobtn"></span>
                                         <p>Company</p>
                                     </div>
                                 </label>
 
                                 <label class="col-xxs-12 col-xs-6 col-md-6 col-lg-4" id="household_project">
-                                    <div class="project_type">
+                                    <div :class='{"project_type": 1, "selected":kind=="household"}'>
                                         <img src="https://unicons.iconscout.com/release/v0.0.4/svg/building.svg" class="icon"/>
-                                        <input type="radio" name="radio">
+                                        <input type="radio" name="radio" value="household" v-model="kind">
                                         <span class="radiobtn"></span>
                                         <p>Household</p>
                                     </div>
@@ -40,10 +40,10 @@
 
                                 <b-form-group class="col-lg-12">
                                     <span class="label">Project name</span>
-                                    <b-input placeholder="ex: OpenFootprint 2019"></b-input>
+                                    <b-input v-model="name" placeholder="ex: OpenFootprint 2019"></b-input>
                                 </b-form-group>
 
-                                <b-button variant="success">Create project</b-button>
+                                <b-button variant="success" @click="createProject()">Create {{kind}} project</b-button>
                             </b-form>
                         </b-col>
                     </div>
@@ -60,10 +60,23 @@
 export default {
   data () {
     return {
-      projects: []
+      kind: "event",
+      name: ""
     }
   },
-  components: {
+  methods: {
+      createProject() {
+        var project = {
+            "kind": this.kind,
+            "name": this.name
+        };
+        this.$http.post("/api/project", project).then((response) => {
+            //TODO catch errors
+            if (response.data && response.data.id) {
+                this.$router.push("project/"+response.data.id);
+            }
+        });
+      }
   }
 }
 </script>

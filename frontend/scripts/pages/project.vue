@@ -2,7 +2,7 @@
   <div>
     <h1>{{project.kind}}: {{project.name}}</h1>
 
-    <button @click="computeFootprint()"><b-spinner v-if="loading_footprint" small type="grow" /> Compute footprint</button>
+    <b-button @click="computeFootprint()"><b-spinner v-if="loading_footprint" small type="grow" /> Compute footprint</b-button>
 
     <div v-if="total_co2e">
       Total footprint: {{total_co2e}} gCO2e
@@ -28,7 +28,7 @@
 
     </b-table>
 
-    <button @click="deleteAllTransports()">Delete all transports</button>
+    <b-button @click="deleteAllTransports()">Delete all transports</b-button>
 
     <h2>Extras</h2>
     <b-table ref="table_extras" class="project_extras" :fields="extras_fields" striped primary-key="id" v-if="project.extras" :items="project.extras">
@@ -50,8 +50,8 @@
       </template>
     </b-table>
 
-    <button @click="addExtra()">Add extra</button>
-    <button @click="saveExtras()">Save extras</button>
+    <b-button @click="addExtra()">Add extra</b-button>
+    <b-button @click="saveExtras()">Save extras</b-button>
 
   </div>
 </template>

@@ -22,5 +22,7 @@ coreapi==2.3.3  # https://github.com/core-api/python-client
 
 
 # OpenFootprint-specific
+# You must run "make docker_build" every time you change this
 geopy==1.18.0
 django-webpack-loader==0.6.0
+django-autoslug==1.9.4

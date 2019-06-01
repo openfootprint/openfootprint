@@ -3,6 +3,7 @@ import time
 import json
 from django.db import models
 from geopy.geocoders import Nominatim
+from autoslug import AutoSlugField
 
 geolocator = Nominatim(user_agent="openfootprint")
 
@@ -19,7 +20,7 @@ class Project(models.Model):
     name = models.CharField("Name", max_length=200)
 
     # TODO autoslug
-    slug = models.SlugField("Slug", max_length=100, db_index=True)
+    slug = AutoSlugField("Slug", unique=True, populate_from="name", max_length=100, db_index=True)
 
     kind = models.CharField(
         max_length=30,
