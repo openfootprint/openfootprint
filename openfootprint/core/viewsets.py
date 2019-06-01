@@ -80,8 +80,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
               defaults={}
           )
         else:
-          if project.main_location:
-            transport.to_location = project.main_location
+          if project.main_venue:
+            transport.to_location = project.main_venue.location
 
         transport.roundtrip = ((row.get("roundtrip") or "").lower() in ("1", "yes", "y", "true"))
 
