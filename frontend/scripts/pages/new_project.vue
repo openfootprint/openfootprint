@@ -3,10 +3,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <img src="../../images/logo_openfootprint.svg" alt="Logo OpenFootprint" class="logo_create_project"/>
+                    <a href="/"><img src="../../images/logo_openfootprint.svg" alt="Logo OpenFootprint" class="logo_create_project"/></a>
                     <!--<h1>Welcome to OpenFootprint, the footprint calculator</h1>-->
                     <div class="create_project_wrapper">
-                        <h2>Create your first project! Select what applies:</h2>
+                        <h2>Create your project in 2 clicks! Select what applies:</h2>
 
                         <b-col lg="10" offset-lg="1">
                             <b-form class="row">
@@ -88,7 +88,7 @@ export default {
 
         .logo_create_project {
             width:300px;
-            margin:0 auto;
+            margin:40px auto;
             display: block;
         }
 
