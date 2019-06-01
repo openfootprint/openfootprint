@@ -3,7 +3,6 @@ import time
 import json
 from django.db import models
 from geopy.geocoders import Nominatim
-from .tasks import geocode_location
 
 geolocator = Nominatim(user_agent="openfootprint")
 
@@ -167,8 +166,10 @@ class Location(models.Model):
             self.save()
 
     def save(self, *args, **kwargs):
+        from .tasks import geocode_location
+
         models.Model.save(self, *args, **kwargs)
-        geocode_location.delay()
+        geocode_location.delay(self.pk)
 
     def __str__(self):
         return "%s [%s]" % (self.source_name, self.source_country)
