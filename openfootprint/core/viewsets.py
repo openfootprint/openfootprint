@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
-from .models import Project, Transport, Location, Person, Footprint
-from .serializers import ProjectSerializerFull, ProjectSerializerList, TransportSerializer
+from .models import Project, Transport, Location, Person, Footprint, Extra
+from .serializers import ProjectSerializerFull, ProjectSerializerList, TransportSerializer, ExtraSerializer
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from django.utils.decorators import method_decorator
@@ -16,6 +16,10 @@ class TransportViewSet(viewsets.ModelViewSet):
     permission_classes = (AllowAny,)  # TODO!
     serializer_class = TransportSerializer
 
+class ExtraViewSet(viewsets.ModelViewSet):
+    queryset = Extra.objects.all()
+    permission_classes = (AllowAny,)  # TODO!
+    serializer_class = ExtraSerializer
 
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
@@ -54,6 +58,36 @@ class ProjectViewSet(viewsets.ModelViewSet):
         resp["footprint_id"] = footprint.id
 
       return Response(resp)
+
+
+    @action(detail=True, methods=['POST'], name='Set Extras')
+    def set_extras(self, request, pk=None):
+      project = self.get_object()
+
+      # TODO see if we can make this more generic
+
+      for row in request.data:
+        if row.get("id") and str(row["id"]).startswith("new"):
+          row.pop("id")
+
+      ids = {row["id"] for row in request.data if row.get("id")}
+
+      Extra.objects.filter(project=project).exclude(id__in=ids).delete()
+
+      for i, row in enumerate(request.data):
+        extra = None
+        if row.get("id"):
+          extra = Extra.objects.get(pk=row["id"])
+        if not extra:
+          extra = Extra(project=project)
+
+        for field in ("name", "kind", "param_f1", "param_f2"):
+          setattr(extra, field, row.get(field))
+
+        extra.save()
+
+      return Response({'status': 'ok'})
+
 
     @action(detail=True, methods=['POST'], name='Set Transports')
     def set_transports(self, request, pk=None):
