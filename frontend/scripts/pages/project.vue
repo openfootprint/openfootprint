@@ -1,39 +1,53 @@
 <template>
-  <div>
-    <h1>{{project.kind}}: {{project.name}}</h1>
+  <div class="admin_project_page">
 
-    <button @click="computeFootprint()"><b-spinner v-if="loading_footprint" small type="grow" /> Compute footprint</button>
+    <b-nav class="ofp-sidebar">
+      <a href="#" class="logo"><img src="../../images/logo_openfootprint_vertical.svg" alt="Logo OpenFootprint"></a>
 
-    <div v-if="total_co2e">
-      Total footprint: {{total_co2e}} gCO2e
-      <a v-if="footprint_id" :href="'/report/'+footprint_id+'/'" target="_blank">Report</a>
+      <b-nav-item active>Dashboard</b-nav-item>
+      <b-nav-item>Estimate</b-nav-item>
+      <b-nav-item>Employees</b-nav-item>
+      <b-nav-item>Offices</b-nav-item>
+      <b-nav-item>Reports</b-nav-item>
+      <b-nav-item>Settings</b-nav-item>
+    </b-nav>
+
+    <div class="ofp-content">
+      <h1>{{project.kind}}: {{project.name}}</h1>
+
+      <button @click="computeFootprint()"><b-spinner v-if="loading_footprint" small type="grow" /> Compute footprint</button>
+
+      <div v-if="total_co2e">
+        Total footprint: {{total_co2e}} gCO2e
+        <a v-if="footprint_id" :href="'/report/'+footprint_id+'/'" target="_blank">Report</a>
+      </div>
+
+      <h2>Transports</h2>
+      <UploadSheet ref="uploaded_transports" :columns='{"from_address": "Address from", "to_address": "Address to", "country": "Country", "name": "Name"}' />
+
+      <b-table :fields="transport_fields" striped primary-key="id" v-if="project.transports" :items="project.transports">
+
+        <template slot="roundtrip" slot-scope="row">
+          <input type="checkbox" v-model="row.roundtrip" />
+        </template>
+
+        <template slot="from_location" slot-scope="row">
+          {{row.value.source_name}}
+        </template>
+
+        <template slot="to_location" slot-scope="row">
+          {{row.value.source_name}}
+        </template>
+
+      </b-table>
+
+      <button @click="deleteAllTransports()">Delete all transports</button>
+
+      <h2>Extras</h2>
+      <ul v-for="extra in project.extras">
+        <li>{{extra.name}}</li>
+      </ul>
     </div>
-
-    <h2>Transports</h2>
-    <UploadSheet ref="uploaded_transports" :columns='{"from_address": "Address from", "to_address": "Address to", "country": "Country", "name": "Name"}' />
-
-    <b-table :fields="transport_fields" striped primary-key="id" v-if="project.transports" :items="project.transports">
-
-      <template slot="roundtrip" slot-scope="row">
-        <input type="checkbox" v-model="row.roundtrip" />
-      </template>
-
-      <template slot="from_location" slot-scope="row">
-        {{row.value.source_name}}
-      </template>
-
-      <template slot="to_location" slot-scope="row">
-        {{row.value.source_name}}
-      </template>
-
-    </b-table>
-
-    <button @click="deleteAllTransports()">Delete all transports</button>
-
-    <h2>Extras</h2>
-    <ul v-for="extra in project.extras">
-      <li>{{extra.name}}</li>
-    </ul>
 
   </div>
 </template>
@@ -110,6 +124,32 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  .nav-link[data-toggle].collapsed:after {
+      content: "▾";
+  }
+  .nav-link[data-toggle]:not(.collapsed):after {
+      content: "▴";
+  }
 
+  .ofp-sidebar {
+    width: 300px;
+    height: 100%;
+    position: fixed;
+    background: #fff;
+    z-index: 2;
+    background-color: #F3F7FA;
+
+    .logo {
+      width:100%;
+      padding:0px;
+      margin:0px;
+      border-bottom:1px solid $white;
+    }
+  }
+
+  .ofp-content {
+    width: 100%;
+    padding: 0 0 130px 300px;
+  }
 </style>
