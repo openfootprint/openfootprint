@@ -1,17 +1,13 @@
 import datetime
 import time
 import json
+import sys
 from django.db import models
 from geopy.geocoders import Nominatim
 from autoslug import AutoSlugField
 
 geolocator = Nominatim(user_agent="openfootprint")
 
-def compute_footprint(project_json):
-    project_json["f"] = {
-        "co2e": 42
-    }
-    return project_json
 
 class Project(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -78,27 +74,25 @@ class Footprint(models.Model):
     starts_at = models.DateTimeField(blank=True, null=True)
     ends_at = models.DateTimeField(blank=True, null=True)
 
+    def _flatten(self):
+        project_json = []
+        for emission_type in ["transports", "extras"]:
+            for emission_source in getattr(self.project, emission_type).all():
+                emission_data = {
+                    "type": emission_type,
+                }
+                emission_data.update(getattr(sys.modules["openfootprint.core.serializers"], "%sSerializer" % emission_type.capitalize()[:-1])(emission_source).data)
+                project_json.append(emission_data)
+        return project_json
+
     def compute(self):
-
-        # Make sure all locations are geocoded
-        for location in self.project.iter_locations():
-            location.geocode(save=True)
-
-        # Update transport weights depending on the time
-        if self.starts_at and self.ends_at:
-            for transport in self.project.transports:
-                multiplier = transport.get_time_weight(self.starts_at, self.ends_at)
-                transport.weight = transport.weight * multiplier  # won't be saved, just for the footprint
-
-        # Send to carbonfootprint library
-        from .serializers import ProjectSerializerFull
-        serialized_project = ProjectSerializerFull(self.project)
-        project_json = serialized_project.data
+        from .tasks import compute_footprint
 
         # 3. save json & generate templates
+        project_json = self._flatten()
         raw_data = compute_footprint(project_json)
 
-        self.footprint = raw_data["f"]["co2e"]
+        self.footprint = sum([emission_source["f"]["co2e"] for emission_source in raw_data])
         # self.version = raw_data["f"]["version"]
 
         self.raw_json = json.dumps(raw_data)
@@ -233,7 +227,7 @@ class Transport(models.Model):
     tags = models.ManyToManyField(Tag)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     def get_time_weight(self, start_date, end_date):
 
