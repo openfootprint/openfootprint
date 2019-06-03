@@ -14,7 +14,7 @@ setup(
     description="Open source software for managing ecological footprint, including carbon emissions.",
     long_description=open("README.md").read(),
     author="Openfootprint",
-    author_email="",
+    author_email="contact@openfootprint.org",
     url="https://github.com/openfootprint/openfootprint",
     packages=[],
     license="Apache 2.0",
