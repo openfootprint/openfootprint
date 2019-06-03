@@ -2,7 +2,7 @@ FROM node:12
 
 WORKDIR /app/frontend
 
-COPY ./compose/local/webpack/package.json /app/package.json
+COPY ./package.json /app/package.json
 
 COPY ./compose/local/webpack/start /start-webpack
 RUN sed -i 's/\r//' /start-webpack

@@ -23,5 +23,8 @@
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-vue": "^5.2.2",
     "vue-eslint-parser": "^6.0.4"
+  },
+  "scripts": {
+    "build": "cd frontend && npm install && /app/node_modules/webpack-cli/bin/cli.js --config webpack.config.prod.js"
   }
 }
