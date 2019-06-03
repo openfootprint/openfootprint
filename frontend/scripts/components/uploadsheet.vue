@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input type="file" accept='.xlsx, .xls, .csv' @change="uploaded">
+    <b-form-file accept='.xlsx, .xls, .csv' @change="uploaded" />
 
     <b-modal @ok="handleOk" scrollable size="xl" ref="modal_preview" title="Please assign the columns:">
 

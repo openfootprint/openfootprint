@@ -25,8 +25,8 @@ urlpatterns = [
     path('api/', include(openfootprint_routers.api_router.urls)),
 
     # Live reports
-    path('report/<int:estimate_id>/', openfootprint_views.ReportView.as_view(), name="report"),
-    path('report/<int:estimate_id>/<path:static_path>', openfootprint_views.report_static_serve, name="report_static"),
+    path('report/<int:footprint_id>/', openfootprint_views.ReportView.as_view(), name="report"),
+    path('report/<int:footprint_id>/<path:static_path>', openfootprint_views.report_static_serve, name="report_static"),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

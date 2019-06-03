@@ -3,6 +3,7 @@ import time
 import json
 from django.db import models
 from geopy.geocoders import Nominatim
+from autoslug import AutoSlugField
 
 geolocator = Nominatim(user_agent="openfootprint")
 
@@ -19,7 +20,7 @@ class Project(models.Model):
     name = models.CharField("Name", max_length=200)
 
     # TODO autoslug
-    slug = models.SlugField("Slug", max_length=100, db_index=True)
+    slug = AutoSlugField("Slug", unique=True, populate_from="name", max_length=100, db_index=True)
 
     kind = models.CharField(
         max_length=30,
@@ -201,7 +202,7 @@ class Transport(models.Model):
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     project = models.ForeignKey(Project, db_index=True, related_name='transports', on_delete=models.CASCADE)
-    name = models.CharField("Name", max_length=200, blank=True, null=True)
+    name = models.CharField("Name", max_length=200, blank=True)
     from_location = models.ForeignKey(Location, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
     to_location = models.ForeignKey(Location, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
 
@@ -263,7 +264,7 @@ class Extra(models.Model):
 
     # All other items that don't have a dedicated model yet
     project = models.ForeignKey(Project, db_index=True, related_name='extras', on_delete=models.CASCADE)
-    name = models.CharField("Name", max_length=200, blank=True, null=True)
+    name = models.CharField("Name", max_length=200)
     tags = models.ManyToManyField(Tag, blank=True)
 
     kind = models.CharField(
@@ -286,7 +287,7 @@ class Venue(models.Model):
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     project = models.ForeignKey(Project, db_index=True, related_name='venues', on_delete=models.CASCADE)
-    name = models.CharField("Name", max_length=200, blank=True, null=True)
+    name = models.CharField("Name", max_length=200)
     tags = models.ManyToManyField(Tag)
 
     location = models.ForeignKey(Location, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
