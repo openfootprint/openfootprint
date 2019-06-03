@@ -9,9 +9,9 @@ class FootprintProvider(BaseFootprintProvider):
     def __init__(self):
         BaseFootprintProvider.__init__(self)
         if "CARBONKIT_USERNAME" in os.environ:
-            self.config["USERNAME"]
+            self.config["USERNAME"] = os.environ["CARBONKIT_USERNAME"]
         if "CARBONKIT_PASSWORD" in os.environ:
-            self.config["PASSWORD"]
+            self.config["PASSWORD"] = os.environ["CARBONKIT_PASSWORD"]
 
     def _do_requests(self, path):
         r = requests.get(
