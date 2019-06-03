@@ -31,7 +31,7 @@
             <span class="icon" v-if="project.kind === 'event'">E</span>
             <span class="icon" v-if="project.kind === 'company'">C</span>
             <span class="icon" v-if="project.kind === 'household'">H</span>
-            </p>
+          </p>
         </div>
       </div>
 
