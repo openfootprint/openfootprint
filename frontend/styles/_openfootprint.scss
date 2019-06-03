@@ -1,3 +1,35 @@
+@font-face {
+    font-family: "Inter";
+    src:url('../fonts/inter/Inter-Regular.woff2') format('woff2'), 
+        url('../fonts/inter/Inter-Regular.woff') format('woff'),
+        url("../fonts/inter/Inter-Regular.otf") format("opentype"),
+        url('../fonts/inter/Inter-Regular.ttf') format('truetype');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Inter";
+    src:url('../fonts/inter/Inter-Medium.woff2') format('woff2'), 
+        url('../fonts/inter/Inter-Medium.woff') format('woff'),
+        url("../fonts/inter/Inter-Medium.otf") format("opentype"),
+        url('../fonts/inter/Inter-Medium.ttf') format('truetype');
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: "Inter";
+    src:url('../fonts/inter/Inter-Bold.woff2') format('woff2'), 
+        url('../fonts/inter/Inter-Bold.woff') format('woff'),
+        url("../fonts/inter/Inter-Bold.otf") format("opentype"),
+        url('../fonts/inter/Inter-Bold.ttf') format('truetype');
+    font-weight: bold;
+}
+
+body {
+    font-family: "Inter", Arial, sans-serif;
+    font-weight: normal;
+}
+
 h1 {
     font-size:2.25rem;
     margin-bottom:35px;

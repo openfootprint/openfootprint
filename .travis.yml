@@ -1,15 +1,26 @@
-sudo: true
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq build-essential gettext python-dev zlib1g-dev libpq-dev xvfb
-  - sudo apt-get install -qq libtiff4-dev libjpeg8-dev libfreetype6-dev liblcms1-dev libwebp-dev
-  - sudo apt-get install -qq graphviz-dev python-setuptools python3-dev python-virtualenv python-pip
-  - sudo apt-get install -qq firefox automake libtool libreadline6 libreadline6-dev libreadline-dev
-  - sudo apt-get install -qq libsqlite3-dev libxml2 libxml2-dev libssl-dev libbz2-dev wget curl llvm
+dist: xenial
+
+services:
+  - docker
+
 language: python
-python:
-  - "3.6"
-install:
-  - pip install -r requirements/local.txt
-script:
-  - "pytest"
+
+python: 3.6
+
+before_install:
+  - docker-compose -v
+  - docker -v
+
+matrix:
+  include:
+    - name: Docker
+      script: sh tests/test_docker.sh
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+  slack:
+    secure: AImqcK9uDdjLZTe9kr7q6kt4a4yms7LWdGNelCk6xoFTq5ScmQpEFFRfqhmrHeArvFwOKJoH0wcPRbXZpt+orRMy3DxFYjpFiZUgWr0wTSFcZ21J5OnbZQ1/XbslMbSDeXJrrIKc4LLeZVf7rRcx69XaAceZt2xsfXEILOfQAmNlSSDa3In345IPuFGOnFdOrocOvmdiQ4W4U6mzA3nMW7s+fW8VI6BUn7RIll/57l/HcVkKi7ROIxnZH3f8KXNQyjVl4k4nd1DzARC8KgYaVYv/2sanFZ8GRxLkNAKVcwonRdb0xRNOGR4zwxB3dp93WdtapIEUAKVzVfx2qMzF7Q82uuALHYVZl+Mn4YFPFQJ1oT407mJVWIU1kqzkQV6U7OZafcNCtlsNYPR/M5bJYUGeYv8ZDIxeDwwKqORhN1+XCokF75EENCqaKzV7CGBzRj7Axm+TtS7aHNXSDnQkhUeF16myLT7WNyACBTtBC5/y1h0UqKHS0yrBU7zaN3RMr7t0Hdok1VnCbJtOlMBDHrqezogEyfBHVeIs695XO7IH1yTSGzdJfn8ddiTzanABGOkhTjsFU5gij35bSn+i6V2flW8i6mGD4hImmXadisJyr1ReWElPV9+KD7cozMI8KMESsJo83ZUodder6WmINZui7t2cSbK0QMzVhvJ/B68=
+    on_success: change
+    on_failure: always
