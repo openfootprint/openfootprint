@@ -281,3 +281,4 @@ openfootprint/media/
 
 # OpenFootprint
 frontend/webpack/local/
+config.*.json
