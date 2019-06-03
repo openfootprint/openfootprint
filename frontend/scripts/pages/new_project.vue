@@ -6,7 +6,7 @@
                     <a href="/"><img src="../../images/logo_openfootprint.svg" alt="Logo OpenFootprint" class="logo_create_project"/></a>
                     <!--<h1>Welcome to OpenFootprint, the footprint calculator</h1>-->
                     <div class="create_project_wrapper">
-                        <h2>Create your project in 2 clicks! Select what applies:</h2>
+                        <h1>Create your project in 2 clicks! Select what applies:</h1>
 
                         <b-col lg="10" offset-lg="1">
                             <b-form class="row">
@@ -92,18 +92,12 @@ export default {
             display: block;
         }
 
-        h1 {
-            margin:0px;
-            padding:15px 0px 50px;
-            font-size:2rem;
-        }
-
         .create_project_wrapper {
             background-color:$gray-100;
             border-radius:10px;
             padding:40px 0px;
 
-            h2 {
+            h1 {
                 font-size:1.5rem;
             }
 
