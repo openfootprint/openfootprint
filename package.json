@@ -25,6 +25,6 @@
     "vue-eslint-parser": "^6.0.4"
   },
   "scripts": {
-    "build": "cd frontend && npm install && /app/node_modules/webpack-cli/bin/cli.js --config webpack.config.prod.js"
+    "build": "cd frontend && npm install && webpack --config webpack.config.prod.js"
   }
 }
