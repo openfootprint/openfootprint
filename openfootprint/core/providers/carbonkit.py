@@ -1,9 +1,17 @@
 from openfootprint.core.providers import FootprintProvider as BaseFootprintProvider
 import requests
+import os
 
 
 class FootprintProvider(BaseFootprintProvider):
     name = "carbonkit"
+
+    def __init__(self):
+        BaseFootprintProvider.__init__(self)
+        if "CARBONKIT_USERNAME" in os.environ:
+            self.config["USERNAME"]
+        if "CARBONKIT_PASSWORD" in os.environ:
+            self.config["PASSWORD"]
 
     def _do_requests(self, path):
         r = requests.get(
