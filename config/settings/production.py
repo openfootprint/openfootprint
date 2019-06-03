@@ -15,7 +15,7 @@ from .base import env
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["openfootprint.org"])
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[".openfootprint.org"])
 
 # DATABASES
 # ------------------------------------------------------------------------------
@@ -88,6 +88,9 @@ AWS_S3_REGION_NAME = env("DJANGO_AWS_S3_REGION_NAME", default=None)
 # STATIC
 # ------------------------
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+STATICFILES_DIRS.append(str(ROOT_DIR.path("frontend/webpack/prod/")))
+
 # MEDIA
 # ------------------------------------------------------------------------------
 # region http://stackoverflow.com/questions/10390244/
@@ -215,5 +218,13 @@ sentry_sdk.init(
     integrations=[sentry_logging, DjangoIntegration(), CeleryIntegration()],
 )
 
-# Your stuff...
+# OpenFootprint
 # ------------------------------------------------------------------------------
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': True,
+        'BUNDLE_DIR_NAME': '/',
+        'STATS_FILE': 'frontend/webpack/prod/stats.json'
+    }
+}

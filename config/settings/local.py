@@ -69,6 +69,7 @@ CELERY_TASK_EAGER_PROPAGATES = True
 
 WEBPACK_LOADER = {
     'DEFAULT': {
+        'CACHE': False,
         'BUNDLE_DIR_NAME': '/',
         'STATS_FILE': 'frontend/webpack/local/stats.json'
     }

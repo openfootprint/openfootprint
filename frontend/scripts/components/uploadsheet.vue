@@ -6,7 +6,6 @@
 
       <b-table striped hover :items="tableData.data">
 
-        <!-- TODO https://github.com/bootstrap-vue/bootstrap-vue/issues/2737 -->
         <template :slot="'HEAD_'+field" slot-scope="data" v-for="(field, i) in tableData.header">
           {{ data.label }} <v-icon @click.native.stop="deleteColumn(field)" name="regular/times-circle" /><br/>
           <select v-model="tableData.mapping[i]">

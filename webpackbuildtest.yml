@@ -1,0 +1,40 @@
+version: '3'
+
+volumes:
+  local_postgres_data: {}
+  local_postgres_data_backups: {}
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
+    image: openfootprint_production_django
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+    env_file:
+      - ./.envs/.production/.django
+      - ./.envs/.production/.postgres
+    environment:
+      - USE_DOCKER=yes
+      - DJANGO_ALLOWED_HOSTS=0.0.0.0,localhost,127.0.0.1
+      - DJANGO_DEBUG=1
+    ports:
+      - "5000:5000"
+    command: /start
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: openfootprint_production_postgres
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/data
+      - local_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.production/.postgres
+
+  redis:
+    image: redis:5.0

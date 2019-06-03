@@ -7,14 +7,10 @@ module.exports = {
 
   mode: 'development',
 
-  context: '/frontend',
+  context: '/app/frontend',
   entry: {
     "main": [
-      //'webpack-dev-server/client?http://localhost:8001',
-      // doesn't fall back to refresh
-      //'webpack/hot/only-dev-server',
-      //'webpack/hot/dev-server',
-      '/frontend/scripts/entry',
+      './scripts/entry',
     ]
   },
 
@@ -38,10 +34,7 @@ module.exports = {
   // devtool: 'inline-source-map',
 
   plugins: [
-    //new webpack.HotModuleReplacementPlugin(),
     new VueLoaderPlugin(),
-    //new webpack.NoEmitOnErrorsPlugin(), // don't reload if there is an error
-
     new BundleTracker({filename: './webpack/local/stats.json'})
   ],
 

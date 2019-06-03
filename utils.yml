@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  webpack_build_prod:
+    build:
+      context: .
+      dockerfile: ./compose/local/webpack/Dockerfile
+    image: openfootprint_local_webpack
+    volumes:
+      - ./frontend:/app/frontend:rw
+    command: "/app/node_modules/webpack-cli/bin/cli.js --config webpack.config.prod.js --progress"

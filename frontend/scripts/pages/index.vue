@@ -1,10 +1,10 @@
 <template>
   <div>
 
-    <a class="btn" href="/#/new">Create new project</a>
+    <b-button :to='{"name": "new"}'>Create new project</b-button>
 
-    <ul v-for="project in projects">
-      <li><a :href="'/#/project/'+project.id">{{project.name}}</a></li>
+    <ul v-for="project in projects" :key="project.id">
+      <li><b-link :to='{"name": "project_home", "params": {"project_id": project.id}}'>{{project.name}}</b-link></li>
     </ul>
   </div>
 </template>

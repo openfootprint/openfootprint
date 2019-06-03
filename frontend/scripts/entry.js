@@ -3,8 +3,8 @@ import BootstrapVue from 'bootstrap-vue'
 import axios from 'axios'
 
 // Icons
-// TODO: only import specific ones cf https://github.com/Justineo/vue-awesome
-import 'vue-awesome/icons'
+import 'vue-awesome/icons/trash'
+import 'vue-awesome/icons/regular/times-circle'
 import Icon from 'vue-awesome/components/Icon'
 
 // https://bootstrap-vue.js.org/docs

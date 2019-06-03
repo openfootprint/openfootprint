@@ -40,7 +40,7 @@
 
                                 <b-form-group class="col-lg-12">
                                     <span class="label">Project name</span>
-                                    <b-input v-model="name" placeholder="ex: OpenFootprint 2019"></b-input>
+                                    <b-input required v-model="name" placeholder="ex: OpenFootprint 2019"></b-input>
                                 </b-form-group>
 
                                 <b-button variant="success" @click="createProject()">Create {{kind}} project</b-button>
