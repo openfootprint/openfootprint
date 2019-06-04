@@ -7,7 +7,7 @@ module.exports = {
 
   mode: 'development',
 
-  context: '/app/frontend',
+  // context: '/app/frontend',
   entry: {
     "main": [
       './scripts/entry',
