@@ -13,8 +13,14 @@ before_install:
 
 matrix:
   include:
-    - name: Docker
-      script: sh tests/test_docker.sh
+    - name: Mypy
+      script: sh tests/mypy.sh
+    - name: Black
+      script: sh tests/black.sh
+    - name: Pytest
+      script: sh tests/pytest.sh
+    - name: Migrations
+      script: sh tests/pytest.sh
 
 notifications:
   email:
