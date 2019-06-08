@@ -22,6 +22,7 @@ def compute_footprint(self, project_json, provider="openfootprint.core.providers
     footprint_provider = importlib.import_module(provider).FootprintProvider() # type: ignore
 
     for emission_source in project_json:
-      emission_source.setdefault("f", {})["co2e"] = getattr(footprint_provider, EMISSION_HANDLERS_BY_SOURCE[emission_source["type"]])(emission_source)
+      co2e = getattr(footprint_provider, EMISSION_HANDLERS_BY_SOURCE[emission_source["type"]])(emission_source)
+      emission_source.setdefault("f", {})["co2e"] = co2e * emission_source.get("weight", 1.0)
 
     return project_json

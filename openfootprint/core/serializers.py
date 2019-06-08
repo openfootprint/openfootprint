@@ -46,6 +46,9 @@ class FootprintSerializer(serializers.ModelSerializer):
 
 
 class PersonSerializer(serializers.ModelSerializer):
+
+    home_address = AddressSerializer(many=False, read_only=True)
+
     class Meta:
         model = Person
         fields = '__all__'

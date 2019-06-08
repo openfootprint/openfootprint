@@ -1,4 +1,5 @@
 from openfootprint.core.providers import FootprintProvider as BaseFootprintProvider
+from django.core.cache import caches
 import requests
 import os
 
@@ -14,6 +15,12 @@ class FootprintProvider(BaseFootprintProvider):
             self.config["PASSWORD"] = os.environ["CARBONKIT_PASSWORD"]
 
     def _do_requests(self, path):
+
+        # TODO cache could be compressed and store only arguments+precise result
+        # TODO prefix
+        if caches["default"].get(path):
+            return caches["default"].get(path)
+
         r = requests.get(
         "https://api.carbonkit.net/3.6/%s" % path,
         headers={
@@ -22,7 +29,12 @@ class FootprintProvider(BaseFootprintProvider):
         auth=(self.config["USERNAME"], self.config["PASSWORD"])
         )
         # TODO handle errors
-        return r.json()
+
+        resp = r.json()
+        caches["default"].set(path, resp, timeout=24*3600)
+        return resp
+
+
 
     def compute_transports_footprint(self, emission_source):
         path = "categories/Great_Circle_flight_methodology/calculation"\

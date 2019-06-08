@@ -34,6 +34,9 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
+    def get_default_location(self):
+        return Location.objects.filter(project=self, is_default=True).first()
+
     # def iter_locations(self):
     #     """ Iterate through all locations linked to this project """
 
@@ -75,8 +78,13 @@ class Footprint(models.Model):
             for emission_source in getattr(self.project, emission_type).all():
                 emission_data = {
                     "type": emission_type,
+                    "weight": 1.0
                 }
                 emission_data.update(getattr(sys.modules["openfootprint.core.serializers"], "%sSerializer" % emission_type.capitalize()[:-1])(emission_source).data)
+
+                if emission_type == "transports" and emission_data.get("roundtrip"):
+                    emission_data["weight"] *= 2
+
                 project_json.append(emission_data)
         return project_json
 
@@ -178,23 +186,6 @@ class Address(models.Model):
         return "%s [%s]" % (self.source_name, self.source_country)
 
 
-class TransportMode(models.Model):
-    name = models.CharField("Name", max_length=200)
-
-
-class TransportStep(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
-
-    project = models.ForeignKey(Project, db_index=True, related_name='transportsteps', on_delete=models.CASCADE)
-
-    from_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
-    to_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
-
-    mode = models.ForeignKey(TransportMode, blank=True, null=True, on_delete=models.PROTECT)
-    transport = models.ForeignKey(TransportMode, related_name='transportsteps', on_delete=models.CASCADE)
-
-
 
 class Transport(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -254,6 +245,33 @@ class Transport(models.Model):
             return yearshare
 
         return 1
+
+class TransportWaypoint(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    transport = models.ForeignKey(Transport, db_index=True, related_name='waypoints', on_delete=models.CASCADE)
+    address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='+')
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ("order", )
+        unique_together = ("transport", "order")
+
+
+class TransportMode(models.Model):
+    name = models.CharField("Name", max_length=200)
+
+
+class TransportStep(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    from_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
+    to_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
+
+    mode = models.ForeignKey(TransportMode, blank=True, null=True, on_delete=models.PROTECT)
+    transport = models.ForeignKey(Transport, related_name='steps', on_delete=models.CASCADE)
 
 
 class Extra(models.Model):

@@ -146,7 +146,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
       for i, row in enumerate(request.data):
         person = Person(project=project)
 
-        if not row.get("name"):
+        if row.get("name"):
+          person.name = row["name"]
+        else:
           person.name = "Person #%s" % (i + people_count)
 
         if row.get("from_address"):
@@ -182,5 +184,42 @@ class ProjectViewSet(viewsets.ModelViewSet):
         transport.roundtrip = ((row.get("roundtrip") or "").lower() in ("1", "yes", "y", "true"))
 
         transport.save()
+
+      return Response({'status': 'ok'})
+
+    @action(detail=True, methods=['POST'], name='Add Transports from people')
+    def add_transports_from_people(self, request, pk=None):
+      project = self.get_object()
+
+      transports = {
+        t.person_id: t
+        for t in Transport.objects.filter(person__isnull=False)
+      }
+
+      for person in project.people.all():
+        if not transports.get(person.id):
+          from_address = None
+          to_address = None
+          project_location = project.get_default_location()
+
+          if person.main_location:
+            to_address = person.main_location.address
+          if not to_address and project_location:
+            to_address = project_location.address
+
+          if person.home_address:
+            from_address = person.home_address
+
+          print(person, from_address, to_address)
+          if from_address and to_address:
+            t = Transport(
+              project=project,
+              roundtrip=True,
+              from_address=from_address,
+              to_address=to_address,
+              name="Transport for %s" % person.name,
+              person=person
+            )
+            t.save()
 
       return Response({'status': 'ok'})

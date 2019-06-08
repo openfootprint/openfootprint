@@ -3,27 +3,28 @@
 
     <div class="test">
       <h2>Transports</h2>
-      
+
       <UploadSheet ref="uploaded_transports" :columns='{"from_address": "Address from", "to_address": "Address to", "country": "Country", "name": "Name"}' />
     </div>
 
     <b-table ref="table_transports" :fields="transports_fields" striped primary-key="id" v-if="$parent.project.transports" :items="$parent.project.transports">
 
       <template slot="roundtrip" slot-scope="row">
-        <input type="checkbox" v-model="row.roundtrip" />
+        <input type="checkbox" v-model="row.item.roundtrip" />
       </template>
 
-      <template slot="from_location" slot-scope="row">
+      <template slot="from_address" slot-scope="row">
         {{row.value.source_name}}
       </template>
 
-      <template slot="to_location" slot-scope="row">
+      <template slot="to_address" slot-scope="row">
         {{row.value.source_name}}
       </template>
 
     </b-table>
 
     <b-button @click="deleteAllTransports()">Delete all transports</b-button>
+    <b-button @click="addTransportsFromPeople()">Add transports from people</b-button>
 
   </div>
 </template>
@@ -44,11 +45,11 @@ export default {
           "label": "Name"
         },
         {
-          "key": "from_location",
+          "key": "from_address",
           "label": "From"
         },
         {
-          "key": "to_location",
+          "key": "to_address",
           "label": "To"
         },
         {
@@ -72,6 +73,11 @@ export default {
       this.$http.post("/api/project/"+this.$parent.project.id+"/delete_transports").then((response) => {
         this.$parent.refreshProject();
       });
+    },
+    addTransportsFromPeople() {
+      this.$http.post("/api/project/"+this.$parent.project.id+"/add_transports_from_people").then((response) => {
+        this.$parent.refreshProject();
+      });
     }
   },
   components: {
@@ -85,5 +91,5 @@ export default {
   h2 {
     float: left;
   }
-  
+
 </style>

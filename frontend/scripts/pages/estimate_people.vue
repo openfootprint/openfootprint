@@ -37,12 +37,8 @@ export default {
           "label": "Name"
         },
         {
-          "key": "from_location",
+          "key": "home_address",
           "label": "From"
-        },
-        {
-          "key": "team",
-          "label": "Team"
         },
         {
           "key": "actions",
