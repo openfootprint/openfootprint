@@ -1,6 +1,13 @@
 <template>
   <div>
-    <b-form-file accept='.xlsx, .xls, .csv' @change="uploaded" />
+    <label class="file-select">
+      <div class="select-button btn btn-border">
+        <span>Select File</span>
+      </div>
+      <input type="file" accept='.xlsx, .xls, .csv' @change="uploaded"/>
+    </label>
+    <!-- <b-form-file class="toto" accept='.xlsx, .xls, .csv' @change="uploaded"/> -->
+
 
     <b-modal @ok="handleOk" scrollable size="xl" ref="modal_preview" title="Please assign the columns:">
 
@@ -18,7 +25,6 @@
     </b-modal>
   </div>
 </template>
-
 
 <script>
 import XLSX from 'xlsx'
@@ -142,3 +148,24 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .file-select {
+    float: right;
+    cursor:pointer;
+
+    // .select-button {
+    //   padding: 10px 25px;
+    //   color: #000;
+    //   background-color: #FFF;
+    //   border:1px solid $green;
+    //   border-radius: 8px;
+    //   text-align: center;
+    //   text-transform: uppercase;
+    // }
+  }
+
+  .file-select > input[type="file"] {
+    display: none;
+  }
+</style>

@@ -1,8 +1,11 @@
 <template>
   <div>
 
-    <h2>Transports</h2>
-    <UploadSheet ref="uploaded_transports" :columns='{"from_address": "Address from", "to_address": "Address to", "country": "Country", "name": "Name"}' />
+    <div class="test">
+      <h2>Transports</h2>
+      
+      <UploadSheet ref="uploaded_transports" :columns='{"from_address": "Address from", "to_address": "Address to", "country": "Country", "name": "Name"}' />
+    </div>
 
     <b-table ref="table_transports" :fields="transports_fields" striped primary-key="id" v-if="$parent.project.transports" :items="$parent.project.transports">
 
@@ -79,4 +82,8 @@ export default {
 
 <style lang="scss" scoped>
 
+  h2 {
+    float: left;
+  }
+  
 </style>

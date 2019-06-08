@@ -33,11 +33,13 @@ body {
 h1 {
     font-size:2.25rem;
     margin-bottom:35px;
+    font-weight: bold;
 }
 
 h2 {
     font-size:1.875rem;
     margin-bottom:25px;
+    font-weight:bold;
 }
 
 h3 {
@@ -48,4 +50,60 @@ h3 {
 h4 {
     font-size:1.25rem;
     margin-bottom:10px;
+}
+
+.table {
+    border-collapse:separate; 
+    border-spacing:0 15px; 
+
+    thead {
+        background-color:$gray-100;
+        border-radius:8px;
+        border:0px;
+        text-transform: uppercase;
+        color:#9AA9BB;
+        font-size:14px;
+
+        th {
+            border:0px;
+            padding: 15px 20px 15px 40px;
+
+            &:first-child {
+                border-top-left-radius: 8px;
+                border-bottom-left-radius: 8px;
+            }
+            
+            &:last-child {
+                border-top-right-radius: 8px;
+                border-bottom-right-radius: 8px;
+            }
+        }
+    }
+
+    &.table-striped tbody tr {
+        &:nth-of-type(odd), &:nth-of-type(even) {
+            background-color:#FFF;
+        } 
+    }
+
+    tbody {
+
+        td {
+            border-top:1px solid $gray-200;
+            border-bottom:1px solid $gray-200;
+            padding: 18px 20px 18px 40px;
+
+            &:first-child {
+                border-top-left-radius: 8px;
+                border-bottom-left-radius: 8px;
+                border-left:1px solid $gray-200;
+            }
+            
+            &:last-child {
+                border-top-right-radius: 8px;
+                border-bottom-right-radius: 8px;
+                border-right:1px solid $gray-200;
+            }
+        }
+    }
 }
