@@ -3,7 +3,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <a href="/"><img src="../../images/logo_openfootprint.svg" alt="Logo OpenFootprint" class="logo_create_project"/></a>
+                    <b-link :to="{'name':'index'}"><img src="../../images/logo_openfootprint.svg" alt="OpenFootprint" class="logo_create_project"/></b-link>
                     <!--<h1>Welcome to OpenFootprint, the footprint calculator</h1>-->
                     <div class="create_project_wrapper">
                         <h1>Create your project in 2 clicks! Select what applies:</h1>

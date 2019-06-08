@@ -28,25 +28,20 @@ class Project(models.Model):
         )
     )
 
-    main_venue = models.ForeignKey("Venue", on_delete=models.PROTECT, related_name='+', blank=True, null=True)
-
     # TODO admin_users
     # TODO subprojects / linkedprojects?
 
     def __str__(self):
         return self.name
 
-    def iter_locations(self):
-        """ Iterate through all locations linked to this project """
+    # def iter_locations(self):
+    #     """ Iterate through all locations linked to this project """
 
-        if self.main_venue and self.main_venue.location:
-            yield self.main_venue.location
-
-        for transport in self.transports.all():
-            if transport.from_location:
-                yield transport.from_location
-            if transport.to_location:
-                yield transport.to_location
+    #     for transport in self.transports.all():
+    #         if transport.from_location:
+    #             yield transport.from_location
+    #         if transport.to_location:
+    #             yield transport.to_location
 
 
 class Tag(models.Model):
@@ -92,7 +87,7 @@ class Footprint(models.Model):
         project_json = self._flatten()
         raw_data = compute_footprint(project_json)
 
-        self.footprint = sum([emission_source["f"]["co2e"] for emission_source in raw_data])
+        self.footprint = sum([(emission_source.get("f", {}).get("co2e") or 0) for emission_source in raw_data])
         # self.version = raw_data["f"]["version"]
 
         self.raw_json = json.dumps(raw_data)
@@ -104,12 +99,12 @@ class Person(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
-    project = models.ForeignKey(Project, db_index=True, related_name='persons', on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, db_index=True, related_name='people', on_delete=models.CASCADE)
     name = models.CharField("Name", max_length=200)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True)
 
-    main_venue = models.ForeignKey("Venue", db_index=True, related_name='persons', on_delete=models.CASCADE, blank=True, null=True)
-    origin_location = models.ForeignKey("Location", on_delete=models.PROTECT, blank=True, null=True)
+    main_location = models.ForeignKey("Location", db_index=True, related_name='people', on_delete=models.CASCADE, blank=True, null=True)
+    home_address = models.ForeignKey("Address", on_delete=models.PROTECT, blank=True, null=True)
 
     kind = models.CharField(
         max_length=30,
@@ -121,16 +116,33 @@ class Person(models.Model):
         )
     )
 
+    # TODO teams
+
     def __str__(self):
         return self.name
 
 
-class Location(models.Model):
+class AddressManager(models.Manager):
+    def create_from_source(self, source_name, source_country=""):
+        from .tasks import geocode_address
+
+        address, created = Address.objects.get_or_create(
+            source_name=source_name,
+            source_country=source_country or "",
+            defaults={}
+        )
+        if created:
+            geocode_address.apply_async((address.pk, ), countdown=5)
+        return address
+
+class Address(models.Model):
+    objects = AddressManager()
+
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     source_name = models.CharField("Name", max_length=250, db_index=True)
-    source_country = models.CharField("Country", max_length=2, db_index=True)
+    source_country = models.CharField("Country", max_length=2, db_index=True, blank=True)
 
     # Computed fields
     latitude = models.FloatField("Latitude", blank=True, null=True)
@@ -139,7 +151,7 @@ class Location(models.Model):
 
     # TODO more fields from geocode
 
-    def geocode(self, force=False, save=False):
+    def geocode(self, force=False):
 
         if self.latitude is not None and not force:
             return
@@ -160,14 +172,7 @@ class Location(models.Model):
         self.longitude = geo.longitude
         self.country = geo.raw["address"]["country_code"]
 
-        if save:
-            self.save()
-
-    def save(self, *args, **kwargs):
-        from .tasks import geocode_location
-
-        models.Model.save(self, *args, **kwargs)
-        geocode_location.delay(self.pk)
+        self.save(update_fields=["latitude", "longitude", "country"])
 
     def __str__(self):
         return "%s [%s]" % (self.source_name, self.source_country)
@@ -183,8 +188,8 @@ class TransportStep(models.Model):
 
     project = models.ForeignKey(Project, db_index=True, related_name='transportsteps', on_delete=models.CASCADE)
 
-    from_location = models.ForeignKey(Location, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
-    to_location = models.ForeignKey(Location, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
+    from_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
+    to_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
 
     mode = models.ForeignKey(TransportMode, blank=True, null=True, on_delete=models.PROTECT)
     transport = models.ForeignKey(TransportMode, related_name='transportsteps', on_delete=models.CASCADE)
@@ -197,8 +202,8 @@ class Transport(models.Model):
 
     project = models.ForeignKey(Project, db_index=True, related_name='transports', on_delete=models.CASCADE)
     name = models.CharField("Name", max_length=200, blank=True)
-    from_location = models.ForeignKey(Location, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
-    to_location = models.ForeignKey(Location, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
+    from_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
+    to_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
 
     roundtrip = models.BooleanField(default=True)
 
@@ -224,7 +229,7 @@ class Transport(models.Model):
     # TODO multiple?
     person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
 
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def __str__(self):
         return str(self.name)
@@ -276,17 +281,18 @@ class Extra(models.Model):
         return self.name
 
 
-class Venue(models.Model):
+class Location(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
-    project = models.ForeignKey(Project, db_index=True, related_name='venues', on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, db_index=True, related_name='locations', on_delete=models.CASCADE)
     name = models.CharField("Name", max_length=200)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True)
 
-    location = models.ForeignKey(Location, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
+    address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
 
     area = models.FloatField(blank=True, null=True)  # in m2
+    is_default = models.BooleanField(default=False)
     # heating?
     # power source?
 
@@ -295,7 +301,7 @@ class DataPoint(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     project = models.ForeignKey(Project, db_index=True, related_name='powerdatapoints', on_delete=models.CASCADE)
-    venue = models.ForeignKey(Venue, on_delete=models.PROTECT, related_name='+')
+    location = models.ForeignKey(Location, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
     wh = models.FloatField()  # absolute measurement from electrical counter
 
     # photo, creator

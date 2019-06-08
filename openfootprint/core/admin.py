@@ -15,4 +15,4 @@ admin.site.register(models.Transport)
 
 admin.site.register(models.Extra)
 
-admin.site.register(models.Venue)
+admin.site.register(models.Address)

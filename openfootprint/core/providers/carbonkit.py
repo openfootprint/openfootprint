@@ -28,10 +28,10 @@ class FootprintProvider(BaseFootprintProvider):
         path = "categories/Great_Circle_flight_methodology/calculation"\
                "?type=great+circle+route&values.isReturn=false&values.journeys=1"\
                "&values.lat1=%f&values.lat2=%f&values.long1=%f&values.long2=%f&values.passengers=1" % (
-            emission_source["from_location"]["latitude"],
-            emission_source["to_location"]["latitude"],
-            emission_source["from_location"]["longitude"],
-            emission_source["to_location"]["longitude"]
+            emission_source["from_address"]["latitude"],
+            emission_source["to_address"]["latitude"],
+            emission_source["from_address"]["longitude"],
+            emission_source["to_address"]["longitude"]
         )
         emmission = self._do_requests(path)
         if emmission.get("status") == "OK":

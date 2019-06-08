@@ -1,18 +1,20 @@
 from config import celery_app
-from .models import Location
+from .models import Address
 import importlib
 
 
 EMISSION_HANDLERS_BY_SOURCE = {
   "transports": "compute_transports_footprint",
-  "extra": "compute_extras_footprint"
+  "extras": "compute_extras_footprint"
 }
 
 
 @celery_app.task(bind=True)
-def geocode_location(self, location_id):
-    location = Location.objects.get(pk=location_id)
-    location.geocode(save=True)
+def geocode_address(self, address_id):
+    print("Geoloc %s" % address_id)
+    print(list(Address.objects.all()))
+    address = Address.objects.get(pk=int(address_id))
+    address.geocode()
 
 @celery_app.task(bind=True)
 def compute_footprint(self, project_json, provider="openfootprint.core.providers.carbonkit"):

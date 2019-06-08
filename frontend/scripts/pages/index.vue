@@ -4,7 +4,7 @@
     <b-button :to='{"name": "new"}'>Create new project</b-button>
 
     <ul v-for="project in projects" :key="project.id">
-      <li><b-link :to='{"name": "project_home", "params": {"project_id": project.id}}'>{{project.name}}</b-link></li>
+      <li><b-link :to='{"name": "project_home", "params": {"id": project.id}}'>{{project.name}}</b-link></li>
     </ul>
   </div>
 </template>

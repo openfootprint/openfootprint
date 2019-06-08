@@ -2,13 +2,17 @@
   <div class="admin_project_page">
 
     <nav class="ofp_sidebar">
-      <a href="/" class="logo"><img src="../../images/logo_openfootprint_vertical.svg" alt="Logo OpenFootprint"></a>
+      <b-link :to="{'name':'index'}" class="logo"><img src="../../images/logo_openfootprint_vertical.svg" alt="Logo OpenFootprint"></b-link>
 
         <ul>
           <b-nav-item :to='{"name": "project_home"}' active>Dashboard<span class="active_bar"></span></b-nav-item>
-          <b-nav-item>Estimate<span class="active_bar"></span></b-nav-item>
-          <b-nav-item>Employees<span class="active_bar"></span></b-nav-item>
-          <b-nav-item>Offices<span class="active_bar"></span></b-nav-item>
+          <b-nav-item :to='{"name": "estimate_people"}' v-if="project.kind=='company'">Employees<span class="active_bar"></span></b-nav-item>
+          <b-nav-item :to='{"name": "estimate_people"}' v-if="project.kind=='event'">Attendees<span class="active_bar"></span></b-nav-item>
+          <b-nav-item :to='{"name": "estimate_transports"}' v-if="project.kind=='event'">Transports<span class="active_bar"></span></b-nav-item>
+          <b-nav-item :to='{"name": "estimate_extras"}' v-if="project.kind=='event'">Extras<span class="active_bar"></span></b-nav-item>
+          <b-nav-item :to='{"name": "estimate_locations"}'>Locations<span class="active_bar"></span></b-nav-item>
+
+          <b-nav-item v-if="project.kind=='company'">Offices<span class="active_bar"></span></b-nav-item>
           <b-nav-item>Reports<span class="active_bar"></span></b-nav-item>
           <b-nav-item :to='{"name": "project_settings"}'>Settings<span class="active_bar"></span></b-nav-item>
 
@@ -60,6 +64,9 @@ export default {
     refreshProject() {
       // TODO loading
       this.$http.get("/api/project/"+this.$route.params.id).then((response) => {
+        response.data.locations.forEach((loc) => {
+          loc.address_source_name = (loc.address||{}).source_name;
+        });
         this.project = response.data;
         console.log(this.project);
       });
@@ -69,7 +76,7 @@ export default {
       this.$http.post("/api/project/"+this.project.id+"/footprint").then((response) => {
         this.loading_footprint = false;
         console.log(response);
-        this.total_co2e = response.data.result.f.co2e;
+        this.total_co2e = response.data.footprint || 0;
         this.footprint_id = response.data.footprint_id;
       });
     }

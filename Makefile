@@ -8,10 +8,13 @@ test_coverage:
 docker_build:
 	docker-compose -f local.yml build
 
-local_setup: docker_build migrate
+createsuperuser:
 	echo
 	echo "Create your admin user:"
 	docker-compose -f local.yml run --rm django python manage.py createsuperuser
+
+
+local_setup: docker_build migrate createsuperuser
 
 local_webpack:
 	docker-compose -f local.yml run --rm --service-ports webpack
@@ -29,9 +32,15 @@ stopserver:
 	docker-compose -f utils.yml down || true
 
 migrate:
-	# docker-compose -f local.yml run --rm django python manage.py reset_schema
+	#
 	docker-compose -f local.yml run --rm django python manage.py makemigrations
 	docker-compose -f local.yml run --rm django python manage.py migrate
+
+resetdb:
+	docker-compose -f local.yml run --rm django python manage.py reset_schema
+	docker-compose -f local.yml run --rm django python manage.py makemigrations core
+	docker-compose -f local.yml run --rm django python manage.py migrate
+	make createsuperuser
 
 shell:
 	docker-compose -f local.yml run --rm -ti django zsh
