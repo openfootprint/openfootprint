@@ -18,6 +18,6 @@ setup(
     url="https://github.com/openfootprint/openfootprint",
     packages=[],
     license="Apache 2.0",
-    platforms='any',
-    zip_safe=False
+    platforms="any",
+    zip_safe=False,
 )

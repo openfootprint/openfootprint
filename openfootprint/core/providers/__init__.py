@@ -3,7 +3,7 @@ import json
 
 
 class FootprintProvider():
-    name = None
+    name = ""
 
     def __init__(self):
         config_path = "config.%s.json" % self.name

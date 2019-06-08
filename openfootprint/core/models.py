@@ -235,7 +235,6 @@ class Transport(models.Model):
         return str(self.name)
 
     def get_time_weight(self, start_date, end_date):
-
         # This is all very approximative for now
         delta = end_date - start_date
         daysyear = 365.0
@@ -254,7 +253,7 @@ class Transport(models.Model):
         elif self.frequency == "peryear":
             return yearshare
 
-        return m
+        return 1
 
 
 class Extra(models.Model):
