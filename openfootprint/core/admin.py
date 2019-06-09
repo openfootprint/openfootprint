@@ -1,7 +1,17 @@
 from django.contrib import admin
 from . import models
 
-admin.site.register(models.Project)
+class ProjectAdmin(admin.ModelAdmin):
+    search_fields = ('name',)
+    list_filter = ('kind',)
+    list_display   = ('name', 'kind')
+
+    fieldsets = (
+        ('General', {
+            'fields': ('name', 'kind', 'starts_at', 'ends_at')
+        }),
+    )
+admin.site.register(models.Project, ProjectAdmin)
 
 admin.site.register(models.Footprint)
 

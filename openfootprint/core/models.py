@@ -28,6 +28,9 @@ class Project(models.Model):
         )
     )
 
+    starts_at = models.DateTimeField(blank=True, null=True)
+    ends_at = models.DateTimeField(blank=True, null=True)
+
     # TODO admin_users
     # TODO subprojects / linkedprojects?
 

@@ -8,7 +8,14 @@
           <b-nav-item :to='{"name": "project_home"}' active>Dashboard<span class="active_bar"></span></b-nav-item>
           <b-nav-item :to='{"name": "estimate_people"}' v-if="project.kind=='company'">Employees<span class="active_bar"></span></b-nav-item>
           <b-nav-item :to='{"name": "estimate_people"}' v-if="project.kind=='event'">Attendees<span class="active_bar"></span></b-nav-item>
-          <b-nav-item :to='{"name": "estimate_transports"}' v-if="project.kind=='event'">Transports<span class="active_bar"></span></b-nav-item>
+          <b-nav-item :to='{"name": "estimate_transports"}' v-if="project.kind=='event'">
+            Transports<span class="active_bar"></span><span class="subtotal_item">10t</span>
+            <ul class="ofp_siedebar_submenu">
+              <b-nav-item>Submenu item</b-nav-item>
+              <b-nav-item>Submenu item</b-nav-item>
+              <b-nav-item>Submenu item</b-nav-item>
+            </ul>  
+          </b-nav-item>
           <b-nav-item :to='{"name": "estimate_extras"}' v-if="project.kind=='event'">Extras<span class="active_bar"></span></b-nav-item>
           <b-nav-item :to='{"name": "estimate_locations"}'>Locations<span class="active_bar"></span></b-nav-item>
 
@@ -115,6 +122,14 @@ export default {
       margin:0px;
       padding:0px;
 
+      &:first-of-type {
+        overflow-y:auto;
+        height: -webkit-calc(100% - 156px);
+        height: -moz-calc(100% - 156px);
+        height: calc(100% - 156px);
+        padding-bottom:30px;
+      }
+
       li {
         list-style: none;
         border-bottom:2px solid #FFF;
@@ -142,6 +157,32 @@ export default {
 
           &:hover {
             color:$blue;
+          }
+
+          .subtotal_item {
+            border-radius:4px;
+            background-color:rgba(8,174,234,0.14);
+            color:$blue;
+            font-size:10px;
+            padding:4px 12px;
+            float: right;
+            text-transform: initial; 
+          }
+        }
+
+        .ofp_siedebar_submenu {
+          padding-bottom:0px;
+          li {
+            border:0px;
+            &:first-child {
+              margin-top:15px;
+            }
+            a {
+              text-transform: initial;
+              font-weight: normal;
+              font-size:14px;
+              padding:10px 0px 10px 10px;
+            }
           }
         }
       }
