@@ -5,7 +5,7 @@
       <b-link :to="{'name':'index'}" class="logo"><img src="../../images/logo_openfootprint_vertical.svg" alt="Logo OpenFootprint"></b-link>
 
         <ul>
-          <b-nav-item :to='{"name": "project_home"}' active>Dashboard<span class="active_bar"></span></b-nav-item>
+          <b-nav-item :to='{"name": "project_home"}'>Dashboard<span class="active_bar"></span></b-nav-item>
           <b-nav-item :to='{"name": "estimate_people"}' v-if="project.kind=='company'">Employees<span class="active_bar"></span></b-nav-item>
           <b-nav-item :to='{"name": "estimate_people"}' v-if="project.kind=='event'">Attendees<span class="active_bar"></span></b-nav-item>
           <b-nav-item :to='{"name": "estimate_transports"}' v-if="project.kind=='event'">
@@ -141,7 +141,7 @@ export default {
           font-weight: bold;
           position: relative;
 
-          &.active {
+          &.router-link-exact-active {
             color:$blue;
 
             .active_bar {
