@@ -7,6 +7,7 @@ from rest_framework.permissions import AllowAny
 from django.utils.decorators import method_decorator
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from .tasks import geocode_project
+import datetime
 
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
@@ -134,6 +135,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
       project = self.get_object()
 
       project.name = request.data["name"]
+      if request.data.get("starts_at"):
+        project.starts_at = datetime.datetime.strptime(request.data.get("starts_at"), '%Y-%m-%d')
+      if request.data.get("ends_at"):
+        project.ends_at = datetime.datetime.strptime(request.data.get("ends_at"), '%Y-%m-%d')
 
       project.save()
 

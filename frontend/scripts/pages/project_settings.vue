@@ -24,7 +24,7 @@
       >
         <b-form-input
           id="settings-project-start-date"
-          v-model="starts_at"
+          v-model="$parent.project.starts_at"
           type="date"
           placeholder="Start date..."
         ></b-form-input>
@@ -37,7 +37,7 @@
       >
         <b-form-input
           id="settings-project-end-date"
-          v-model="ends_at"
+          v-model="$parent.project.ends_at"
           type="date"
           placeholder="End date..."
         ></b-form-input>
@@ -58,12 +58,13 @@ export default {
   },
   methods:{
     onSubmit() {
+
       var data = {
-        "main_location": this.main_location,
         "name": this.$parent.project.name,
-        "start_at": this.$parent.project.start_at,
+        "starts_at": this.$parent.project.starts_at,
         "ends_at": this.$parent.project.ends_at,
       };
+      console.log(data);
       this.$http.post("/api/project/"+this.$parent.project.id+"/set_settings", data).then((response) => {
         this.$parent.refreshProject();
       });

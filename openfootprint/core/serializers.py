@@ -62,6 +62,9 @@ class ProjectSerializerFull(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     locations = LocationSerializer(many=True, read_only=True)
 
+    starts_at = serializers.DateTimeField(read_only=True, format="%Y-%m-%d")
+    ends_at = serializers.DateTimeField(read_only=True, format="%Y-%m-%d")
+
     class Meta:
         model = Project
         fields = '__all__'
