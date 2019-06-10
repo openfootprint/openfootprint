@@ -107,3 +107,45 @@ h4 {
         }
     }
 }
+
+.full_width_upload_import {
+    width:100%;
+    border-radius: 8px;
+    border:2px dashed $gray-200;
+    padding:60px 30px;
+    text-align: center;
+    background-color:rgba(8, 174, 234, 0.02);
+    
+    .file-select {
+        width:100%;
+        float: none;
+    }
+
+    svg {
+        width:60px;
+        height:auto;
+        fill:$blue;
+        margin-bottom:10px;
+    }
+
+    p {
+        margin-bottom:0px;
+
+        span {
+            color:$blue;
+            font-weight: bold;
+        }
+    }
+
+    &:hover {
+        background-color:rgba(8, 174, 234, 0.04);
+        span {
+            text-decoration: underline;
+        }
+    }
+
+    &.import_field {
+        border:2px solid $gray-200;
+        cursor: pointer;
+    }
+}
