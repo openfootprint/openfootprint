@@ -16,5 +16,12 @@ class FootprintProvider():
     def compute_transports_footprint(self, emission_source):
         raise NotImplementedError
 
+    def compute_hotel_footprint(self, emission_source):
+        raise NotImplementedError
+
+    def compute_food_footprint(self, emission_source):
+        # 1kg per person
+        return emission_source["attendees"] * emission_source["night_stays"] * 1000
+
     def compute_extra_footprint(self, emission_source):
         raise NotImplementedError

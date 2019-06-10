@@ -5,9 +5,8 @@
 
     <b-form @submit.prevent.stop="onSubmit">
       <b-form-group
-        label="Name:"
+        label="Project name:"
         label-for="settings-project-name"
-        description="Name of this project."
       >
         <b-form-input
           id="settings-project-name"
@@ -20,15 +19,27 @@
 
       <b-form-group
         v-if="$parent.project.kind=='event'"
-        label="Main event location:"
-        label-for="settings-project-main-location"
-        description="Main location where the event takes place"
+        label="Event start date:"
+        label-for="settings-project-start-date"
       >
         <b-form-input
-          id="settings-project-main-location"
-          v-model="main_location"
-          type="text"
-          placeholder="Address..."
+          id="settings-project-start-date"
+          v-model="starts_at"
+          type="date"
+          placeholder="Start date..."
+        ></b-form-input>
+      </b-form-group>
+
+      <b-form-group
+        v-if="$parent.project.kind=='event'"
+        label="Event end date:"
+        label-for="settings-project-end-date"
+      >
+        <b-form-input
+          id="settings-project-end-date"
+          v-model="ends_at"
+          type="date"
+          placeholder="End date..."
         ></b-form-input>
       </b-form-group>
 
@@ -49,7 +60,9 @@ export default {
     onSubmit() {
       var data = {
         "main_location": this.main_location,
-        "name": this.$parent.project.name
+        "name": this.$parent.project.name,
+        "start_at": this.$parent.project.start_at,
+        "ends_at": this.$parent.project.ends_at,
       };
       this.$http.post("/api/project/"+this.$parent.project.id+"/set_settings", data).then((response) => {
         this.$parent.refreshProject();
