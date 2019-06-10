@@ -62,7 +62,7 @@ export default {
   },
   methods: {
     addRow() {
-      this.$refs.table_main.items.push({"id": "new_"+Math.random()});
+      this.$refs.table_main.items.push({"id": "new_"+Math.random(), "is_default": (this.$refs.table_main.items.length==0)});
       Vue.nextTick(() => {
         var newInput = this.$refs.table_main.$el.querySelector("tr:last-child input[type=text]");
         if (newInput) newInput.focus();

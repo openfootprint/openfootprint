@@ -17,6 +17,8 @@ import router from './router'
 Vue.component('v-icon', Icon)
 
 Vue.prototype.$http = axios
+Vue.prototype.$OPENFOOTPRINT_GLOBAL = JSON.parse(document.getElementById("OPENFOOTPRINT_GLOBAL").textContent);
+Vue.prototype.$OPENFOOTPRINT_GLOBAL["transport_modes"].unshift({"value": null, "text":""});
 
 Vue.use(BootstrapVue)
 

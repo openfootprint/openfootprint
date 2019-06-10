@@ -4,6 +4,7 @@ import json
 import sys
 from django.db import models
 from geopy.geocoders import Nominatim
+from geopy.distance import geodesic
 from autoslug import AutoSlugField
 
 geolocator = Nominatim(user_agent="openfootprint")
@@ -37,15 +38,27 @@ class Project(models.Model):
     def get_default_location(self):
         return Location.objects.filter(project=self, is_default=True).first()
 
-    # def iter_locations(self):
-    #     """ Iterate through all locations linked to this project """
+    def iter_adresses(self):
+        """ Iterate through all addresses linked to this project """
 
-    #     for transport in self.transports.all():
-    #         if transport.from_location:
-    #             yield transport.from_location
-    #         if transport.to_location:
-    #             yield transport.to_location
+        for transport in self.transports.all():
+            if transport.from_address:
+                yield transport.from_address
+            if transport.to_address:
+                yield transport.to_address
+            for step in transport.steps.all():
+                if step.from_address:
+                    yield step.from_address
+                if step.to_address:
+                    yield step.to_address
 
+        for location in self.locations.all():
+            if location.address:
+                yield location.address
+
+        for person in self.people.all():
+            if person.home_address:
+                yield person.home_address
 
 class Tag(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -144,6 +157,8 @@ class AddressManager(models.Manager):
         return address
 
 class Address(models.Model):
+    """ Adresses are shared between projects and thus are immutable once their source_name/source_country is set """
+
     objects = AddressManager()
 
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -186,6 +201,20 @@ class Address(models.Model):
         return "%s [%s]" % (self.source_name, self.source_country)
 
 
+TransportModeField = models.CharField(
+    max_length=100,
+    blank=False,
+    null=True,
+    choices=(
+        ("guess", "Guess"),
+        ("plane", "Plane"),
+        ("car", "Car"),
+        ("train", "Train"),
+        ("truck", "Truck"),
+        ("bus", "Bus"),
+        ("foot", "Foot")
+    )
+)
 
 class Transport(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -222,8 +251,38 @@ class Transport(models.Model):
 
     tags = models.ManyToManyField(Tag, blank=True)
 
+    mode = TransportModeField
+
     def __str__(self):
         return str(self.name)
+
+    def get_distance(self):
+        if not self.from_address or not self.to_address:
+            return None
+        return geodesic((self.from_address.latitude, self.from_address.longitude), (self.to_address.latitude, self.to_address.longitude)).m
+
+    def guess_mode(self):
+        # Guess the most likely form of transport, with rough naive assumptions.
+        # To be improved over time and spun off into a proper module
+
+        km = (self.get_distance() or 0) / 1000
+
+        if not km:
+            return None
+
+        # c1 = self.from_address.country
+        # c2 = self.to_address.country
+
+        if km > 800:
+            return "plane"
+
+        if km > 200:
+            return "train"
+
+        if km > 1:
+            return "car"
+
+        return "foot"
 
     def get_time_weight(self, start_date, end_date):
         # This is all very approximative for now
@@ -259,10 +318,6 @@ class TransportWaypoint(models.Model):
         unique_together = ("transport", "order")
 
 
-class TransportMode(models.Model):
-    name = models.CharField("Name", max_length=200)
-
-
 class TransportStep(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
@@ -270,7 +325,7 @@ class TransportStep(models.Model):
     from_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
     to_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
 
-    mode = models.ForeignKey(TransportMode, blank=True, null=True, on_delete=models.PROTECT)
+    mode = TransportModeField
     transport = models.ForeignKey(Transport, related_name='steps', on_delete=models.CASCADE)
 
 

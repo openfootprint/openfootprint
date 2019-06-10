@@ -6,6 +6,8 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from django.utils.decorators import method_decorator
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from .tasks import geocode_project
+
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
     def enforce_csrf(self, request):
@@ -39,13 +41,13 @@ class ProjectViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['POST'], name='Delete all transports')
     def delete_transports(self, request, pk=None):
       project = self.get_object()
-      Transport.objects.filter(project=project).delete()
+      project.transports.all().delete()
       return Response({'status': 'ok'})
 
     @action(detail=True, methods=['POST'], name='Delete all people')
     def delete_people(self, request, pk=None):
       project = self.get_object()
-      Person.objects.filter(project=project).delete()
+      project.people.all().delete()
       return Response({'status': 'ok'})
 
     @action(detail=True, methods=['POST'], name='Estimate footprint')
@@ -79,7 +81,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
       ids = {row["id"] for row in request.data if row.get("id")}
 
-      Extra.objects.filter(project=project).exclude(id__in=ids).delete()
+      project.extras.exclude(id__in=ids).delete()
 
       for i, row in enumerate(request.data):
         extra = None
@@ -108,7 +110,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
       ids = {row["id"] for row in request.data if row.get("id")}
 
-      Location.objects.filter(project=project).exclude(id__in=ids).delete()
+      project.locations.exclude(id__in=ids).delete()
 
       for i, row in enumerate(request.data):
         obj = None
@@ -163,27 +165,49 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def set_transports(self, request, pk=None):
       project = self.get_object()
 
+      for row in request.data:
+        if row.get("id") and str(row["id"]).startswith("new"):
+          row.pop("id")
+
+      ids = {row["id"] for row in request.data if row.get("id")}
+
+      project.transports.exclude(id__in=ids).delete()
+
       transports_count = project.transports.count()
 
       for i, row in enumerate(request.data):
-        transport = Transport(project=project)
 
-        if not row.get("name"):
-          transport.name = "Transport #%s" % (i + transports_count)
+        obj = None
+        if row.get("id"):
+          obj = Transport.objects.get(pk=row["id"])
+        if not obj:
+          obj = Transport(project=project)
+
+        if row.get("mode"):
+          obj.mode = row["mode"]
+
+        if row.get("name"):
+          obj.name = row["name"]
+        else:
+          obj.name = "Transport #%s" % (i + transports_count)
 
         if row.get("from_address"):
-          transport.from_address = Address.objects.create_from_source(row["from_address"],row.get("from_country"))
+          if type(row["from_address"]) == dict:
+            row["from_country"] = row["from_address"].get("source_country")
+            row["from_address"] = row["from_address"]["source_name"]
+          obj.from_address = Address.objects.create_from_source(row["from_address"],row.get("from_country"))
 
         if row.get("to_address"):
-          transport.to_address = Address.objects.create_from_source(row["to_address"],row.get("to_country"))
+          if type(row["to_address"]) == dict:
+            row["to_country"] = row["to_address"].get("source_country")
+            row["to_address"] = row["to_address"]["source_name"]
+          obj.to_address = Address.objects.create_from_source(row["to_address"],row.get("to_country"))
 
-        else:
-          # TODO default location?
-          pass
+        obj.roundtrip = (str(row.get("roundtrip") or "").lower() in ("1", "yes", "y", "true"))
 
-        transport.roundtrip = ((row.get("roundtrip") or "").lower() in ("1", "yes", "y", "true"))
+        obj.save()
 
-        transport.save()
+      geocode_project.apply_async((project.id, ), countdown=5)
 
       return Response({'status': 'ok'})
 
@@ -210,7 +234,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
           if person.home_address:
             from_address = person.home_address
 
-          print(person, from_address, to_address)
           if from_address and to_address:
             t = Transport(
               project=project,
@@ -218,8 +241,11 @@ class ProjectViewSet(viewsets.ModelViewSet):
               from_address=from_address,
               to_address=to_address,
               name="Transport for %s" % person.name,
-              person=person
+              person=person,
+              mode="guess"
             )
             t.save()
+
+      geocode_project.apply_async((project.id, ), countdown=5)
 
       return Response({'status': 'ok'})
