@@ -237,6 +237,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
       for person in project.people.all():
         if not transports.get(person.id):
+
           from_address = None
           to_address = None
           project_location = project.get_default_location()
@@ -250,16 +251,22 @@ class ProjectViewSet(viewsets.ModelViewSet):
             from_address = person.home_address
 
           if from_address and to_address:
-            t = Transport(
-              project=project,
-              roundtrip=True,
-              from_address=from_address,
-              to_address=to_address,
-              name="Transport for %s" % person.name,
-              person=person,
-              mode="guess"
-            )
-            t.save()
+            addresses = [from_address] + [Address.objects.create_from_source(waypoint) for waypoint in request.data.get("waypoints") or []] + [to_address]
+
+            # TODO native waypoint support
+            for i in range(len(addresses) - 1):
+
+              # TODO date
+              t = Transport(
+                project=project,
+                roundtrip=True,
+                from_address=addresses[i],
+                to_address=addresses[i+1],
+                name="Transport for %s" % person.name,
+                person=person,
+                mode="guess"
+              )
+              t.save()
 
       geocode_project.apply_async((project.id, ), countdown=5)
 

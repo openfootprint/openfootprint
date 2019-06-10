@@ -13,7 +13,7 @@
           <p>Data</p>
         </template>
 
-        <b-table ref="table_transports" :fields="transports_fields" striped primary-key="id" v-if="$parent.project.transports" :items="$parent.project.transports">
+        <b-table ref="table_main" :fields="transports_fields" striped primary-key="id" v-if="$parent.project.transports" :items="$parent.project.transports">
 
           <template slot="from_address" slot-scope="row">
             <AddressField v-model="row.item.from_address" />
@@ -70,6 +70,20 @@
           <p>Click here to import transports from your attendees</p>
           <b-button @click="addTransportsFromPeople()" variant="primary">Add transports from people <b-spinner v-if="loading_add_from_people" small type="grow" /></b-button>
         </div>
+
+        <br/>
+
+        <b-form-group
+          label="Add waypoint for everyone:"
+          label-for="transport_from_people_waypoint"
+        >
+          <AddressField
+            id="transport_from_people_waypoint"
+            v-model="transport_from_people_waypoint"
+          />
+        </b-form-group>
+
+
       </b-tab>
 
       <b-tab :active="($parent.project.people||[]).length==0 && ($parent.project.transports||[]).length==0">
@@ -101,6 +115,8 @@ export default {
 
       loading_save: false,
       loading_add_from_people:false,
+
+      transport_from_people_waypoint:null,
 
       transports_fields: [
         {
@@ -174,7 +190,12 @@ export default {
     },
     addTransportsFromPeople() {
       this.loading_add_from_people = true;
-      this.$http.post("/api/project/"+this.$parent.project.id+"/add_transports_from_people").then((response) => {
+      var options = {
+        "waypoints": this.transport_from_people_waypoint?[
+          this.transport_from_people_waypoint.source_name
+        ]:[]
+      }
+      this.$http.post("/api/project/"+this.$parent.project.id+"/add_transports_from_people", options).then((response) => {
         this.$parent.refreshProject(() => {
           this.loading_add_from_people = false;
         });
