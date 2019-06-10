@@ -112,3 +112,55 @@ $text-shadow: 0 1px 0 rgba(0, 0, 0, 0.05) !default;
   padding:20px;
   color:#474B4F;
 }
+
+
+// Tabs ========================================================================
+
+.nav-tabs {
+  border:none;
+
+  .nav-link.active, .nav-item.show .nav-link {
+    border:none;
+    color:$gray-700;
+  }
+
+  .nav-link {
+    padding:10px 20px;
+    font-size:16px;
+    color:$gray-600;
+    border:none;
+    
+    .icon-tab {
+      fill:$gray-600;
+      position: relative;
+      top:-1px;
+    }
+
+    .icon-tab, p {
+      display: inline-block;
+    }
+    
+    .icon-tab {
+      width:20px;
+      height:auto;
+    }
+
+    p {
+      margin:0px;
+    }
+
+    &.active {
+      border-bottom:3px solid $blue;
+      color:$gray-700;
+      font-weight: 500;
+
+      .icon-tab {
+        fill:$gray-700;
+      }
+    }
+  }
+}
+
+.tab-pane {
+  margin-top:30px;
+}

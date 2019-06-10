@@ -21,7 +21,7 @@
     </b-table>
 
     <b-button @click="addExtra()">Add extra</b-button>
-    <b-button @click="saveExtras()">Save extras</b-button>
+    <b-button @click="saveExtras()" variant="primary">Save extras</b-button>
   </div>
 </template>
 

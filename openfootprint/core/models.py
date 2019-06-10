@@ -296,7 +296,7 @@ class Transport(models.Model):
         # c1 = self.from_address.country
         # c2 = self.to_address.country
 
-        if km > 800:
+        if km > 700:
             return "plane"
 
         if km > 200:

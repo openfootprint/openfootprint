@@ -6,20 +6,21 @@
 
         <ul>
           <b-nav-item :to='{"name": "project_home"}'>Dashboard<span class="active_bar"></span></b-nav-item>
-          <b-nav-item :to='{"name": "estimate_people"}' v-if="project.kind=='company'">Employees<span class="active_bar"></span></b-nav-item>
-          <b-nav-item :to='{"name": "estimate_people"}' v-if="project.kind=='event'">Attendees<span class="active_bar"></span></b-nav-item>
-          <b-nav-item :to='{"name": "estimate_transports"}' v-if="project.kind=='event'">
-            Transports<span class="active_bar"></span><span class="subtotal_item">10t</span>
+          <b-nav-item>
+            Estimate<span class="active_bar"></span>
+            <!--<span class="subtotal_item">10t</span>-->
             <ul class="ofp_siedebar_submenu">
-              <b-nav-item>Submenu item</b-nav-item>
-              <b-nav-item>Submenu item</b-nav-item>
-              <b-nav-item>Submenu item</b-nav-item>
-            </ul>  
-          </b-nav-item>
-          <b-nav-item :to='{"name": "estimate_extras"}' v-if="project.kind=='event'">Extras<span class="active_bar"></span></b-nav-item>
-          <b-nav-item :to='{"name": "estimate_locations"}'>Locations<span class="active_bar"></span></b-nav-item>
+              <b-nav-item :to='{"name": "estimate_locations"}'>Locations<span class="active_bar"></span></b-nav-item>
+              <b-nav-item :to='{"name": "estimate_people"}'>
+                <span v-if="project.kind=='company'">Employees</span>
+                <span v-if="project.kind=='event'">Attendees</span>
+                <span class="active_bar"></span>
+              </b-nav-item>
+              <b-nav-item :to='{"name": "estimate_transports"}'>Transports<span class="active_bar"></span></b-nav-item>
+              <b-nav-item :to='{"name": "estimate_extras"}' v-if="project.kind=='event'">Extras<span class="active_bar"></span></b-nav-item>
 
-          <b-nav-item v-if="project.kind=='company'">Offices<span class="active_bar"></span></b-nav-item>
+            </ul>
+          </b-nav-item>
           <b-nav-item>Reports<span class="active_bar"></span></b-nav-item>
           <b-nav-item :to='{"name": "project_settings"}'>Settings<span class="active_bar"></span></b-nav-item>
 
@@ -68,21 +69,20 @@ export default {
     this.refreshProject();
   },
   methods: {
-    refreshProject() {
+    refreshProject(callback) {
       // TODO loading
       this.$http.get("/api/project/"+this.$route.params.id).then((response) => {
         response.data.locations.forEach((loc) => {
           loc.address_source_name = (loc.address||{}).source_name;
         });
         this.project = response.data;
-        console.log(this.project);
+        if (callback) callback();
       });
     },
     computeFootprint() {
       this.loading_footprint = true;
       this.$http.post("/api/project/"+this.project.id+"/footprint").then((response) => {
         this.loading_footprint = false;
-        console.log(response);
         this.total_co2e = response.data.footprint || 0;
         this.footprint_id = response.data.footprint_id;
       });
@@ -166,7 +166,7 @@ export default {
             font-size:10px;
             padding:4px 12px;
             float: right;
-            text-transform: initial; 
+            text-transform: initial;
           }
         }
 

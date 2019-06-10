@@ -31,7 +31,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
       if getattr(self, 'action') == "list":
         return Project.objects.all()
-      return Project.objects.all().prefetch_related("transports").prefetch_related("transports__to_address").prefetch_related("transports__from_address").prefetch_related("transports__tags")
+      return Project.objects.all().prefetch_related("transports").prefetch_related("transports__to_address").prefetch_related("transports__from_address").prefetch_related("transports__tags").prefetch_related("people").prefetch_related("people__tags").prefetch_related("people__home_address")
 
     def get_serializer_class(self):
       if getattr(self, 'action') == "list":
@@ -143,20 +143,35 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def set_people(self, request, pk=None):
       project = self.get_object()
 
+      for row in request.data:
+        if row.get("id") and str(row["id"]).startswith("new"):
+          row.pop("id")
+
+      ids = {row["id"] for row in request.data if row.get("id")}
+
+      project.people.exclude(id__in=ids).delete()
+
       people_count = project.people.count()
 
       for i, row in enumerate(request.data):
-        person = Person(project=project)
+        obj = None
+        if row.get("id"):
+          obj = Person.objects.get(pk=row["id"])
+        if not obj:
+          obj = Person(project=project)
 
         if row.get("name"):
-          person.name = row["name"]
+          obj.name = row["name"]
         else:
-          person.name = "Person #%s" % (i + people_count)
+          obj.name = "Person #%s" % (i + people_count)
 
-        if row.get("from_address"):
-          person.home_address = Address.objects.create_from_source(row["from_address"],row.get("from_country"))
+        if row.get("home_address"):
+          if type(row["home_address"]) == dict:
+            row["home_country"] = row["home_address"].get("source_country")
+            row["home_address"] = row["home_address"]["source_name"]
+          obj.home_address = Address.objects.create_from_source(row["home_address"],row.get("home_country"))
 
-        person.save()
+        obj.save()
 
       return Response({'status': 'ok'})
 

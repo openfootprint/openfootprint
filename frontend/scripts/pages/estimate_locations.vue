@@ -27,7 +27,7 @@
     </b-table>
 
     <b-button @click="addRow()">Add location</b-button>
-    <b-button @click="saveAll()">Save locations</b-button>
+    <b-button @click="saveAll()" variant="primary">Save locations <b-spinner v-if="loading_save" small type="grow" /></b-button>
   </div>
 </template>
 
@@ -39,7 +39,7 @@ import Vue from 'vue'
 export default {
   data () {
     return {
-
+      loading_save: false,
       locations_fields: [
         {
           "key": "name",
@@ -72,8 +72,11 @@ export default {
       this.$refs.table_main.items.splice(row.index,1);
     },
     saveAll() {
+      this.loading_save = true;
       this.$http.post("/api/project/"+this.$parent.project.id+"/set_locations", this.$refs.table_main.items).then((response) => {
-        this.$parent.refreshProject();
+        this.$parent.refreshProject(() => {
+          this.loading_save = false;
+        });
       });
     }
   }
