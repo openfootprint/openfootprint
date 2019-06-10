@@ -53,6 +53,10 @@ class FootprintProvider(BaseFootprintProvider):
 
         return -1
 
+    def compute_hotel_footprint(self, emission_source):
+        # https://gitlab.com/carbonkit/datasets/blob/master/business/buildings/hotel/generic/algorithm.js
+        return 36.63 * emission_source["attendees"] * emission_source["night_stays"] * 1000
+
     def compute_extras_footprint(self, emission_source):
         if emission_source["kind"] == "co2e":
             return emission_source["param_f1"]

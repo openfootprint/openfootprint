@@ -5,6 +5,8 @@ import importlib
 
 EMISSION_HANDLERS_BY_SOURCE = {
   "transports": "compute_transports_footprint",
+  "hotel": "compute_hotel_footprint",
+  "food": "compute_food_footprint",
   "extras": "compute_extras_footprint"
 }
 

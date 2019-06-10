@@ -89,6 +89,26 @@ class Footprint(models.Model):
                     emission_data["weight"] *= 2
 
                 project_json.append(emission_data)
+        if self.project.kind == "event":
+            night_stays = (self.project.ends_at - self.project.starts_at).days
+            # TODO handle other location than main
+            event_location = self.project.get_default_location()
+            if night_stays <= 0:
+                night_stays = 1
+            number_of_attendees = self.project.people.exclude(main_location=event_location).count()
+            project_json.append({
+                "type": "hotel",
+                "attendees": number_of_attendees,
+                "night_stays": night_stays
+            })
+            # TODO specify number of meals per day in project settings
+            project_json.append({
+                "type": "food",
+                "number_of_meals": 3,
+                "attendees": number_of_attendees,
+                "night_stays": night_stays
+            })
+
         return project_json
 
     def compute(self):
