@@ -16,7 +16,7 @@
       </template>
 
       <template slot="actions" slot-scope="row">
-        <b-button @click="deleteRow(row)" ><v-icon name="trash" /></b-button>
+        <div class="btn-action" @click="deleteRow(row)" ><v-icon name="trash" /></div>
       </template>
     </b-table>
 
@@ -41,7 +41,8 @@ export default {
         },
         {
           "key": "kind",
-          "label": "Type"
+          "label": "Type",
+          "class": "th_dropdown"
         },
         {
           "key": "params",
@@ -49,7 +50,8 @@ export default {
         },
         {
           "key": "actions",
-          "label": "Actions"
+          "label": "",
+          "class": "th_actions"
         }
       ],
 

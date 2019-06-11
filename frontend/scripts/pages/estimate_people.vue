@@ -23,7 +23,7 @@
           </template>
 
           <template slot="actions" slot-scope="row">
-            <b-button @click="deleteRow(row)" ><v-icon name="trash" /></b-button>
+            <div class="btn-action" @click="deleteRow(row)" ><v-icon name="trash" /></div>
           </template>
         </b-table>
 
@@ -70,7 +70,8 @@ export default {
         },
         {
           "key": "actions",
-          "label": "Actions"
+          "label": "",
+          "class": "th_actions"
         }
       ],
       people_uploaded_columns: {
