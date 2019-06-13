@@ -69,6 +69,53 @@ class Project(models.Model):
             if person.home_address:
                 yield person.home_address
 
+    def get_flat_json(self):
+        project_json = []
+        for emission_type in ["transport", "extra"]:
+            for emission_source in getattr(self, "%ss" % emission_type).all():
+                emission_data = {
+                    "type": emission_type,
+                    "weight": 1.0
+                }
+                emission_data.update(getattr(sys.modules["openfootprint.core.serializers"], "%sSerializer" % emission_type.capitalize())(emission_source).data)
+
+                if emission_type == "transports" and emission_data.get("roundtrip"):
+                    emission_data["weight"] *= 2
+
+                project_json.append(emission_data)
+        if self.kind == "event":
+            if self.ends_at and self.starts_at:
+
+                # TODO configure that
+                night_stays = (self.ends_at - self.starts_at).days
+                if night_stays <= 0:
+                    night_stays = 1
+
+                number_of_attendees = self.people.count()
+                project_json.append({
+                    "type": "hotel",
+                    "attendees": number_of_attendees,
+                    "night_stays": night_stays
+                })
+                # TODO specify number of meals per day in project settings
+                project_json.append({
+                    "type": "food",
+                    "number_of_meals": 3,
+                    "attendees": number_of_attendees,
+                    "night_stays": night_stays
+                })
+
+        return {
+            "items": project_json,
+            "project": {
+                "id": self.id,
+                "people_count": self.people.count(),
+                "starts_at": self.starts_at.strftime("%Y-%m-%d") if self.starts_at else None,
+                "ends_at": self.ends_at.strftime("%Y-%m-%d") if self.ends_at else None
+            }
+        }
+
+
 class Tag(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
@@ -94,52 +141,16 @@ class Footprint(models.Model):
     starts_at = models.DateTimeField(blank=True, null=True)
     ends_at = models.DateTimeField(blank=True, null=True)
 
-    def _flatten(self):
-        project_json = []
-        for emission_type in ["transports", "extras"]:
-            for emission_source in getattr(self.project, emission_type).all():
-                emission_data = {
-                    "type": emission_type,
-                    "weight": 1.0
-                }
-                emission_data.update(getattr(sys.modules["openfootprint.core.serializers"], "%sSerializer" % emission_type.capitalize()[:-1])(emission_source).data)
-
-                if emission_type == "transports" and emission_data.get("roundtrip"):
-                    emission_data["weight"] *= 2
-
-                project_json.append(emission_data)
-        if self.project.kind == "event":
-            if self.project.ends_at and self.project.starts_at:
-
-                # TODO configure that
-                night_stays = (self.project.ends_at - self.project.starts_at).days
-                if night_stays <= 0:
-                    night_stays = 1
-
-                number_of_attendees = self.project.people.count()
-                project_json.append({
-                    "type": "hotel",
-                    "attendees": number_of_attendees,
-                    "night_stays": night_stays
-                })
-                # TODO specify number of meals per day in project settings
-                project_json.append({
-                    "type": "food",
-                    "number_of_meals": 3,
-                    "attendees": number_of_attendees,
-                    "night_stays": night_stays
-                })
-
-        return project_json
-
     def compute(self):
-        from .tasks import compute_footprint
+        from .tasks import compute_footprint, geocode_project
 
-        # 3. save json & generate templates
-        project_json = self._flatten()
-        raw_data = compute_footprint(project_json)
+        # Geocode everything
+        geocode_project(self.project.id)
 
-        self.footprint = sum([(emission_source.get("f", {}).get("co2e") or 0) for emission_source in raw_data])
+        # Save json & generate templates
+        raw_data = compute_footprint(self.project.id)
+
+        self.footprint = sum([(emission_source.get("f", {}).get("co2e") or 0) for emission_source in raw_data["items"]])
         # self.version = raw_data["f"]["version"]
 
         self.raw_json = json.dumps(raw_data)

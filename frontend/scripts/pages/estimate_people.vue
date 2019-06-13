@@ -15,24 +15,7 @@
           <p>Data</p>
         </template>
 
-        <b-table ref="table_main" :fields="people_fields" striped primary-key="id" v-if="$parent.project.people" :items="$parent.project.people">
-
-          <template slot="name" slot-scope="row">
-            <b-input v-model="row.item.name"/>
-          </template>
-
-          <template slot="home_address" slot-scope="row">
-            <AddressField v-model="row.item.home_address" />
-          </template>
-
-          <template slot="actions" slot-scope="row">
-            <div class="btn-action" @click="deleteRow(row)" ><v-icon name="trash" /></div>
-          </template>
-        </b-table>
-
-        <b-button @click="addRow()">Add person</b-button>
-        <!-- <b-button @click="saveAll()" variant="primary">Save all <b-spinner v-if="loading_save" small type="grow" /></b-button> -->
-        <b-button @click="deleteAll()" variant="danger">Delete all</b-button>
+        <DataTable ref="table_main" :fields="people_fields" collection="people" />
 
       </b-tab>
 
@@ -54,6 +37,7 @@
 
 <script>
 
+import DataTable from "../components/datatable"
 import AddressField from "../components/addressfield"
 import UploadSheet from "../components/uploadsheet"
 import Vue from 'vue'
@@ -119,7 +103,8 @@ export default {
   },
   components: {
     UploadSheet,
-    AddressField
+    AddressField,
+    DataTable
   }
 }
 </script>

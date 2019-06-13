@@ -4,10 +4,10 @@ import importlib
 
 
 EMISSION_HANDLERS_BY_SOURCE = {
-  "transports": "compute_transports_footprint",
+  "transport": "compute_transport_footprint",
   "hotel": "compute_hotel_footprint",
   "food": "compute_food_footprint",
-  "extras": "compute_extras_footprint"
+  "extra": "compute_extra_footprint"
 }
 
 
@@ -30,11 +30,14 @@ def geocode_address(self, address_id):
     address.geocode()
 
 @celery_app.task(bind=True)
-def compute_footprint(self, project_json, provider="openfootprint.core.providers.carbonkit"):
+def compute_footprint(self, project_id, provider="openfootprint.core.providers.carbonkit"):
+    project = Project.objects.get(pk=int(project_id))
+
+    project_json = project.get_flat_json()
 
     footprint_provider = importlib.import_module(provider).FootprintProvider() # type: ignore
 
-    for emission_source in project_json:
+    for emission_source in project_json["items"]:
         co2e = getattr(footprint_provider, EMISSION_HANDLERS_BY_SOURCE[emission_source["type"]])(emission_source)
         emission_source.setdefault("f", {})["co2e"] = co2e * emission_source.get("weight", 1.0)
 
