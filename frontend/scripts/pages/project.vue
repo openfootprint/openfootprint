@@ -24,12 +24,12 @@
           <b-nav-item>Reports<span class="active_bar"></span></b-nav-item>
           <b-nav-item :to='{"name": "project_settings"}'>Settings<span class="active_bar"></span></b-nav-item>
 
-          <div>
+          <div class="compute_block">
             <b-button @click="computeFootprint()" class="compute_footprint"><b-spinner v-if="loading_footprint" small type="grow" /> Compute footprint</b-button>
 
-            <div v-if="total_co2e">
-              Total footprint: {{total_co2e}} gCO2e
-              <a v-if="footprint_id" :href="'/report/'+footprint_id+'/'" target="_blank">Report</a>
+            <div v-if="total_co2e" class="computed_footprint">
+              <p><strong>Total footprint:</strong> {{total_co2e}} gCO2e</p>
+              <p><strong>Report:</strong> <a v-if="footprint_id" :href="'/report/'+footprint_id+'/'" target="_blank">click here</a></p>
             </div>
         </div>
       </ul>
@@ -127,7 +127,7 @@ export default {
         height: -webkit-calc(100% - 156px);
         height: -moz-calc(100% - 156px);
         height: calc(100% - 156px);
-        padding-bottom:30px;
+        padding-bottom:140px;
       }
 
       li {
@@ -188,10 +188,27 @@ export default {
       }
     }
 
-    .compute_footprint {
-      margin-left: 25px;
-      margin-top: 20px;
-      width: calc(100% - 50px);
+    .compute_block {
+      position: absolute;
+      bottom:0px;
+      left:0px;
+      width:100%;
+      padding:20px 25px;
+      background-color:$gray-900;
+
+      .compute_footprint {
+        width:100%;
+        margin-bottom:5px;
+      }
+
+      .computed_footprint {
+        color:$white;
+        font-size:14px;
+
+        p {
+          margin-bottom:0px;
+        }
+      }
     }
   }
 

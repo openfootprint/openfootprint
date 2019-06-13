@@ -30,6 +30,12 @@ body {
     font-weight: normal;
 }
 
+input[type="text"]:focus {
+    outline:none!important;
+    border:0px!important;
+    box-shadow:none!important;
+}
+
 h1 {
     font-size:2.25rem;
     margin-bottom:35px;
@@ -66,7 +72,7 @@ h4 {
 
         th {
             border:0px;
-            padding: 15px 20px 15px 40px;
+            padding: 15px 20px 15px 30px;
 
             &:first-child {
                 border-top-left-radius: 8px;
@@ -76,6 +82,10 @@ h4 {
             &:last-child {
                 border-top-right-radius: 8px;
                 border-bottom-right-radius: 8px;
+            }
+
+            &.th_actions {
+                width:60px;
             }
         }
     }
@@ -87,11 +97,11 @@ h4 {
     }
 
     tbody {
-
+        
         td {
             border-top:1px solid $gray-200;
             border-bottom:1px solid $gray-200;
-            padding: 18px 20px 18px 40px;
+            padding: 12px 15px 12px 25px;
 
             &:first-child {
                 border-top-left-radius: 8px;
@@ -104,7 +114,146 @@ h4 {
                 border-bottom-right-radius: 8px;
                 border-right:1px solid $gray-200;
             }
+
+            input[type="text"] {
+                -webkit-appearance: none;
+                appearance: none;
+                -moz-appearance: none;
+                border:none;
+                border-bottom:1px solid transparent;
+                font-size:14px;
+                padding:0px 10px 0px 5px;
+                border-radius:0px;
+
+                &:focus {
+                    border-bottom:1px solid $gray-400!important;
+                }
+
+                &.form-control {
+                    height:inherit;
+                }
+            }
+
+            &.th_actions {
+
+                .btn-action, .btn-action svg {
+                    max-height:15px;
+                }
+
+                .btn-action {
+                    display: none;
+                    top: -3px;
+                    position: relative;
+                    cursor:pointer;
+                    right:10px;
+
+                    &:hover {
+                        svg {
+                            fill:$gray-700;
+                        }
+                    }
+                }
+            }
+
+            &.th_checkbox {
+                position:relative;
+                padding-left:30px;
+
+                label {
+                    position: absolute;
+                    top:9px;
+                }
+            }
+
+            label {
+                margin-bottom:0px;
+            }
+
+            &.th_dropdown {
+                position: relative;
+            }
+
+            .custom-select {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                font-size: 14px;
+                height: 30px;
+                padding: 0px 8px;
+                line-height: 16px;
+                position: absolute;
+                top: 8px;
+                width:calc(100% - 40px);
+                background:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right 0.35rem center/8px 10px;
+            }
         }
+
+        tr:hover .btn-action {
+            display:block;
+        }
+    }
+
+    /* Styles for hiding the native checkbox */
+    input[type='checkbox'].check-custom {
+        position: absolute;
+        left: -10000px;
+        top: auto;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+    }
+  
+    /* Styles for the basic appearance of the toggle switch */
+    input[type='checkbox'].check-custom.toggle-switch ~ .check-toggle {
+        width: 1.5rem;
+        height: 1rem;
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        cursor: pointer;
+    }
+
+    /* Common styles for the ::before and ::after pseudo-elements of the toggle switch */
+    input[type='checkbox'].check-custom.toggle-switch ~ .check-toggle::before,
+    input[type='checkbox'].check-custom.toggle-switch ~ .check-toggle::after {
+        content: '';
+        top: 0;
+        left: 0;
+        position: absolute;
+    }
+
+    /* Styles for the ::before pseudo-element (the outer frame) of the toggle switch */
+    input[type='checkbox'].check-custom.toggle-switch ~ .check-toggle::before {
+        width: 100%;
+        height: 100%;
+        border-radius: 0.5rem;
+        background: #dbdbdb;
+    }
+
+    /* Styles for the ::after pseudo-element (the inner slider) of the toggle switch */
+    input[type='checkbox'].check-custom.toggle-switch ~ .check-toggle::after {
+        width: 0.75rem;
+        height: 0.75rem;
+        margin: 0.125rem;
+        border-radius: 50%;
+        background: #ffffff;
+    }
+
+    /* Styles for the ::before pseudo-element of the toggle switch in hover state */
+    input[type='checkbox'].check-custom.toggle-switch:hover ~ .check-toggle::before {
+        background: #c4c4c4;
+    }
+
+
+
+    /* Styles for the ::before pseudo-element of the toggle switch in checked or enabled state */
+    input[type='checkbox'].check-custom.toggle-switch:checked ~ .check-toggle::before {
+        background: $green;
+    }
+
+    /* Styles for the ::after pseudo-element of the toggle switch in checked or enabled state */
+    input[type='checkbox'].check-custom.toggle-switch:checked ~ .check-toggle::after {
+        left: auto;
+        right: 0;
     }
 }
 
@@ -147,5 +296,19 @@ h4 {
     &.import_field {
         border:2px solid $gray-200;
         cursor: pointer;
+    }
+
+    .btn {
+        margin-top:10px;
+    }
+}
+
+.btns_actions {
+    h2 {
+        float:left;
+    }
+
+    .btns {
+        float: right;
     }
 }

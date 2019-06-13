@@ -1,7 +1,12 @@
 <template>
   <div>
-
-    <h2>Locations</h2>
+    <div class="btns_actions">
+      <h2>Locations</h2>
+      <div class="btns">
+        <b-button @click="saveAll()" variant="save">Save locations <b-spinner v-if="loading_save" small type="grow" /></b-button>
+      </div>
+      <div class="clearfix"></div>
+    </div>
 
     <b-table ref="table_main" :fields="locations_fields" striped primary-key="id" v-if="$parent.project.locations" :items="$parent.project.locations">
 
@@ -13,21 +18,28 @@
         <b-input v-model="row.item.address_source_name" />
       </template>
 
-      <template slot="is_default" slot-scope="row">
+      <!-- <template slot="is_default" slot-scope="row">
         <b-form-checkbox
           v-model="row.item.is_default"
         >
         </b-form-checkbox>
+      </template> -->
+
+      <template slot="is_default" slot-scope="row">
+        <label>
+          <input type="checkbox" class="check-custom toggle-switch" v-model="row.item.is_default">
+          <span class="check-toggle"></span>
+        </label>
       </template>
 
       <template slot="actions" slot-scope="row">
-        <b-button @click="deleteRow(row)" ><v-icon name="trash" /></b-button>
+        <div class="btn-action" @click="deleteRow(row)" ><v-icon name="trash" /></div>
       </template>
 
     </b-table>
 
     <b-button @click="addRow()">Add location</b-button>
-    <b-button @click="saveAll()" variant="primary">Save locations <b-spinner v-if="loading_save" small type="grow" /></b-button>
+    <!-- <b-button @click="saveAll()" variant="primary">Save locations <b-spinner v-if="loading_save" small type="grow" /></b-button> -->
   </div>
 </template>
 
@@ -51,11 +63,13 @@ export default {
         },
         {
           "key": "is_default",
-          "label": "Default"
+          "label": "Default",
+          "class": "th_checkbox"
         },
         {
           "key": "actions",
-          "label": "Actions"
+          "label": "",
+          "class": "th_actions"
         }
       ]
     };

@@ -1,9 +1,12 @@
 <template>
   <div>
-
-    <h2>Transports</h2>
-
-    <div class="clearfix"></div>
+    <div class="btns_actions">
+      <h2>Transports</h2>
+      <div class="btns">
+        <b-button @click="saveAll()" variant="save">Save<b-spinner v-if="loading_save" small type="grow" /></b-button>
+      </div>
+      <div class="clearfix"></div>
+    </div>
 
     <b-tabs>
 
@@ -32,20 +35,19 @@
           </template>
 
           <template slot="roundtrip" slot-scope="row">
-            <b-form-checkbox
-              v-model="row.item.roundtrip"
-            >
-            </b-form-checkbox>
+            <label>
+              <input type="checkbox" class="check-custom toggle-switch" v-model="row.item.roundtrip">
+              <span class="check-toggle"></span>
+            </label>
           </template>
 
           <template slot="actions" slot-scope="row">
-            <b-button @click="deleteRow(row)" ><v-icon name="trash" /></b-button>
+            <div class="btn-action" @click="deleteRow(row)" ><v-icon name="trash" /></div>
           </template>
 
         </b-table>
 
         <b-button @click="addRow()">Add transport</b-button>
-        <b-button @click="saveAll()" variant="primary">Save all <b-spinner v-if="loading_save" small type="grow" /></b-button>
         <b-button @click="deleteAll()" variant="danger">Delete all</b-button>
 
       </b-tab>
@@ -133,15 +135,18 @@ export default {
         },
         {
           "key": "mode",
-          "label": "Mode"
+          "label": "Mode",
+          "class": "th_dropdown"
         },
         {
           "key": "roundtrip",
-          "label": "Roundtrip?"
+          "label": "Roundtrip?",
+          "class": "th_checkbox"
         },
         {
           "key": "actions",
-          "label": "Actions"
+          "label": "",
+          "class": "th_actions"
         }
       ],
       transports_uploaded_columns: {
