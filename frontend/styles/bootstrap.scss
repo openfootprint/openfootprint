@@ -57,6 +57,10 @@ $text-shadow: 0 1px 0 rgba(0, 0, 0, 0.05) !default;
 .btn-save {
   color:$white!important;
   background-color:$green!important;
+
+  &:hover {
+    background-color:darken($green, 10%)!important;
+  }
 }
 
 .btn-border {

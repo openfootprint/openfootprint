@@ -194,7 +194,7 @@ export default {
       left:0px;
       width:100%;
       padding:20px 25px;
-      background-color:$gray-900;
+      background-color:$blue;
 
       .compute_footprint {
         width:100%;
