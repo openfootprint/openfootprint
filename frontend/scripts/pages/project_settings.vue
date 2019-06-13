@@ -1,50 +1,51 @@
 <template>
   <div>
-
     <h2>Settings</h2>
 
-    <b-form @submit.prevent.stop="onSubmit">
-      <b-form-group
-        label="Project name:"
-        label-for="settings-project-name"
-      >
-        <b-form-input
-          id="settings-project-name"
-          v-model="$parent.project.name"
-          type="text"
-          required
-          placeholder="Project name"
-        ></b-form-input>
-      </b-form-group>
+    <div class="row">
+      <b-form @submit.prevent.stop="onSubmit" class="col-lg-6">
+        <b-form-group
+          label="Project name:"
+          label-for="settings-project-name"
+        >
+          <b-form-input
+            id="settings-project-name"
+            v-model="$parent.project.name"
+            type="text"
+            required
+            placeholder="Project name"
+          ></b-form-input>
+        </b-form-group>
 
-      <b-form-group
-        v-if="$parent.project.kind=='event'"
-        label="Event start date:"
-        label-for="settings-project-start-date"
-      >
-        <b-form-input
-          id="settings-project-start-date"
-          v-model="$parent.project.starts_at"
-          type="date"
-          placeholder="Start date..."
-        ></b-form-input>
-      </b-form-group>
+        <b-form-group
+          v-if="$parent.project.kind=='event'"
+          label="Event start date:"
+          label-for="settings-project-start-date"
+        >
+          <b-form-input
+            id="settings-project-start-date"
+            v-model="$parent.project.starts_at"
+            type="date"
+            placeholder="Start date..."
+          ></b-form-input>
+        </b-form-group>
 
-      <b-form-group
-        v-if="$parent.project.kind=='event'"
-        label="Event end date:"
-        label-for="settings-project-end-date"
-      >
-        <b-form-input
-          id="settings-project-end-date"
-          v-model="$parent.project.ends_at"
-          type="date"
-          placeholder="End date..."
-        ></b-form-input>
-      </b-form-group>
+        <b-form-group
+          v-if="$parent.project.kind=='event'"
+          label="Event end date:"
+          label-for="settings-project-end-date"
+        >
+          <b-form-input
+            id="settings-project-end-date"
+            v-model="$parent.project.ends_at"
+            type="date"
+            placeholder="End date..."
+          ></b-form-input>
+        </b-form-group>
 
-      <b-button type="submit" variant="primary">Submit</b-button>
-    </b-form>
+        <b-button type="submit" variant="primary">Submit</b-button>
+      </b-form>
+    </div>
   </div>
 </template>
 

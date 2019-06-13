@@ -30,12 +30,6 @@ body {
     font-weight: normal;
 }
 
-input[type="text"]:focus {
-    outline:none!important;
-    border:0px!important;
-    box-shadow:none!important;
-}
-
 h1 {
     font-size:2.25rem;
     margin-bottom:35px;
@@ -126,6 +120,9 @@ h4 {
                 border-radius:0px;
 
                 &:focus {
+                    outline:none!important;
+                    border:0px!important;
+                    box-shadow:none!important;
                     border-bottom:1px solid $gray-400!important;
                 }
 
@@ -310,5 +307,24 @@ h4 {
 
     .btns {
         float: right;
+    }
+}
+
+.input_w_icon {
+    position: relative;
+    width:calc(100% - 20px);
+    label {
+        position: absolute;
+        left:0px;
+        width: 18px;
+        top: -4px;
+
+        svg {
+            fill:#474B4F;
+        }
+    }
+
+    input {
+        padding: 0px 10px 0px 20px!important;
     }
 }

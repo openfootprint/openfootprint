@@ -58,7 +58,7 @@
           <p>Map</p>
         </template>
 
-        <div class="map_container"></div>
+        <div class="main_container_map"><div class="map_container"></div></div>
       </b-tab>
 
       <b-tab :active="($parent.project.people||[]).length>0 && ($parent.project.transports||[]).length==0">
@@ -233,13 +233,20 @@ export default {
           geo:{
               scope: 'world',
               projection: {
-                  type: 'equirectangular'
+                  type: 'mercator'
               },
               showland: true,
-              landcolor: 'rgb(243,243,243)',
-              countrycolor: 'rgb(204,204,204)',
               showframe: false,
-              showcountries: true
+              showcountries: true,
+              showcoastlines: false,
+              showocean: true,
+              oceancolor: "#8acdec",
+              landcolor: "#f1ede8",
+              countrycolor: "#d9d4cd",
+              // center: {
+              //     lon: 12,
+              //     lat: 12,
+              // },
           },
           margin: {
             l: 0,
@@ -248,9 +255,9 @@ export default {
             t: 0,
             pad: 0
         },
-        autosize: true
+        autosize: true,
         //width:900,
-        //height: 400
+        height: 1400
       };
 
       var config = {
@@ -273,6 +280,20 @@ export default {
 
   h2 {
     float: left;
+  }
+
+  .main_container_map {
+    width:100%;
+    height:500px;
+    overflow: hidden;
+    border-radius: 8px;
+    position:relative;
+
+    .map_container {
+      position: absolute;
+      top:-50%;
+      width:100%;
+    }
   }
 
 </style>
