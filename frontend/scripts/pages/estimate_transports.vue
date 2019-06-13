@@ -1,9 +1,12 @@
 <template>
   <div>
-
-    <h2>Transports</h2>
-
-    <div class="clearfix"></div>
+    <div class="btns_actions">
+      <h2>Transports</h2>
+      <div class="btns">
+        <b-button @click="saveAll()" variant="save">Save<b-spinner v-if="loading_save" small type="grow" /></b-button>
+      </div>
+      <div class="clearfix"></div>
+    </div>
 
     <b-tabs>
 
@@ -45,7 +48,6 @@
         </b-table>
 
         <b-button @click="addRow()">Add transport</b-button>
-        <b-button @click="saveAll()" variant="primary">Save all <b-spinner v-if="loading_save" small type="grow" /></b-button>
         <b-button @click="deleteAll()" variant="danger">Delete all</b-button>
 
       </b-tab>

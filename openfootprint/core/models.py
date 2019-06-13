@@ -32,6 +32,12 @@ class Project(models.Model):
     starts_at = models.DateTimeField(blank=True, null=True)
     ends_at = models.DateTimeField(blank=True, null=True)
 
+    # report_logo = models.ImageField(upload_to="reports", null=True, blank=True)
+    # report_background_banner = models.ImageField(upload_to="reports", null=True, blank=True)
+    # report_website_url = models.URLField(null=True, blank=True)
+    # report_twitter_habdle = models.CharField(max_length=30, null=True, blank=True)
+    # report_project_is_compensated = models.BooleanField(default=False)
+
     # TODO admin_users
     # TODO subprojects / linkedprojects?
 

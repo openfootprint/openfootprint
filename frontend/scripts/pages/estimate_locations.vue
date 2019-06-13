@@ -1,7 +1,12 @@
 <template>
   <div>
-
-    <h2>Locations</h2>
+    <div class="btns_actions">
+      <h2>Locations</h2>
+      <div class="btns">
+        <b-button @click="saveAll()" variant="save">Save locations <b-spinner v-if="loading_save" small type="grow" /></b-button>
+      </div>
+      <div class="clearfix"></div>
+    </div>
 
     <b-table ref="table_main" :fields="locations_fields" striped primary-key="id" v-if="$parent.project.locations" :items="$parent.project.locations">
 
@@ -34,7 +39,7 @@
     </b-table>
 
     <b-button @click="addRow()">Add location</b-button>
-    <b-button @click="saveAll()" variant="primary">Save locations <b-spinner v-if="loading_save" small type="grow" /></b-button>
+    <!-- <b-button @click="saveAll()" variant="primary">Save locations <b-spinner v-if="loading_save" small type="grow" /></b-button> -->
   </div>
 </template>
 

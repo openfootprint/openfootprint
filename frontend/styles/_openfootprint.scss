@@ -243,19 +243,11 @@ h4 {
         background: #c4c4c4;
     }
 
-    /* Styles for the ::before pseudo-element of the toggle switch in focus state */
-    input[type='checkbox'].check-custom.toggle-switch:focus ~ .check-toggle::before {
-        box-shadow: 0 0 0 2px rgba(23, 133, 255, 0.5);
-    }
 
-    /* Styles for the ::before pseudo-element of the toggle switch in both focus and checked or enabled state */
-    input[type='checkbox'].check-custom.toggle-switch:focus:checked ~ .check-toggle::before {
-        box-shadow: 0 0 0 2px rgba(97, 191, 158, 0.5);
-    }
 
     /* Styles for the ::before pseudo-element of the toggle switch in checked or enabled state */
     input[type='checkbox'].check-custom.toggle-switch:checked ~ .check-toggle::before {
-        background: #61bf9e;
+        background: $green;
     }
 
     /* Styles for the ::after pseudo-element of the toggle switch in checked or enabled state */
@@ -308,5 +300,15 @@ h4 {
 
     .btn {
         margin-top:10px;
+    }
+}
+
+.btns_actions {
+    h2 {
+        float:left;
+    }
+
+    .btns {
+        float: right;
     }
 }

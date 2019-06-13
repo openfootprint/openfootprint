@@ -31,8 +31,8 @@
                     <div class="col-lg-4">
                         <img src="images/logo_dotjs.png" alt="Logo"/>
                         <h1>{{footprint.project.name}}</h1>
-                        <p class="intro_infos">December 5-6 • Paris, France</p>
-                        <p class="intro_links"><a href="https://www.dotjs.io" target="_blank">www.dotjs.io</a> • <a href="https://www.twitter.com/dotJS" target="_blank">@dotJS</a></p>
+                        <p class="intro_infos">June 12-14 • {{location.name}}</p>
+                        <p class="intro_links"><a href="https://www.welcometothejungle.co" target="_blank">www.welcomtothejungle.co</a> • <a href="https://www.twitter.com/wttj_fr" target="_blank">@wttj_fr</a></p>
                     </div>
                 </div>
             </div>
@@ -43,12 +43,12 @@
                 <div class="row">
                     <div class="col-lg-3">
                         <div class="main_blocks_stats">
-                            <p><span>1.5 tons</span><br>of C02</p>
+                            <p><span>{{total_co2e}}</span><br>gCO2e</p>
                         </div>
                     </div>
                     <div class="col-lg-3">
                         <div class="main_blocks_stats">
-                            <p><span>1400</span><br>attendees</p>
+                            <p><span>{{project.people|length}}</span><br>attendees</p>
                         </div>
                     </div>
                     <div class="col-lg-3">
@@ -58,7 +58,7 @@
                     </div>
                     <div class="col-lg-3">
                         <div class="main_blocks_stats">
-                            <p><span>32</span><br>countries</p>
+                            <p><span>3</span><br>countries</p>
                         </div>
                     </div>
                 </div>

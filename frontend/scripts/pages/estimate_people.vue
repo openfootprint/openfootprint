@@ -1,9 +1,12 @@
 <template>
   <div>
-
-    <h2 v-if="$parent.project.kind=='event'">Attendees</h2>
-
-    <div class="clearfix"></div>
+    <div class="btns_actions">
+      <h2 v-if="$parent.project.kind=='event'">Attendees</h2>
+      <div class="btns">
+        <b-button @click="saveAll()" variant="save">Save<b-spinner v-if="loading_save" small type="grow" /></b-button>
+      </div>
+      <div class="clearfix"></div>
+    </div>
 
     <b-tabs>
       <b-tab>
@@ -28,7 +31,7 @@
         </b-table>
 
         <b-button @click="addRow()">Add person</b-button>
-        <b-button @click="saveAll()" variant="primary">Save all <b-spinner v-if="loading_save" small type="grow" /></b-button>
+        <!-- <b-button @click="saveAll()" variant="primary">Save all <b-spinner v-if="loading_save" small type="grow" /></b-button> -->
         <b-button @click="deleteAll()" variant="danger">Delete all</b-button>
 
       </b-tab>
@@ -123,7 +126,4 @@ export default {
 
 <style lang="scss" scoped>
 
-  h2 {
-    float: left;
-  }
 </style>
