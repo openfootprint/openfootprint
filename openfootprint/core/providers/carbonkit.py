@@ -36,7 +36,7 @@ class FootprintProvider(BaseFootprintProvider):
 
 
 
-    def compute_transports_footprint(self, emission_source):
+    def compute_transport_footprint(self, emission_source):
         path = "categories/Great_Circle_flight_methodology/calculation"\
                "?type=great+circle+route&values.isReturn=false&values.journeys=1"\
                "&values.lat1=%f&values.lat2=%f&values.long1=%f&values.long2=%f&values.passengers=1" % (
@@ -57,7 +57,7 @@ class FootprintProvider(BaseFootprintProvider):
         # https://gitlab.com/carbonkit/datasets/blob/master/business/buildings/hotel/generic/algorithm.js
         return 36.63 * emission_source["attendees"] * emission_source["night_stays"] * 1000
 
-    def compute_extras_footprint(self, emission_source):
+    def compute_extra_footprint(self, emission_source):
         if emission_source["kind"] == "co2e":
             return emission_source["param_f1"]
         return -1

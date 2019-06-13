@@ -17,55 +17,6 @@
 
 <body>
 
-    <div class="intro_header">
-        <div class="intro_background"></div>
-
-        <div class="intro_image">
-            <div class="overlay"></div>
-            <img src="images/main_image.jpg" alt="" />
-        </div>
-
-        <div class="intro_content">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-4">
-                        <img src="images/logo_dotjs.png" alt="Logo"/>
-                        <h1>{{footprint.project.name}}</h1>
-                        <p class="intro_infos">December 5-6 • Paris, France</p>
-                        <p class="intro_links"><a href="https://www.dotjs.io" target="_blank">www.dotjs.io</a> • <a href="https://www.twitter.com/dotJS" target="_blank">@dotJS</a></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="intro_blocks">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-3">
-                        <div class="main_blocks_stats">
-                            <p><span>1.5 tons</span><br>of C02</p>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="main_blocks_stats">
-                            <p><span>1400</span><br>attendees</p>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="main_blocks_stats">
-                            <p><span>2 days</span><br>of conference</p>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="main_blocks_stats">
-                            <p><span>32</span><br>countries</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="main_content">
 
         <div id="app">
@@ -77,6 +28,57 @@
     {% verbatim %}
 
         <script type="text/x-template" id="tpl-app">
+
+
+            <div class="intro_header">
+                <div class="intro_background"></div>
+
+                <div class="intro_image">
+                    <div class="overlay"></div>
+                    <img src="images/main_image.jpg" alt="" />
+                </div>
+
+                <div class="intro_content">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <img src="images/logo_dotjs.png" alt="Logo"/>
+                                <h1>{{project.name}}</h1>
+                                <p class="intro_infos">December 5-6 • Paris, France</p>
+                                <p class="intro_links"><a href="https://www.dotjs.io" target="_blank">www.dotjs.io</a> • <a href="https://www.twitter.com/dotJS" target="_blank">@dotJS</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="intro_blocks">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="main_blocks_stats">
+                                    <p><span>1.5 tons</span><br>of C02</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="main_blocks_stats">
+                                    <p><span>{{project.people_count}}</span><br>attendees</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="main_blocks_stats">
+                                    <p><span>2 days</span><br>of conference</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="main_blocks_stats">
+                                    <p><span>32</span><br>countries</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="container">
                 <footprint-section v-for="section in sections" :section="section" />
             </div>
@@ -141,8 +143,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js" integrity="sha256-chlNFSVx3TdcQ2Xlw7SvnbLAavAQLO0Y/LBiWX04viY=" crossorigin="anonymous"></script>
     <script>
-        var OFP_FOOTPRINT_DATA = {{footprint.raw_json|safe}};
-        console.log(OFP_FOOTPRINT_DATA);
+        var FOOTPRINT_DATA = {{footprint.raw_json|safe}};
+        console.log(FOOTPRINT_DATA);
 
         (function() {
 
@@ -163,7 +165,7 @@
             var app = new Vue({
                 template: '#tpl-app',
                 data: function() {
-                    return OFP_FOOTPRINT_DATA;
+                    return FOOTPRINT_DATA;
                 },
                 computed: {
                     sections: function() {
