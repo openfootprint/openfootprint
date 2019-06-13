@@ -166,7 +166,10 @@ export default {
       });
     });
     this.$refs.tab_map.$on("click", () => {
-      this.renderMap();
+      // TODO proper event on tab show, with width set already
+      setTimeout(() => {
+        this.renderMap();
+      }, 200);
     });
   },
   methods: {
@@ -230,14 +233,32 @@ export default {
           geo:{
               scope: 'world',
               projection: {
-                  type: 'azimuthal equal area'
+                  type: 'equirectangular'
               },
               showland: true,
               landcolor: 'rgb(243,243,243)',
-              countrycolor: 'rgb(204,204,204)'
-          }
+              countrycolor: 'rgb(204,204,204)',
+              showframe: false,
+              showcountries: true
+          },
+          margin: {
+            l: 0,
+            r: 0,
+            b: 0,
+            t: 0,
+            pad: 0
+        },
+        autosize: true
+        //width:900,
+        //height: 400
       };
-      Plotly.plot(this.$refs.tab_map.$el.querySelector(".map_container"), data, layout, {showLink: false});
+
+      var config = {
+        displayModeBar: false,
+        showLink: false,
+        responsive: true
+      };
+      Plotly.plot(this.$refs.tab_map.$el.querySelector(".map_container"), data, layout, config);
 
     }
   },
