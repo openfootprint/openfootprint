@@ -15,7 +15,7 @@
           <p>Data</p>
         </template>
 
-        <DataTable ref="table_main" :fields="people_fields" collection="people" />
+        <DataTable ref="table_main" :fields="people_fields" :root="$parent" :items="$parent.project.people" collection="people" :newitemtemplate='{"home_address": {}}' />
 
       </b-tab>
 

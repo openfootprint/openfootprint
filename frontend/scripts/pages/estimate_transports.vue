@@ -16,39 +16,7 @@
           <p>Data</p>
         </template>
 
-        <b-table ref="table_main" :fields="transports_fields" striped primary-key="id" v-if="$parent.project.transports" :items="$parent.project.transports">
-
-          <template slot="from_address" slot-scope="row">
-            <AddressField v-model="row.item.from_address" />
-          </template>
-
-          <template slot="to_address" slot-scope="row">
-            <AddressField v-model="row.item.to_address" />
-          </template>
-
-          <template slot="name" slot-scope="row">
-            <b-input v-model="row.item.name"/>
-          </template>
-
-          <template slot="mode" slot-scope="row">
-            <b-form-select v-model="row.item.mode" :options="$OPENFOOTPRINT_GLOBAL.transport_modes" />
-          </template>
-
-          <template slot="roundtrip" slot-scope="row">
-            <label>
-              <input type="checkbox" class="check-custom toggle-switch" v-model="row.item.roundtrip">
-              <span class="check-toggle"></span>
-            </label>
-          </template>
-
-          <template slot="actions" slot-scope="row">
-            <div class="btn-action" @click="deleteRow(row)" ><v-icon name="trash" /></div>
-          </template>
-
-        </b-table>
-
-        <b-button @click="addRow()">Add transport</b-button>
-        <b-button @click="deleteAll()" variant="danger">Delete all</b-button>
+        <DataTable ref="table_main" :fields="transports_fields" :root="$parent" :items="$parent.project.transports" collection="transports" :newitemtemplate='{"from_address": {}, "to_address": {}}' />
 
       </b-tab>
 
@@ -106,6 +74,7 @@
 
 <script>
 
+import DataTable from "../components/datatable"
 import UploadSheet from "../components/uploadsheet"
 import AddressField from "../components/addressfield"
 import Plotly from 'plotly.js-dist'
@@ -173,29 +142,6 @@ export default {
     });
   },
   methods: {
-    addRow() {
-      this.$parent.project.transports.push({"id": "new_"+Math.random(), "from_address": {}, "to_address": {}});
-      Vue.nextTick(() => {
-        var newInput = this.$refs.table_main.$el.querySelector("tr:last-child input[type=text]");
-        if (newInput) newInput.focus();
-      });
-    },
-    deleteRow(row) {
-      this.$refs.table_main.items.splice(row.index,1);
-    },
-    deleteAll() {
-      this.$http.post("/api/project/"+this.$parent.project.id+"/delete_transports").then((response) => {
-        this.$parent.refreshProject();
-      });
-    },
-    saveAll() {
-      this.loading_save = true;
-      this.$http.post("/api/project/"+this.$parent.project.id+"/set_transports", this.$refs.table_main.items).then((response) => {
-        this.$parent.refreshProject(() => {
-          this.loading_save = false;
-        });
-      });
-    },
     addTransportsFromPeople() {
       this.loading_add_from_people = true;
       var options = {
@@ -264,7 +210,8 @@ export default {
   },
   components: {
     UploadSheet,
-    AddressField
+    AddressField,
+    DataTable
   }
 }
 </script>

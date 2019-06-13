@@ -8,44 +8,15 @@
       <div class="clearfix"></div>
     </div>
 
-    <b-table ref="table_main" :fields="locations_fields" striped primary-key="id" v-if="$parent.project.locations" :items="$parent.project.locations">
+    <DataTable ref="table_main" :fields="locations_fields" :root="$parent" :items="$parent.project.locations" collection="locations" :newitemtemplate='{}' />
 
-      <template slot="name" slot-scope="row">
-        <b-input v-model="row.item.name" class="project_location_name" />
-      </template>
-
-      <template slot="address_source_name" slot-scope="row">
-        <b-input v-model="row.item.address_source_name" />
-      </template>
-
-      <!-- <template slot="is_default" slot-scope="row">
-        <b-form-checkbox
-          v-model="row.item.is_default"
-        >
-        </b-form-checkbox>
-      </template> -->
-
-      <template slot="is_default" slot-scope="row">
-        <label>
-          <input type="checkbox" class="check-custom toggle-switch" v-model="row.item.is_default">
-          <span class="check-toggle"></span>
-        </label>
-      </template>
-
-      <template slot="actions" slot-scope="row">
-        <div class="btn-action" @click="deleteRow(row)" ><v-icon name="trash" /></div>
-      </template>
-
-    </b-table>
-
-    <b-button @click="addRow()">Add location</b-button>
-    <!-- <b-button @click="saveAll()" variant="primary">Save locations <b-spinner v-if="loading_save" small type="grow" /></b-button> -->
-  </div>
+ </div>
 </template>
 
 
 <script>
 
+import DataTable from "../components/datatable"
 import Vue from 'vue'
 
 export default {
@@ -75,24 +46,9 @@ export default {
     };
   },
   methods: {
-    addRow() {
-      this.$refs.table_main.items.push({"id": "new_"+Math.random(), "is_default": (this.$refs.table_main.items.length==0)});
-      Vue.nextTick(() => {
-        var newInput = this.$refs.table_main.$el.querySelector("tr:last-child input[type=text]");
-        if (newInput) newInput.focus();
-      });
-    },
-    deleteRow(row) {
-      this.$refs.table_main.items.splice(row.index,1);
-    },
-    saveAll() {
-      this.loading_save = true;
-      this.$http.post("/api/project/"+this.$parent.project.id+"/set_locations", this.$refs.table_main.items).then((response) => {
-        this.$parent.refreshProject(() => {
-          this.loading_save = false;
-        });
-      });
-    }
+  },
+  components: {
+    DataTable
   }
 }
 </script>
