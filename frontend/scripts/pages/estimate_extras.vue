@@ -2,7 +2,7 @@
   <div>
     <h2>Extras</h2>
 
-    <DataTable ref="table_main" :fields="extras_fields" :root="$parent" :items="$parent.project.extras" collection="extras" :newitemtemplate='{"kind": "co2e"}' />
+    <DataTable ref="table_main" :fields="extras_fields" :root="$parent" collection="extras" :newitemtemplate='{"kind": "co2e"}' />
 
   </div>
 </template>

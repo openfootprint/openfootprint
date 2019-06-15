@@ -30,7 +30,7 @@
         <!-- TODO -->
         <a href="#">
           <img src="../../images/logo_openfootprint_icon.svg" />
-          <p>OpenFootprint</p>
+          <p>Log in to save</p>
         </a>
       </div>
     </nav>
@@ -46,11 +46,12 @@
           </p>
         </div>
         <div class="compute_block">
-            <b-button @click="computeFootprint()" variant="primary" v-if="!total_co2e"><b-spinner v-if="loading_footprint" small type="grow" /> Compute footprint</b-button>
+            <b-button @click="computeFootprint()" variant="primary" v-if="!total_co2e">Compute footprint <b-spinner v-if="loading_footprint" small type="grow" /></b-button>
 
             <div v-if="total_co2e" class="computed_footprint">
-              <p>{{total_co2e}} gCO2e <span @click="computeFootprint()" v-if="total_co2e"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21,11a1,1,0,0,0-1,1,8.05,8.05,0,1,1-2.22-5.5h-2.4a1,1,0,0,0,0,2h4.53a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4.77A10,10,0,1,0,22,12,1,1,0,0,0,21,11Z"/></svg></span></p>
+              <p>{{parseInt(total_co2e/100000,10)/10}} tons of CO2e <span @click="computeFootprint()" v-if="total_co2e"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21,11a1,1,0,0,0-1,1,8.05,8.05,0,1,1-2.22-5.5h-2.4a1,1,0,0,0,0,2h4.53a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4.77A10,10,0,1,0,22,12,1,1,0,0,0,21,11Z"/></svg></span></p>
               <a v-if="footprint_id" :href="'/report/'+footprint_id+'/'" target="_blank">View report</a>
+              | <a href="">Offset</a>
             </div>
         </div>
       </div>
@@ -69,8 +70,8 @@ export default {
     return {
       loading_footprint: false,
       project: {},
-      total_co2e: true,
-      footprint_id:true
+      total_co2e: null,
+      footprint_id: null
     };
   },
   created() {
@@ -151,7 +152,7 @@ export default {
             position: relative;
             top:-2px;
             margin-right:10px;
-            
+
             svg {
               fill:$gray-700;
             }
@@ -301,7 +302,7 @@ export default {
       .compute_block {
         position: absolute;
         top:0px;
-        width:250px;
+        width:280px;
         padding:5px 20px;
         background-color:#F3F7FA;
         right:0px;

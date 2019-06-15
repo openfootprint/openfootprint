@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <b-table ref="table_main"  striped primary-key="id" v-if="items" :items="items" :fields="fields">
+    <b-table ref="table_main" sort-by="id" primary-key="id" v-if="root.project[collection]" :items="root.project[collection]" :fields="fields">
 
       <template slot="name" slot-scope="row">
         <b-input v-model="row.item.name"/>
@@ -67,7 +67,7 @@ import AddressField from "../components/addressfield"
 import Vue from 'vue'
 
 export default {
-  props: ['collection', 'fields', 'items', 'root', 'newitemtemplate'],
+  props: ['collection', 'fields', 'root', 'newitemtemplate'],
   data() {
     return {
       loading_save: false,
@@ -92,15 +92,21 @@ export default {
     addRow() {
       var newitem = JSON.parse(JSON.stringify(this.newitemtemplate));
       newitem["id"] = "new_"+Math.random();
-      // "is_default": (this.$refs.table_main.items.length==0)}
-      this.items.push(newitem);
+
+      // TODO this shouldn't be hardcoded here
+      if (this.collection == "locations") {
+        newitem["is_default"] = (this.root.project[this.collection].length==0)
+      }
+
+      this.root.project[this.collection].push(newitem);
       Vue.nextTick(() => {
         var newInput = this.$refs.table_main.$el.querySelector("tr:last-child input[type=text]");
         if (newInput) newInput.focus();
       });
     },
     deleteRow(row) {
-      this.items.splice(row.index,1);
+      // TODO: investigate why splice doesn't behave correctly
+      this.root.project[this.collection].splice(row.index,1);
     },
     deleteAll() {
       this.$http.post("/api/project/"+this.root.project.id+"/delete_"+this.collection).then((response) => {
@@ -109,7 +115,7 @@ export default {
     },
     saveAll() {
       this.loading_save = true;
-      this.$http.post("/api/project/"+this.root.project.id+"/set_"+this.collection, this.items).then((response) => {
+      this.$http.post("/api/project/"+this.root.project.id+"/set_"+this.collection, this.root.project[this.collection]).then((response) => {
         this.root.refreshProject(() => {
           this.loading_save = false;
         });

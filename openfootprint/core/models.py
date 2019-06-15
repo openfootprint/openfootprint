@@ -50,7 +50,7 @@ class Project(models.Model):
     def iter_adresses(self):
         """ Iterate through all addresses linked to this project """
 
-        for transport in self.transports.all():
+        for transport in self.transports.all().prefetch_related("from_address").prefetch_related("to_address").prefetch_related("steps").prefetch_related("steps__to_address").prefetch_related("steps__from_address"):
             if transport.from_address:
                 yield transport.from_address
             if transport.to_address:
@@ -61,11 +61,11 @@ class Project(models.Model):
                 if step.to_address:
                     yield step.to_address
 
-        for location in self.locations.all():
+        for location in self.locations.all().prefetch_related("address"):
             if location.address:
                 yield location.address
 
-        for person in self.people.all():
+        for person in self.people.all().prefetch_related("home_address"):
             if person.home_address:
                 yield person.home_address
 

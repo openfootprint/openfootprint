@@ -51,7 +51,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
       project.people.all().delete()
       return Response({'status': 'ok'})
 
-    @action(detail=True, methods=['POST'], name='Estimate footprint')
+    @action(detail=True, methods=['POST', 'GET'], name='Estimate footprint')
     def footprint(self, request, pk=None):
       project = self.get_object()
 

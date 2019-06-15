@@ -8,7 +8,7 @@
       <div class="clearfix"></div>
     </div>
 
-    <DataTable ref="table_main" :fields="locations_fields" :root="$parent" :items="$parent.project.locations" collection="locations" :newitemtemplate='{}' />
+    <DataTable ref="table_main" :fields="locations_fields" :root="$parent" collection="locations" :newitemtemplate='{}' />
 
  </div>
 </template>

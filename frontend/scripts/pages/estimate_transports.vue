@@ -16,7 +16,7 @@
           <p>Data</p>
         </template>
 
-        <DataTable ref="table_main" :fields="transports_fields" :root="$parent" :items="$parent.project.transports" collection="transports" :newitemtemplate='{"from_address": {}, "to_address": {}}' />
+        <DataTable ref="table_main" :fields="transports_fields" :root="$parent" collection="transports" :newitemtemplate='{"from_address": {}, "to_address": {}}' />
 
       </b-tab>
 
@@ -159,27 +159,42 @@ export default {
 
       var data = [];
 
+      var latitudes = [];
+      var longitudes = [];
+
       this.$parent.project.transports.forEach((transport) => {
         data.push({
           type: 'scattergeo',
-          locationmode: 'USA-states',
           lon: [ transport.from_address.longitude, transport.to_address.longitude ],
           lat: [ transport.from_address.latitude, transport.to_address.latitude ],
           mode: 'lines',
           line: {
-              width: 1,
+              width: 3,
               color: 'red'
           },
-          opacity: 1
+          opacity: 0.1
         });
+        latitudes.push(transport.from_address.latitude);
+        latitudes.push(transport.to_address.latitude);
+        longitudes.push(transport.from_address.longitude);
+        longitudes.push(transport.to_address.longitude);
       });
+
+      // Find the bounding box
+      // TODO: test this with corner cases
+      var topleft = [Math.max(...latitudes), Math.min(...longitudes)];
+      var bottomright = [Math.min(...latitudes), Math.max(...longitudes)];
+
+      var center = [(topleft[0] + bottomright[0])/2, (topleft[1] + bottomright[1])/2];
+      var maxSize = Math.max(topleft[0] - bottomright[0], bottomright[1] - topleft[1]);
 
       var layout = {
           showlegend: false,
           geo:{
               scope: 'world',
               projection: {
-                  type: 'mercator'
+                  type: 'mercator',
+                  scale: maxSize / 2
               },
               showland: true,
               showframe: false,
@@ -189,10 +204,10 @@ export default {
               oceancolor: "#8acdec",
               landcolor: "#f1ede8",
               countrycolor: "#d9d4cd",
-              // center: {
-              //     lon: 12,
-              //     lat: 12,
-              // },
+              center: {
+                  lat: center[0] - (maxSize / 2), // Compensate for overflow position. TODO: should be done in CSS
+                  lon: center[1]
+              },
           },
           margin: {
             l: 0,
@@ -203,7 +218,7 @@ export default {
         },
         autosize: true,
         //width:900,
-        height: 1400
+        height: 1400 // TODO make this dynamic
       };
 
       var config = {
