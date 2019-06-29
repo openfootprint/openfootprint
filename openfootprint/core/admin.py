@@ -13,7 +13,7 @@ class ProjectAdmin(admin.ModelAdmin):
     )
 admin.site.register(models.Project, ProjectAdmin)
 
-admin.site.register(models.Footprint)
+admin.site.register(models.Report)
 
 admin.site.register(models.Tag)
 
@@ -26,3 +26,7 @@ admin.site.register(models.Transport)
 admin.site.register(models.Extra)
 
 admin.site.register(models.Address)
+
+admin.site.register(models.Meal)
+
+admin.site.register(models.Hotel)

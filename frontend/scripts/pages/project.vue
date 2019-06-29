@@ -49,8 +49,9 @@
 
             <div v-if="total_co2e" class="computed_footprint">
               <p>{{parseInt(total_co2e/100000,10)/10}} tons of CO2e <span @click="computeFootprint()" v-if="total_co2e"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21,11a1,1,0,0,0-1,1,8.05,8.05,0,1,1-2.22-5.5h-2.4a1,1,0,0,0,0,2h4.53a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4.77A10,10,0,1,0,22,12,1,1,0,0,0,21,11Z"/></svg></span></p>
-              <a v-if="footprint_id" :href="'/report/'+footprint_id+'/'" target="_blank">View report</a>
-              | <a href="">Offset</a>
+              <a v-if="report_id" :href="'/report/'+report_id+'/'" target="_blank">View report</a>
+              |
+              <a href="">Offset</a>
             </div>
         </div>
       </div>
@@ -70,7 +71,7 @@ export default {
     return {
       loading_footprint: false,
       total_co2e: null,
-      footprint_id: null
+      report_id: null
     };
   },
   created() {
@@ -86,7 +87,7 @@ export default {
       this.$http.post("/api/project/"+this.project.id+"/footprint").then((response) => {
         this.loading_footprint = false;
         this.total_co2e = response.data.footprint || 0;
-        this.footprint_id = response.data.footprint_id;
+        this.report_id = response.data.report_id;
       });
     }
   },

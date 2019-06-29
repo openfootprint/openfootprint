@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Project, Extra, Transport, Footprint, Person, Tag, Location, Address, Hotel, Meal
+from .models import Project, Extra, Transport, Report, Person, Tag, Location, Address, Hotel, Meal
 
 
 # TODO: filter fields properly
@@ -53,9 +53,9 @@ class TransportSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class FootprintSerializer(serializers.ModelSerializer):
+class ReportSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Footprint
+        model = Report
         fields = '__all__'
 
 
@@ -71,7 +71,7 @@ class PersonSerializer(serializers.ModelSerializer):
 class ProjectSerializerFull(serializers.ModelSerializer):
     extras = ExtraSerializer(many=True, read_only=True)
     transports = TransportSerializer(many=True, read_only=True)
-    footprints = FootprintSerializer(many=True, read_only=True)
+    reports = ReportSerializer(many=True, read_only=True)
     people = PersonSerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     locations = LocationSerializer(many=True, read_only=True)

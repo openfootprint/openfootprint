@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
-from .models import Project, Transport, Location, Person, Footprint, Extra, Address, Hotel, Meal
+from .models import Project, Transport, Location, Person, Report, Extra, Address, Hotel, Meal
 from .serializers import ProjectSerializerFull, ProjectSerializerList, TransportSerializer, ExtraSerializer
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -55,17 +55,19 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def footprint(self, request, pk=None):
       project = self.get_object()
 
-      footprint = Footprint(project=project)
-      data = footprint.compute()
+      # Create a default report if it doesn't exist
+      report_count = project.reports.count()
+      if report_count == 0:
+        report = Report(project=project, name="Default report")
+        report.save()
 
-      save = True
+      data = None
+      for report in project.reports.all():
+        data = report.compute()
+        report.save()
 
-      resp = {'status': 'ok', 'result': data}
-
-      if resp:
-        footprint.save()
-        resp["footprint_id"] = footprint.id
-        resp["footprint"] = footprint.footprint
+      # Return data for the last report
+      resp = {'status': 'ok', 'result': data, "report_id": report.id, "footprint": report.footprint}
 
       return Response(resp)
 

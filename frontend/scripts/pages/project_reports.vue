@@ -16,7 +16,7 @@
           <p>Reports</p>
         </template>
 
-        <DataTable ref="table_main" :fields="reports_fields" :root="$parent" collection="reports" :newitemtemplate='{}' />
+        <DataTable ref="table_main" :fields="reports_fields" collection="reports" :newitemtemplate='{}' />
 
         <b-modal id="modal-template" scrollable size="xl" ref="modal_template" title="Please select a template">
             <p>Help text if needed</p>
@@ -69,7 +69,7 @@
 import DataTable from "../components/datatable"
 import Vue from 'vue'
 
-export default {    
+export default {
   data () {
     return {
       reports_fields: [

@@ -1,5 +1,5 @@
 from config import celery_app
-from .models import Address, Transport, Project
+from .models import Address, Transport, Project, Report
 import importlib
 
 
@@ -30,10 +30,10 @@ def geocode_address(self, address_id):
     address.geocode()
 
 @celery_app.task(bind=True)
-def compute_footprint(self, project_id, provider="openfootprint.core.providers.carbonkit"):
-    project = Project.objects.get(pk=int(project_id))
+def compute_footprint(self, report_id, provider="openfootprint.core.providers.carbonkit"):
+    report = Report.objects.get(pk=int(report_id))
 
-    project_json = project.get_flat_json()
+    project_json = report.get_flat_items()
 
     footprint_provider = importlib.import_module(provider).FootprintProvider() # type: ignore
 

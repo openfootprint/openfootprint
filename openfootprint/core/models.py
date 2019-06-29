@@ -16,7 +16,6 @@ class Project(models.Model):
 
     name = models.CharField("Name", max_length=200)
 
-    # TODO autoslug
     slug = AutoSlugField("Slug", unique=True, populate_from="name", max_length=100, db_index=True)
 
     kind = models.CharField(
@@ -63,52 +62,6 @@ class Project(models.Model):
             if person.home_address:
                 yield person.home_address
 
-    def get_flat_json(self):
-        project_json = []
-        for emission_type in ["transport", "extra", "hotel", "meal"]:
-            for emission_source in getattr(self, "%ss" % emission_type).all():
-                emission_data = {
-                    "type": emission_type,
-                    "weight": 1.0
-                }
-                emission_data.update(getattr(sys.modules["openfootprint.core.serializers"], "%sSerializer" % emission_type.capitalize())(emission_source).data)
-
-                if emission_type == "transports" and emission_data.get("roundtrip"):
-                    emission_data["weight"] *= 2
-
-                project_json.append(emission_data)
-        if self.kind == "event":
-            if self.ends_at and self.starts_at:
-
-                # TODO configure that
-                night_stays = (self.ends_at - self.starts_at).days
-                if night_stays <= 0:
-                    night_stays = 1
-
-                number_of_attendees = self.people.count()
-                project_json.append({
-                    "type": "hotel",
-                    "attendees": number_of_attendees,
-                    "night_stays": night_stays
-                })
-                # TODO specify number of meals per day in project settings
-                project_json.append({
-                    "type": "food",
-                    "number_of_meals": 3,
-                    "attendees": number_of_attendees,
-                    "night_stays": night_stays
-                })
-
-        return {
-            "items": project_json,
-            "project": {
-                "id": self.id,
-                "people_count": self.people.count(),
-                "starts_at": self.starts_at.strftime("%Y-%m-%d") if self.starts_at else None,
-                "ends_at": self.ends_at.strftime("%Y-%m-%d") if self.ends_at else None
-            }
-        }
-
 
 class Tag(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -122,17 +75,23 @@ class Tag(models.Model):
         return self.name
 
 
-# class Report(models.Model):
-#     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-#     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
-#     project = models.ForeignKey(Project, db_index=True, related_name='reports', on_delete=models.CASCADE)
-#     name = models.CharField("Name", max_length=200)
+class Report(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
-#     config = models.TextField("Config JSON")
+    project = models.ForeignKey(Project, db_index=True, related_name='reports', on_delete=models.CASCADE)
+    version = models.CharField("CR version", max_length=50)
+    footprint = models.BigIntegerField("Footprint in gCO2e", blank=True, null=True)
 
-#     starts_at = models.DateTimeField(blank=True, null=True)
-#     ends_at = models.DateTimeField(blank=True, null=True)
+    name = models.CharField("Name", max_length=200)
+
+    raw_json = models.TextField("Raw JSON")
+
+    starts_at = models.DateTimeField(blank=True, null=True)
+    ends_at = models.DateTimeField(blank=True, null=True)
+
+    config = models.TextField("Config JSON")
 
     # report_logo = models.ImageField(upload_to="reports", null=True, blank=True)
     # report_background_banner = models.ImageField(upload_to="reports", null=True, blank=True)
@@ -140,19 +99,38 @@ class Tag(models.Model):
     # report_twitter_habdle = models.CharField(max_length=30, null=True, blank=True)
     # report_project_is_compensated = models.BooleanField(default=False)
 
+    def get_flat_items(self):
 
-class Footprint(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+        items = []
+        for emission_type in ["transport", "extra", "hotel", "meal"]:
+            for emission_source in getattr(self.project, "%ss" % emission_type).all():
+                emission_data = {
+                    "type": emission_type,
+                    "weight": 1.0
+                }
+                emission_data.update(getattr(sys.modules["openfootprint.core.serializers"], "%sSerializer" % emission_type.capitalize())(emission_source).data)
 
-    project = models.ForeignKey(Project, db_index=True, related_name='footprints', on_delete=models.CASCADE)
-    version = models.CharField("CR version", max_length=50)
-    footprint = models.FloatField("Footprint in gCO2e", blank=True, null=True)
+                if emission_type == "transport" and emission_data.get("roundtrip"):
+                    emission_data["weight"] *= 2
 
-    raw_json = models.TextField("Raw JSON")
+                if emission_type == "hotel":
+                    emission_data["nights"] = emission_source.get_nights() or 0
 
-    starts_at = models.DateTimeField(blank=True, null=True)
-    ends_at = models.DateTimeField(blank=True, null=True)
+                items.append(emission_data)
+
+        return {
+            "items": items,
+            "project": {
+                "id": self.project.id,
+                "people_count": self.project.people.count(),
+                "starts_at": self.project.starts_at.strftime("%Y-%m-%d") if self.project.starts_at else None,
+                "ends_at": self.project.ends_at.strftime("%Y-%m-%d") if self.project.ends_at else None
+            },
+            "report": {
+                "starts_at": self.starts_at.strftime("%Y-%m-%d") if self.starts_at else None,
+                "ends_at": self.ends_at.strftime("%Y-%m-%d") if self.ends_at else None
+            }
+        }
 
     def compute(self):
         from .tasks import compute_footprint, geocode_project
@@ -161,12 +139,12 @@ class Footprint(models.Model):
         geocode_project(self.project.id)
 
         # Save json & generate templates
-        raw_data = compute_footprint(self.project.id)
+        raw_data = compute_footprint(self.id)
 
         self.footprint = sum([(emission_source.get("f", {}).get("co2e") or 0) for emission_source in raw_data["items"]])
         # self.version = raw_data["f"]["version"]
 
-        self.raw_json = json.dumps(raw_data)
+        self.raw_json = json.dumps(raw_data, separators=(',', ':'))
 
         return raw_data
 

@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
-from .models import Footprint, TransportModeField
+from .models import Report, TransportModeField
 from django.views import static
 
 
@@ -10,13 +10,13 @@ class ReportView(TemplateView):
     return ["reports/event1/index.html"]
 
   def get_context_data(self, **kwargs):
-    self.footprint = get_object_or_404(Footprint, id=kwargs["footprint_id"])
+    self.report = get_object_or_404(Report, id=kwargs["report_id"])
     context = super().get_context_data(**kwargs)
-    context["footprint"] = self.footprint
+    context["report"] = self.report
     return context
 
 def report_static_serve(request, **kwargs):
-  footprint = get_object_or_404(Footprint, id=kwargs["footprint_id"])
+  report = get_object_or_404(Report, id=kwargs["report_id"])
   document_root = "openfootprint/templates/reports/event1/"
   return static.serve(request, kwargs["static_path"], document_root=document_root)
 
