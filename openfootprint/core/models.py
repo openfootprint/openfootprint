@@ -32,12 +32,6 @@ class Project(models.Model):
     starts_at = models.DateTimeField(blank=True, null=True)
     ends_at = models.DateTimeField(blank=True, null=True)
 
-    # report_logo = models.ImageField(upload_to="reports", null=True, blank=True)
-    # report_background_banner = models.ImageField(upload_to="reports", null=True, blank=True)
-    # report_website_url = models.URLField(null=True, blank=True)
-    # report_twitter_habdle = models.CharField(max_length=30, null=True, blank=True)
-    # report_project_is_compensated = models.BooleanField(default=False)
-
     # TODO admin_users
     # TODO subprojects / linkedprojects?
 
@@ -126,6 +120,25 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# class Report(models.Model):
+#     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+#     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+#     project = models.ForeignKey(Project, db_index=True, related_name='reports', on_delete=models.CASCADE)
+#     name = models.CharField("Name", max_length=200)
+
+#     config = models.TextField("Config JSON")
+
+#     starts_at = models.DateTimeField(blank=True, null=True)
+#     ends_at = models.DateTimeField(blank=True, null=True)
+
+    # report_logo = models.ImageField(upload_to="reports", null=True, blank=True)
+    # report_background_banner = models.ImageField(upload_to="reports", null=True, blank=True)
+    # report_website_url = models.URLField(null=True, blank=True)
+    # report_twitter_habdle = models.CharField(max_length=30, null=True, blank=True)
+    # report_project_is_compensated = models.BooleanField(default=False)
 
 
 class Footprint(models.Model):

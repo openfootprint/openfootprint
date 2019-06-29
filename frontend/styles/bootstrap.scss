@@ -126,7 +126,7 @@ $text-shadow: 0 1px 0 rgba(0, 0, 0, 0.05) !default;
 // Tabs ========================================================================
 
 .nav-tabs {
-  border:none;
+  border-bottom: 1px solid $gray-200;
 
   .nav-link.active, .nav-item.show .nav-link {
     border:none;
