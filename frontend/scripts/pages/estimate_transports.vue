@@ -16,11 +16,11 @@
           <p>Data</p>
         </template>
 
-        <DataTable ref="table_main" :fields="transports_fields" :root="$parent" collection="transports" :newitemtemplate='{"from_address": {}, "to_address": {}}' />
+        <DataTable ref="table_main" :fields="transports_fields" collection="transports" :newitemtemplate='{"from_address": {}, "to_address": {}}' />
 
       </b-tab>
 
-      <b-tab ref="tab_map" v-show="$parent.project.transports && $parent.project.transports.length>0">
+      <b-tab ref="tab_map" v-show="project.transports && project.transports.length>0">
         <template slot="title">
           <div class="icon-tab"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.32,5.05l-6-2h-.07a.7.7,0,0,0-.14,0h-.23l-.13,0h-.07L9,5,3.32,3.05a1,1,0,0,0-.9.14A1,1,0,0,0,2,4V18a1,1,0,0,0,.68.95l6,2h0a1,1,0,0,0,.62,0h0L15,19.05,20.68,21A1.19,1.19,0,0,0,21,21a.94.94,0,0,0,.58-.19A1,1,0,0,0,22,20V6A1,1,0,0,0,21.32,5.05ZM8,18.61,4,17.28V5.39L8,6.72Zm6-1.33-4,1.33V6.72l4-1.33Zm6,1.33-4-1.33V5.39l4,1.33Z"/></svg></div>
           <p>Map</p>
@@ -29,7 +29,7 @@
         <div class="main_container_map"><div class="map_container"></div></div>
       </b-tab>
 
-      <b-tab :active="($parent.project.people||[]).length>0 && ($parent.project.transports||[]).length==0">
+      <b-tab :active="(project.people||[]).length>0 && (project.transports||[]).length==0">
         <template slot="title">
           <div class="icon-tab"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.29,13.29a1,1,0,0,0,0,1.42l3,3a1,1,0,0,0,1.42,0l3-3a1,1,0,0,0-1.42-1.42L13,14.59V3a1,1,0,0,0-2,0V14.59l-1.29-1.3A1,1,0,0,0,8.29,13.29ZM18,9H16a1,1,0,0,0,0,2h2a1,1,0,0,1,1,1v7a1,1,0,0,1-1,1H6a1,1,0,0,1-1-1V12a1,1,0,0,1,1-1H8A1,1,0,0,0,8,9H6a3,3,0,0,0-3,3v7a3,3,0,0,0,3,3H18a3,3,0,0,0,3-3V12A3,3,0,0,0,18,9Z"/></svg></div>
           <p>Import from attendees</p>
@@ -56,7 +56,7 @@
 
       </b-tab>
 
-      <b-tab :active="($parent.project.people||[]).length==0 && ($parent.project.transports||[]).length==0">
+      <b-tab :active="(project.people||[]).length==0 && (project.transports||[]).length==0">
         <template slot="title">
           <div class="icon-tab"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.42,8.22A7,7,0,0,0,5.06,10.11,4,4,0,0,0,6,18a1,1,0,0,0,0-2,2,2,0,0,1,0-4,1,1,0,0,0,1-1,5,5,0,0,1,9.73-1.61,1,1,0,0,0,.78.67,3,3,0,0,1,.24,5.84,1,1,0,0,0,.5,1.94,5,5,0,0,0,.17-9.62Zm-5.71,2.07a1,1,0,0,0-.33-.21,1,1,0,0,0-.76,0,1,1,0,0,0-.33.21l-3,3a1,1,0,0,0,1.42,1.42L11,13.41V19a1,1,0,0,0,2,0V13.41l1.29,1.3a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42Z"/></svg></div>
           <p>Upload a file</p>
@@ -130,7 +130,7 @@ export default {
   mounted() {
     this.$refs.uploaded_transports.$on("data", (data) => {
       // TODO loading (https://bootstrap-vue.js.org/docs/components/table#table-busy-state)
-      this.$http.post("/api/project/"+this.$parent.project.id+"/set_transports", data).then((response) => {
+      this.$http.post("/api/project/"+this.project.id+"/set_transports", data).then((response) => {
         this.$parent.refreshProject();
       });
     });
@@ -149,7 +149,7 @@ export default {
           this.transport_from_people_waypoint.source_name
         ]:[]
       }
-      this.$http.post("/api/project/"+this.$parent.project.id+"/add_transports_from_people", options).then((response) => {
+      this.$http.post("/api/project/"+this.project.id+"/add_transports_from_people", options).then((response) => {
         this.$parent.refreshProject(() => {
           this.loading_add_from_people = false;
         });
@@ -162,7 +162,7 @@ export default {
       var latitudes = [];
       var longitudes = [];
 
-      this.$parent.project.transports.forEach((transport) => {
+      this.project.transports.forEach((transport) => {
         data.push({
           type: 'scattergeo',
           lon: [ transport.from_address.longitude, transport.to_address.longitude ],

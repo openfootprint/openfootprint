@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Project, Extra, Transport, Footprint, Person, Tag, Location, Address
+from .models import Project, Extra, Transport, Footprint, Person, Tag, Location, Address, Hotel, Meal
 
 
 # TODO: filter fields properly
@@ -27,6 +27,20 @@ class LocationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Location
+        fields = '__all__'
+
+
+class HotelSerializer(serializers.ModelSerializer):
+    address = AddressSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Hotel
+        fields = '__all__'
+
+
+class MealSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Meal
         fields = '__all__'
 
 
@@ -61,6 +75,8 @@ class ProjectSerializerFull(serializers.ModelSerializer):
     people = PersonSerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     locations = LocationSerializer(many=True, read_only=True)
+    meals = MealSerializer(many=True, read_only=True)
+    hotels = HotelSerializer(many=True, read_only=True)
 
     starts_at = serializers.DateTimeField(read_only=True, format="%Y-%m-%d")
     ends_at = serializers.DateTimeField(read_only=True, format="%Y-%m-%d")

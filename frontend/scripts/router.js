@@ -9,6 +9,8 @@ import EstimatePeople from './pages/estimate_people'
 import EstimateTransports from './pages/estimate_transports'
 import EstimateExtras from './pages/estimate_extras'
 import EstimateLocations from './pages/estimate_locations'
+import EstimateFood from './pages/estimate_food'
+import EstimateHotels from './pages/estimate_hotels'
 
 
 Vue.use(VueRouter)
@@ -54,6 +56,16 @@ export default new VueRouter({
           path: 'locations',
           name: 'estimate_locations',
           component: EstimateLocations
+        },
+        {
+          path: 'hotels',
+          name: 'estimate_hotels',
+          component: EstimateHotels
+        },
+        {
+          path: 'food',
+          name: 'estimate_food',
+          component: EstimateFood
         }
       ]
     },

@@ -5,8 +5,14 @@
 </template>
 
 <script>
+import router from './router'
+import store from "./store"
+
 export default {
-  name: 'app'
+  name: 'app',
+  el: '#app',
+  router,
+  store
 }
 </script>
 

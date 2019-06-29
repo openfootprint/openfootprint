@@ -16,10 +16,9 @@
                 <span v-if="project.kind=='event'">Attendees</span>
               </b-nav-item>
               <b-nav-item :to='{"name": "estimate_transports"}'>Transports</b-nav-item>
-              <b-nav-item >Food</b-nav-item>
-              <b-nav-item >Hotels</b-nav-item>
+              <b-nav-item :to='{"name": "estimate_food"}'>Food</b-nav-item>
+              <b-nav-item :to='{"name": "estimate_hotels"}'>Hotels</b-nav-item>
               <b-nav-item :to='{"name": "estimate_extras"}' v-if="project.kind=='event'">Extras</b-nav-item>
-
             </ul>
           </b-nav-item>
           <b-nav-item><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7,16a1.5,1.5,0,0,0,1.5-1.5.77.77,0,0,0,0-.15l2.79-2.79.23,0,.23,0,1.61,1.61s0,.05,0,.08a1.5,1.5,0,1,0,3,0v-.08L20,9.5h0A1.5,1.5,0,1,0,18.5,8a.77.77,0,0,0,0,.15l-3.61,3.61h-.16L13,10a1.49,1.49,0,0,0-3,0L7,13H7a1.5,1.5,0,0,0,0,3Zm13.5,4H3.5V3a1,1,0,0,0-2,0V21a1,1,0,0,0,1,1h18a1,1,0,0,0,0-2Z"/></svg></span>Reports</b-nav-item>
@@ -64,30 +63,24 @@
 </template>
 
 <script>
+import Vue from 'vue'
 
 export default {
   data () {
     return {
       loading_footprint: false,
-      project: {},
       total_co2e: null,
       footprint_id: null
     };
   },
   created() {
+    // TODO use vuex mutation
+    this.$store.state.project = {
+      "id": this.$route.params.id
+    };
     this.refreshProject();
   },
   methods: {
-    refreshProject(callback) {
-      // TODO loading
-      this.$http.get("/api/project/"+this.$route.params.id).then((response) => {
-        response.data.locations.forEach((loc) => {
-          loc.address_source_name = (loc.address||{}).source_name;
-        });
-        this.project = response.data;
-        if (callback) callback();
-      });
-    },
     computeFootprint() {
       this.loading_footprint = true;
       this.$http.post("/api/project/"+this.project.id+"/footprint").then((response) => {

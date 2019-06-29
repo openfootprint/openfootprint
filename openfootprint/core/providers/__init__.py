@@ -13,15 +13,14 @@ class FootprintProvider():
                 cwd = os.getcwd()
                 self.config = json.load(json_file)
 
-    def compute_transports_footprint(self, emission_source):
+    def compute_transport_footprint(self, emission_source):
         raise NotImplementedError
 
     def compute_hotel_footprint(self, emission_source):
         raise NotImplementedError
 
-    def compute_food_footprint(self, emission_source):
-        # 1kg per person
-        return emission_source["attendees"] * emission_source["night_stays"] * 1000
+    def compute_meal_footprint(self, emission_source):
+        raise NotImplementedError
 
     def compute_extra_footprint(self, emission_source):
         raise NotImplementedError

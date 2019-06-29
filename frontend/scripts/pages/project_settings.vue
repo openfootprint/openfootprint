@@ -10,7 +10,7 @@
         >
           <b-form-input
             id="settings-project-name"
-            v-model="$parent.project.name"
+            v-model="project.name"
             type="text"
             required
             placeholder="Project name"
@@ -18,26 +18,26 @@
         </b-form-group>
 
         <b-form-group
-          v-if="$parent.project.kind=='event'"
+          v-if="project.kind=='event'"
           label="Event start date:"
           label-for="settings-project-start-date"
         >
           <b-form-input
             id="settings-project-start-date"
-            v-model="$parent.project.starts_at"
+            v-model="project.starts_at"
             type="date"
             placeholder="Start date..."
           ></b-form-input>
         </b-form-group>
 
         <b-form-group
-          v-if="$parent.project.kind=='event'"
+          v-if="project.kind=='event'"
           label="Event end date:"
           label-for="settings-project-end-date"
         >
           <b-form-input
             id="settings-project-end-date"
-            v-model="$parent.project.ends_at"
+            v-model="project.ends_at"
             type="date"
             placeholder="End date..."
           ></b-form-input>
@@ -54,19 +54,19 @@
 export default {
   data () {
     return {
-      main_location:((this.$parent.project.main_location||{}).address||{}).source_name||""
+      main_location:((this.project.main_location||{}).address||{}).source_name||""
     }
   },
   methods:{
     onSubmit() {
 
       var data = {
-        "name": this.$parent.project.name,
-        "starts_at": this.$parent.project.starts_at,
-        "ends_at": this.$parent.project.ends_at,
+        "name": this.project.name,
+        "starts_at": this.project.starts_at,
+        "ends_at": this.project.ends_at,
       };
       console.log(data);
-      this.$http.post("/api/project/"+this.$parent.project.id+"/set_settings", data).then((response) => {
+      this.$http.post("/api/project/"+this.project.id+"/set_settings", data).then((response) => {
         this.$parent.refreshProject();
       });
     }

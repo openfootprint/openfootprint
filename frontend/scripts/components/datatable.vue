@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <b-table ref="table_main" sort-by="id" primary-key="id" v-if="root.project[collection]" :items="root.project[collection]" :fields="fields">
+    <b-table ref="table_main" sort-by="id" primary-key="id" v-if="project[collection]" :items="project[collection]" :fields="fields">
 
       <template slot="name" slot-scope="row">
         <b-input v-model="row.item.name"/>
@@ -13,6 +13,18 @@
 
       <template slot="address_source_name" slot-scope="row">
         <b-input v-model="row.item.address_source_name" />
+      </template>
+
+      <template slot="mass" slot-scope="row">
+        <b-input v-model="row.item.mass" />
+      </template>
+
+      <template slot="starts_at" slot-scope="row">
+        <b-form-input type="date" v-model="row.item.starts_at" />
+      </template>
+
+      <template slot="ends_at" slot-scope="row">
+        <b-form-input type="date" v-model="row.item.ends_at" />
       </template>
 
       <template slot="is_default" slot-scope="row">
@@ -31,6 +43,10 @@
           <input type="checkbox" class="check-custom toggle-switch" v-model="row.item.roundtrip">
           <span class="check-toggle"></span>
         </label>
+      </template>
+
+      <template slot="address" slot-scope="row">
+        <AddressField v-model="row.item.address" />
       </template>
 
       <template slot="from_address" slot-scope="row">
@@ -67,7 +83,7 @@ import AddressField from "../components/addressfield"
 import Vue from 'vue'
 
 export default {
-  props: ['collection', 'fields', 'root', 'newitemtemplate'],
+  props: ['collection', 'fields', 'newitemtemplate'],
   data() {
     return {
       loading_save: false,
@@ -95,10 +111,11 @@ export default {
 
       // TODO this shouldn't be hardcoded here
       if (this.collection == "locations") {
-        newitem["is_default"] = (this.root.project[this.collection].length==0)
+        newitem["is_default"] = (this.project[this.collection].length==0)
       }
 
-      this.root.project[this.collection].push(newitem);
+      this.project[this.collection].push(newitem);
+
       Vue.nextTick(() => {
         var newInput = this.$refs.table_main.$el.querySelector("tr:last-child input[type=text]");
         if (newInput) newInput.focus();
@@ -106,17 +123,17 @@ export default {
     },
     deleteRow(row) {
       // TODO: investigate why splice doesn't behave correctly
-      this.root.project[this.collection].splice(row.index,1);
+      this.project[this.collection].splice(row.index,1);
     },
     deleteAll() {
-      this.$http.post("/api/project/"+this.root.project.id+"/delete_"+this.collection).then((response) => {
-        this.root.refreshProject();
+      this.$http.post("/api/project/"+this.project.id+"/delete_"+this.collection).then((response) => {
+        this.refreshProject();
       });
     },
     saveAll() {
       this.loading_save = true;
-      this.$http.post("/api/project/"+this.root.project.id+"/set_"+this.collection, this.root.project[this.collection]).then((response) => {
-        this.root.refreshProject(() => {
+      this.$http.post("/api/project/"+this.project.id+"/set_"+this.collection, this.project[this.collection]).then((response) => {
+        this.refreshProject(() => {
           this.loading_save = false;
         });
       });

@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h2>Extras</h2>
+    <h2>Food</h2>
 
-    <DataTable ref="table_main" :fields="extras_fields" collection="extras" :newitemtemplate='{"kind": "co2e"}' />
+    <DataTable ref="table_main" :fields="food_fields" collection="meals" :newitemtemplate='{}' />
 
   </div>
 </template>
@@ -17,19 +17,14 @@ export default {
   data () {
     return {
 
-      extras_fields: [
+      food_fields: [
         {
           "key": "name",
           "label": "Name"
         },
         {
-          "key": "kind",
-          "label": "Type",
-          "class": "th_dropdown"
-        },
-        {
-          "key": "params",
-          "label": "Parameters"
+          "key": "mass",
+          "label": "Mass (in grams)"
         },
         {
           "key": "actions",

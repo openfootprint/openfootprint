@@ -10,21 +10,18 @@ import Icon from 'vue-awesome/components/Icon'
 // https://bootstrap-vue.js.org/docs
 import '../styles/bootstrap.scss'
 
+import {GlobalMixin} from "./mixins"
+
 import App from './app'
-import router from './router'
-
-
-Vue.component('v-icon', Icon)
 
 Vue.prototype.$http = axios
 Vue.prototype.$OPENFOOTPRINT_GLOBAL = JSON.parse(document.getElementById("OPENFOOTPRINT_GLOBAL").textContent);
 Vue.prototype.$OPENFOOTPRINT_GLOBAL["transport_modes"].unshift({"value": null, "text":""});
 
+Vue.component('v-icon', Icon)
+
 Vue.use(BootstrapVue)
 
-new Vue({
-  el: '#app',
-  router,
-  template: '<App/>',
-  components: { App }
-})
+Vue.mixin(GlobalMixin)
+
+new Vue(App);

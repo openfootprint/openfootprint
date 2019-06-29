@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
-from .models import Project, Transport, Location, Person, Footprint, Extra, Address
+from .models import Project, Transport, Location, Person, Footprint, Extra, Address, Hotel, Meal
 from .serializers import ProjectSerializerFull, ProjectSerializerList, TransportSerializer, ExtraSerializer
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -32,7 +32,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
       if getattr(self, 'action') == "list":
         return Project.objects.all()
-      return Project.objects.all().prefetch_related("transports").prefetch_related("transports__to_address").prefetch_related("transports__from_address").prefetch_related("transports__tags").prefetch_related("people").prefetch_related("people__tags").prefetch_related("people__home_address")
+      return Project.objects.all().prefetch_related("transports").prefetch_related("transports__to_address").prefetch_related("transports__from_address").prefetch_related("transports__tags").prefetch_related("people").prefetch_related("people__tags").prefetch_related("people__home_address").prefetch_related("hotels").prefetch_related("hotels__address").prefetch_related("hotels__tags").prefetch_related("meals").prefetch_related("meals__tags")
 
     def get_serializer_class(self):
       if getattr(self, 'action') == "list":
@@ -98,6 +98,68 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
       return Response({'status': 'ok'})
 
+
+    @action(detail=True, methods=['POST'], name='Set Hotels')
+    def set_hotels(self, request, pk=None):
+      project = self.get_object()
+
+      # TODO see if we can make this more generic
+
+      for row in request.data:
+        if row.get("id") and str(row["id"]).startswith("new"):
+          row.pop("id")
+
+      ids = {row["id"] for row in request.data if row.get("id")}
+
+      project.hotels.exclude(id__in=ids).delete()
+
+      for i, row in enumerate(request.data):
+        obj = None
+        if row.get("id"):
+          obj = Hotel.objects.get(pk=row["id"])
+        if not obj:
+          obj = Hotel(project=project)
+
+        for field, default in (("name", ""), ("starts_at", None), ("ends_at", None)):
+          setattr(obj, field, row.get(field, default))
+
+        if row.get("address"):
+          if type(row["address"]) == dict:
+            row["country"] = row["address"].get("source_country")
+            row["address"] = row["address"]["source_name"]
+          obj.address = Address.objects.create_from_source(row["address"],row.get("country"))
+
+        obj.save()
+
+      return Response({'status': 'ok'})
+
+    @action(detail=True, methods=['POST'], name='Set Meals')
+    def set_meals(self, request, pk=None):
+      project = self.get_object()
+
+      # TODO see if we can make this more generic
+
+      for row in request.data:
+        if row.get("id") and str(row["id"]).startswith("new"):
+          row.pop("id")
+
+      ids = {row["id"] for row in request.data if row.get("id")}
+
+      project.meals.exclude(id__in=ids).delete()
+
+      for i, row in enumerate(request.data):
+        obj = None
+        if row.get("id"):
+          obj = Meal.objects.get(pk=row["id"])
+        if not obj:
+          obj = Meal(project=project)
+
+        for field, default in (("name", ""), ("mass", 0),):
+          setattr(obj, field, row.get(field, default))
+
+        obj.save()
+
+      return Response({'status': 'ok'})
 
     @action(detail=True, methods=['POST'], name='Set Locations')
     def set_locations(self, request, pk=None):

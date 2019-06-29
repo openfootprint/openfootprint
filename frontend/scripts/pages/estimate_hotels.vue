@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h2>Extras</h2>
+    <h2>Hotel nights</h2>
 
-    <DataTable ref="table_main" :fields="extras_fields" collection="extras" :newitemtemplate='{"kind": "co2e"}' />
+    <DataTable ref="table_main" :fields="hotels_fields" collection="hotels" :newitemtemplate='{}' />
 
   </div>
 </template>
@@ -17,19 +17,22 @@ export default {
   data () {
     return {
 
-      extras_fields: [
+      hotels_fields: [
         {
           "key": "name",
           "label": "Name"
         },
         {
-          "key": "kind",
-          "label": "Type",
-          "class": "th_dropdown"
+          "key": "address",
+          "label": "Address"
         },
         {
-          "key": "params",
-          "label": "Parameters"
+          "key": "starts_at",
+          "label": "Check-in"
+        },
+        {
+          "key": "ends_at",
+          "label": "Check-out"
         },
         {
           "key": "actions",

@@ -71,7 +71,7 @@ class Project(models.Model):
 
     def get_flat_json(self):
         project_json = []
-        for emission_type in ["transport", "extra"]:
+        for emission_type in ["transport", "extra", "hotel", "meal"]:
             for emission_source in getattr(self, "%ss" % emission_type).all():
                 emission_data = {
                     "type": emission_type,
@@ -411,10 +411,44 @@ class Location(models.Model):
     # power source?
 
 
+class Hotel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    project = models.ForeignKey(Project, db_index=True, related_name='hotels', on_delete=models.CASCADE)
+    name = models.CharField("Name", max_length=200)
+    tags = models.ManyToManyField(Tag, blank=True)
+
+    address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
+
+    # TODO multiple?
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
+
+    starts_at = models.DateField(blank=True, null=True)
+    ends_at = models.DateField(blank=True, null=True)
+
+    def get_nights(self):
+        if self.starts_at and self.ends_at:
+            return (self.ends_at - self.starts_at).days
+
+class Meal(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    project = models.ForeignKey(Project, db_index=True, related_name='meals', on_delete=models.CASCADE)
+    name = models.CharField("Name", max_length=200)
+    tags = models.ManyToManyField(Tag, blank=True)
+
+    mass = models.BigIntegerField(default=0)  # In grams
+
+    # TODO multiple?
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
+
+
 class DataPoint(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
-    project = models.ForeignKey(Project, db_index=True, related_name='powerdatapoints', on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, db_index=True, related_name='datapoints', on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
     wh = models.FloatField()  # absolute measurement from electrical counter
 
