@@ -4,6 +4,8 @@ import Index from './pages/index'
 import Project from './pages/project'
 import NewProject from './pages/new_project'
 import ProjectSettings from './pages/project_settings'
+import ProjectReports from './pages/project_reports'
+import ProjectReport from './pages/project_report'
 import ProjectHome from './pages/project_home'
 import EstimatePeople from './pages/estimate_people'
 import EstimateTransports from './pages/estimate_transports'
@@ -21,7 +23,7 @@ export default new VueRouter({
       component: Index
     },
     {
-      path: '/project/:id',
+      path: '/project/:project_id',
       component: Project,
       children: [
         {
@@ -54,6 +56,16 @@ export default new VueRouter({
           path: 'locations',
           name: 'estimate_locations',
           component: EstimateLocations
+        },
+        {
+          path: 'reports',
+          name: 'project_reports',
+          component: ProjectReports
+        },
+        {
+          path: 'report/:report_id',
+          name: 'project_report',
+          component: ProjectReport
         }
       ]
     },

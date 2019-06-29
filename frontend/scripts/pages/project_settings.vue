@@ -65,7 +65,7 @@ export default {
         "starts_at": this.$parent.project.starts_at,
         "ends_at": this.$parent.project.ends_at,
       };
-      console.log(data);
+      
       this.$http.post("/api/project/"+this.$parent.project.id+"/set_settings", data).then((response) => {
         this.$parent.refreshProject();
       });

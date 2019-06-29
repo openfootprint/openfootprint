@@ -79,7 +79,7 @@ h4 {
             }
 
             &.th_actions {
-                width:60px;
+                width:100px;
             }
         }
     }
@@ -134,7 +134,7 @@ h4 {
             &.th_actions {
 
                 .btn-action, .btn-action svg {
-                    max-height:15px;
+                    max-height:20px;
                 }
 
                 .btn-action {
@@ -142,11 +142,23 @@ h4 {
                     top: -3px;
                     position: relative;
                     cursor:pointer;
+                    padding:0px;
+                    margin:0px;
                     right:10px;
 
                     &:hover {
                         svg {
                             fill:$gray-700;
+                        }
+                    }
+
+                    li {
+                        display: inline-block;
+                        float: left;
+                        margin-left:15px;
+
+                        &:first-child {
+                            margin-left:0px;
                         }
                     }
                 }
