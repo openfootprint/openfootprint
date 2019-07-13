@@ -2,8 +2,13 @@ import { mapState } from 'vuex'
 
 
 // https://vuejs.org/v2/guide/mixins.html
+var uuid = 0;
 
 var GlobalMixin = {
+  beforeCreate() {
+    this.uuid = uuid.toString();
+    uuid += 1;
+  },
   computed: mapState({
     project: "project"
   }),

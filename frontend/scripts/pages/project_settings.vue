@@ -3,73 +3,71 @@
     <h2>Settings</h2>
 
     <div class="row">
-      <b-form @submit.prevent.stop="onSubmit" class="col-lg-6">
-        <b-form-group
-          label="Project name:"
-          label-for="settings-project-name"
-        >
-          <b-form-input
-            id="settings-project-name"
-            v-model="project.name"
-            type="text"
-            required
-            placeholder="Project name"
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-          v-if="project.kind=='event'"
-          label="Event start date:"
-          label-for="settings-project-start-date"
-        >
-          <b-form-input
-            id="settings-project-start-date"
-            v-model="project.starts_at"
-            type="date"
-            placeholder="Start date..."
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-          v-if="project.kind=='event'"
-          label="Event end date:"
-          label-for="settings-project-end-date"
-        >
-          <b-form-input
-            id="settings-project-end-date"
-            v-model="project.ends_at"
-            type="date"
-            placeholder="End date..."
-          ></b-form-input>
-        </b-form-group>
-
-        <b-button type="submit" variant="primary">Submit</b-button>
-      </b-form>
+      <json-schema-form :value="values" :schema="schema" @submit="onSubmit" :submitting="submitting" class="col-lg-6" />
     </div>
   </div>
 </template>
 
 <script>
 
+import JsonSchemaForm from "../components/jsonschemaform"
+
 export default {
   data () {
     return {
-      main_location:((this.project.main_location||{}).address||{}).source_name||""
+      "submitting": false
+    }
+  },
+  computed:{
+    values() {
+      return {
+        "name": this.project.name,
+        "starts_at": this.project.starts_at,
+        "ends_at": this.project.ends_at
+      }
+    },
+    schema() {
+      var required = ["name"];
+      var properties = {
+        "name": {
+          "type": "string",
+          "title": "Project name"
+        }
+      };
+
+      if (this.project.kind="event") {
+        properties["starts_at"] = {
+          "type": "string",
+          "title": "Event start date",
+          "format": "date"
+        };
+        properties["ends_at"] = {
+          "type": "string",
+          "title": "Event start date",
+          "format": "date"
+        };
+      }
+
+      return {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "required": required,
+        "properties": properties,
+        "additionalProperties": false
+      };
     }
   },
   methods:{
-    onSubmit() {
-
-      var data = {
-        "name": this.project.name,
-        "starts_at": this.project.starts_at,
-        "ends_at": this.project.ends_at,
-      };
-
-      this.$http.post("/api/project/"+this.project.id+"/set_settings", data).then((response) => {
+    onSubmit(newValues) {
+      this.submitting = true;
+      this.$http.post("/api/project/"+this.project.id+"/set_settings", newValues).then((response) => {
+        this.submitting = false;
         this.$parent.refreshProject();
       });
     }
+  },
+  components: {
+    JsonSchemaForm
   }
 }
 </script>
