@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import Project, Extra, Transport, Report, Person, Tag, Location, Address, Hotel, Meal
-
+from .models import Project, Extra, Transport, Report, Person, Tag, Location, Address, Hotel, Meal, File
+import json
 
 # TODO: filter fields properly
 
@@ -13,6 +13,12 @@ class ExtraSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
+        fields = '__all__'
+
+
+class FileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = File
         fields = '__all__'
 
 
@@ -57,6 +63,33 @@ class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
         fields = '__all__'
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+
+        rep["config"] = json.loads(rep.get("config") or "{}") or {}
+
+        # TODO: move to a proper plugin
+        rep["config_schema"] = {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "header_image": {
+                    "type": "number",
+                    "title": "Header image",
+                    "attrs": {
+                        "type": "file"
+                    }
+                },
+                "website_url": {
+                    "type": "string",
+                    "title": "Event website URL",
+                    "format": "uri"
+                }
+            }
+        }
+
+        return rep
 
 
 class PersonSerializer(serializers.ModelSerializer):

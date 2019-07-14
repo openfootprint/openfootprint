@@ -15,7 +15,7 @@ RUN apk update \
   # https://docs.djangoproject.com/en/dev/ref/django-admin/#dbshell
   && apk add postgresql-client \
   # OpenFootprint
-  && apk add zsh
+  && apk add zsh libmagic
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements /requirements

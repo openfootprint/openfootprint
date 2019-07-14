@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 from .models import Report, TransportModeField
 from django.views import static
+import json
 
 
 class ReportView(TemplateView):
@@ -13,6 +14,7 @@ class ReportView(TemplateView):
     self.report = get_object_or_404(Report, id=kwargs["report_id"])
     context = super().get_context_data(**kwargs)
     context["report"] = self.report
+    context["report"].config = json.loads(context["report"].config or "{}")
     return context
 
 def report_static_serve(request, **kwargs):

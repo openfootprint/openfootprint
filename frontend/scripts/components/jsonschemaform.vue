@@ -1,33 +1,46 @@
 <template>
-  <div>
-    <b-form @submit.prevent.stop="submit" :class="className">
 
-      <ul style="color:red;" v-if="errors.length">
-        <li v-for="error in errors">
-          {{error}}
-        </li>
-      </ul>
+  <b-form @submit.prevent.stop="submit">
 
-      <div v-for="(property, key) in schema.properties">
-        <b-form-group
-          v-if="property.type=='string'"
-          :label="property.title"
-          :label-for="'_jsf_'+uuid+'_'+key"
-        >
-          <b-form-input
-            :id="'_jsf_'+uuid+'_'+key"
-            :type="property.format||'text'"
-            v-model="currentValue[key]"
-            :required="schema.required.indexOf(key)>=0"
-          />
-        </b-form-group>
+    <ul style="color:red;" v-if="errors.length">
+      <li v-for="error in errors">
+        {{error}}
+      </li>
+    </ul>
 
-      </div>
+    <slot name="pre_fields"></slot>
 
-      <b-button type="submit" variant="primary">Submit <b-spinner v-if="submitting" small type="grow" /></b-button>
+    <div v-for="(property, key) in schema.properties">
+      <b-form-group
+        v-if="property.type=='string' || property.type=='number'"
+        :label="property.title"
+        :label-for="'_jsf_'+uuid+'_'+key"
+      >
 
-    </b-form>
-  </div>
+        <b-form-file
+          v-if="(property.attrs||{}).type=='file'"
+          :id="'_jsf_'+uuid+'_'+key"
+          @change="onFileChange"
+          :data-key="key"
+          :required="(schema.required||[]).indexOf(key)>=0"
+        />
+
+        <b-form-input
+          v-else
+          :id="'_jsf_'+uuid+'_'+key"
+          :type="{'uri': 'text'}[property.format]||property.format||'text'"
+          v-model="currentValue[key]"
+          :required="(schema.required||[]).indexOf(key)>=0"
+        />
+
+      </b-form-group>
+
+    </div>
+
+    <b-button type="submit" variant="primary">Submit <b-spinner v-if="submitting" small type="grow" /></b-button>
+
+  </b-form>
+
 </template>
 
 
@@ -37,10 +50,10 @@ import Vue from 'vue'
 import Ajv from 'ajv'
 
 export default {
-  props: ["schema", "className", "value", "submitting"],
+  props: ["schema", "value", "submitting"],
   data () {
     return {
-      currentValue: {},
+      currentValue: JSON.parse(JSON.stringify(this.value)),
       errors: []
     }
   },
@@ -59,6 +72,21 @@ export default {
       }
       this.$emit('input', this.currentValue);
       this.$emit('submit', this.currentValue);
+    },
+    onFileChange(evt) {
+      // We upload files right after they have been selected in the browser
+
+      if (!evt.target.files || evt.target.files.length === 0) return;
+
+      var formData = new FormData();
+      formData.append("file", evt.target.files[0]);
+      this.$http.post("/api/project/"+this.project.id+"/upload_file", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+      }).then((response) => {
+        this.currentValue[evt.target.getAttribute("data-key")] = response.data.file.id;
+      })
     }
   }
 };

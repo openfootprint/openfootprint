@@ -6,6 +6,9 @@ from django.db import models
 from geopy.geocoders import Nominatim
 from geopy.distance import geodesic
 from autoslug import AutoSlugField
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+import magic
 
 geolocator = Nominatim(user_agent="openfootprint")
 
@@ -75,6 +78,40 @@ class Tag(models.Model):
         return self.name
 
 
+def file_upload_directory_path(instance, filename):
+    return "uploads/projects/%s/%s" % (instance.project.id, filename)
+
+
+class File(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    project = models.ForeignKey(Project, db_index=True, related_name='files', on_delete=models.CASCADE)
+
+    file = models.FileField(upload_to=file_upload_directory_path)
+
+    name = models.CharField("File name", max_length=200, blank=True, null=True)
+    size = models.PositiveIntegerField("File size", blank=True, null=True)
+    mimetype = models.CharField("Mime type", max_length=255, blank=True, null=True)
+
+
+@receiver(pre_save, sender=File)
+def _file_pre_save(sender, instance, *args, **kwargs):
+    # A new file was just uploaded
+    if instance.file._file is not None:
+        old_file = File.objects.filter(id=instance.id).first()
+        if old_file and old_file.file:
+            old_file.file.delete(save=False)
+
+        # TODO max file size (what is django's or DRF limit?)
+        instance.size = instance.file.size
+        instance.name = instance.file.name
+
+        # TODO check all errors this can generate
+        instance.mimetype = magic.from_buffer(instance.file.read(1024), mime=True)
+
+# TODO receiver on delete, clean files!
+
 
 class Report(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -91,13 +128,7 @@ class Report(models.Model):
     starts_at = models.DateTimeField(blank=True, null=True)
     ends_at = models.DateTimeField(blank=True, null=True)
 
-    config = models.TextField("Config JSON")
-
-    # report_logo = models.ImageField(upload_to="reports", null=True, blank=True)
-    # report_background_banner = models.ImageField(upload_to="reports", null=True, blank=True)
-    # report_website_url = models.URLField(null=True, blank=True)
-    # report_twitter_habdle = models.CharField(max_length=30, null=True, blank=True)
-    # report_project_is_compensated = models.BooleanField(default=False)
+    config = models.TextField("Config JSON", blank=True, null=True)
 
     def get_flat_items(self):
 

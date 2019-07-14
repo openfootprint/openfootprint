@@ -43,7 +43,7 @@ resetdb:
 	make createsuperuser
 
 shell:
-	docker-compose -f local.yml run --rm -ti django zsh
+	docker-compose -f local.yml run --rm django zsh
 
 webpack_build:
 	rm -rf frontend/webpack/prod/

@@ -8,7 +8,7 @@
 
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600,700" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm">
 
     <link rel="stylesheet" href="styles/custom.css">
 
@@ -43,7 +43,7 @@
                                     <img src="images/logo_dotjs.png" alt="Logo"/>
                                     <h1>{{project.name}}</h1>
                                     <p class="intro_infos">December 5-6 • Paris, France</p>
-                                    <p class="intro_links"><a href="https://www.dotjs.io" target="_blank">www.dotjs.io</a> • <a href="https://www.twitter.com/dotJS" target="_blank">@dotJS</a></p>
+                                    <p class="intro_links"><a :href="config.website_url" target="_blank">{{config.website_url.replace(/http(s?)\:\/\//, "")}}</a> • <a href="https://www.twitter.com/dotJS" target="_blank">@dotJS</a></p>
                                 </div>
                             </div>
                         </div>
@@ -78,7 +78,7 @@
                 </div>
 
                 <div class="container">
-                    <footprint-section v-for="section in sections" :section="section" />
+                    <footprint-section v-if="section.items.length > 0" v-for="section in sections" :section="section" />
                 </div>
             </div>
         </script>
@@ -114,9 +114,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="row in section">
-                                        <td>{{row.name}}</td>
-                                        <td>{{row.f.co2e}}</td>
+                                    <tr v-for="item in section.items">
+                                        <td>{{item.name}}</td>
+                                        <td>{{parseInt(item.f.co2e/100000,10)/10}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -140,9 +140,14 @@
 
     {% endverbatim %}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js" integrity="sha256-chlNFSVx3TdcQ2Xlw7SvnbLAavAQLO0Y/LBiWX04viY=" crossorigin="anonymous"></script>
+    <script src="scripts/vue.min.js" integrity="sha256-chlNFSVx3TdcQ2Xlw7SvnbLAavAQLO0Y/LBiWX04viY="></script>
     <script>
         var FOOTPRINT_DATA = {{report.raw_json|safe}};
+
+        FOOTPRINT_DATA["config"] = {
+            "website_url": "{{report.config.website_url}}"
+        };
+
         console.log(FOOTPRINT_DATA);
 
         (function() {
@@ -164,21 +169,26 @@
 
             var data = {
                 "extra": {
-                    "co2e": 0
+                    "co2e": 0,
+                    "items": []
                 },
                 "transport": {
-                    "co2e": 0
+                    "co2e": 0,
+                    "items": []
                 },
                 "hotel": {
-                    "co2e": 0
+                    "co2e": 0,
+                    "items": []
                 },
                 "meal": {
-                    "co2e": 0
+                    "co2e": 0,
+                    "items": []
                 }
             };
 
             FOOTPRINT_DATA.items.forEach(function(item) {
                 data[item.type]["co2e"] += item.f.co2e;
+                data[item.type]["items"].push(item);
             });
 
             var app = new Vue({

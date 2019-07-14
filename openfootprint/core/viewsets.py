@@ -1,13 +1,14 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
-from .models import Project, Transport, Location, Person, Report, Extra, Address, Hotel, Meal
-from .serializers import ProjectSerializerFull, ProjectSerializerList, TransportSerializer, ExtraSerializer
+from .models import Project, Transport, Location, Person, Report, Extra, Address, Hotel, Meal, File
+from .serializers import ProjectSerializerFull, ProjectSerializerList, TransportSerializer, ExtraSerializer, FileSerializer
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from django.utils.decorators import method_decorator
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from .tasks import geocode_project
 import datetime
+import json
 
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
@@ -38,18 +39,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
       if getattr(self, 'action') == "list":
         return ProjectSerializerList
       return ProjectSerializerFull
-
-    @action(detail=True, methods=['POST'], name='Delete all transports')
-    def delete_transports(self, request, pk=None):
-      project = self.get_object()
-      project.transports.all().delete()
-      return Response({'status': 'ok'})
-
-    @action(detail=True, methods=['POST'], name='Delete all people')
-    def delete_people(self, request, pk=None):
-      project = self.get_object()
-      project.people.all().delete()
-      return Response({'status': 'ok'})
 
     @action(detail=True, methods=['POST', 'GET'], name='Estimate footprint')
     def footprint(self, request, pk=None):
@@ -295,6 +284,46 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
       return Response({'status': 'ok'})
 
+
+    @action(detail=True, methods=['POST'], name='Set Reports')
+    def set_reports(self, request, pk=None):
+      project = self.get_object()
+
+      partial = False
+
+      for row in request.data:
+        if row == "partial":
+          partial = True
+        elif row.get("id") and str(row["id"]).startswith("new"):
+          row.pop("id")
+
+      if not partial:
+        ids = {row["id"] for row in request.data if row.get("id")}
+        project.reports.exclude(id__in=ids).delete()
+
+      report_count = project.reports.count()
+
+      for i, row in enumerate(request.data):
+        if partial and i == 0:
+          continue
+        obj = None
+        if row.get("id"):
+          obj = Report.objects.get(pk=row["id"])
+        if not obj:
+          obj = Report(project=project)
+
+        if row.get("name"):
+          obj.name = row["name"]
+        else:
+          obj.name = "Report #%s" % (i + report_count)
+
+        obj.config = json.dumps(row.get("config") or {})
+
+        obj.save()
+
+      return Response({'status': 'ok'})
+
+
     @action(detail=True, methods=['POST'], name='Add Transports from people')
     def add_transports_from_people(self, request, pk=None):
       project = self.get_object()
@@ -340,3 +369,30 @@ class ProjectViewSet(viewsets.ModelViewSet):
       geocode_project.apply_async((project.id, ), countdown=5)
 
       return Response({'status': 'ok'})
+
+    @action(detail=True, methods=['POST'], name='Upload a file')
+    def upload_file(self, request, pk=None):
+      project = self.get_object()
+
+      file = FileSerializer(data={
+        "file": request.data.get("file"),
+        "project": project.id
+      })
+
+      if not file.is_valid():
+        return Response({
+          'status': 'nok'
+        })
+
+      file.save()
+
+      f = File.objects.get(id=file.data["id"])
+
+      return Response({
+        'status': 'ok',
+        'file': {
+          'id': f.id,
+          'url': f.file.url
+        }
+      })
+

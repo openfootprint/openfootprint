@@ -6,6 +6,8 @@ import NewProject from './pages/new_project'
 import ProjectSettings from './pages/project_settings'
 import ProjectReports from './pages/project_reports'
 import ProjectReport from './pages/project_report'
+import ProjectPlugins from './pages/project_plugins'
+import ProjectPlugin from './pages/project_plugin'
 import ProjectHome from './pages/project_home'
 import EstimatePeople from './pages/estimate_people'
 import EstimateTransports from './pages/estimate_transports'
@@ -75,9 +77,19 @@ export default new VueRouter({
           component: ProjectReports
         },
         {
-          path: 'report/:report_id',
+          path: 'reports/:report_id',
           name: 'project_report',
           component: ProjectReport
+        },
+        {
+          path: 'plugins',
+          name: 'project_plugins',
+          component: ProjectPlugins
+        },
+        {
+          path: 'plugins/:plugin_slug',
+          name: 'project_plugin',
+          component: ProjectPlugin
         }
       ]
     },
