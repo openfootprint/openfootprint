@@ -33,7 +33,7 @@
 
                     <div class="intro_image">
                         <div class="overlay"></div>
-                        <img src="images/main_image.jpg" alt="" />
+                        <img v-if="config.header_image" :src="config.header_image" alt="" />
                     </div>
 
                     <div class="intro_content">
@@ -54,7 +54,7 @@
                             <div class="row">
                                 <div class="col-lg-3">
                                     <div class="main_blocks_stats">
-                                        <p><span>1.5 tons</span><br>of C02</p>
+                                        <p><span>{{parseInt(project.f.co2e/100000,10)/10}} tons</span><br>of C02</p>
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
@@ -78,7 +78,7 @@
                 </div>
 
                 <div class="container">
-                    <footprint-section v-if="section.items.length > 0" v-for="section in sections" :section="section" />
+                    <footprint-section v-if="section.items.length > 0" v-for="section in sections" :section="section" :project="project" />
                 </div>
             </div>
         </script>
@@ -91,7 +91,7 @@
 
                     <div class="total_allocation">
                         <p class="total_tons">{{parseInt(section.co2e/100000,10)/10}} tons of CO2e</p>
-                        <p class="percent-of-total">70% of total</p>
+                        <p class="percent-of-total">{{parseInt(section.co2e*1000/project.f.co2e,10)/10}}% of total</p>
                     </div>
                 </div>
 
@@ -145,7 +145,8 @@
         var FOOTPRINT_DATA = {{report.raw_json|safe}};
 
         FOOTPRINT_DATA["config"] = {
-            "website_url": "{{report.config.website_url}}"
+            "website_url": "{{report.config.website_url}}",
+            "header_image": "{{report.config.header_image.url|default:""}}",
         };
 
         console.log(FOOTPRINT_DATA);
@@ -164,7 +165,7 @@
 
             Vue.component('footprint-section', {
                 template: '#tpl-footprint-section',
-                props:["section"]
+                props:["section", "project"]
             });
 
             var data = {
@@ -185,10 +186,14 @@
                     "items": []
                 }
             };
+            FOOTPRINT_DATA["project"]["f"] = {
+                "co2e": 0
+            };
 
             FOOTPRINT_DATA.items.forEach(function(item) {
                 data[item.type]["co2e"] += item.f.co2e;
                 data[item.type]["items"].push(item);
+                FOOTPRINT_DATA["project"]["f"]["co2e"] += item.f.co2e;
             });
 
             var app = new Vue({

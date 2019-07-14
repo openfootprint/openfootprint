@@ -330,7 +330,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
       transports = {
         t.person_id: t
-        for t in Transport.objects.filter(person__isnull=False)
+        for t in project.transports.filter(person__isnull=False)
       }
 
       for person in project.people.all():
@@ -367,6 +367,68 @@ class ProjectViewSet(viewsets.ModelViewSet):
               t.save()
 
       geocode_project.apply_async((project.id, ), countdown=5)
+
+      return Response({'status': 'ok'})
+
+
+    @action(detail=True, methods=['POST'], name='Add Meals from people')
+    def add_meals_from_people(self, request, pk=None):
+      project = self.get_object()
+
+      meals = {
+        t.person_id: t
+        for t in project.meals.filter(person__isnull=False)
+      }
+
+      massperday = int(request.data.get("massperday") or 1000)
+
+      days = project.get_days() or 1
+
+      for person in project.people.all():
+        if not meals.get(person.id):
+          for day in range(days):
+            name = "Meal for %s" % person.name
+            if days > 1:
+              name += " on day %s" % day
+            m = Meal(
+              project=project,
+              mass=massperday,
+              name=name,
+              person=person
+            )
+            m.save()
+
+      return Response({'status': 'ok'})
+
+    @action(detail=True, methods=['POST'], name='Add Hotels from people')
+    def add_hotels_from_people(self, request, pk=None):
+      project = self.get_object()
+
+      existing = {
+        t.person_id: t
+        for t in project.hotels.filter(person__isnull=False)
+      }
+
+      averageoccupancy = float(request.data.get("averageoccupancy") or 1)
+
+      # TODO additional nights for attendees coming from far away
+      # TODO hotel address + transports (!)
+
+      nights = project.get_nights() or 1
+      print(nights)
+      if nights > 0:
+        for person in project.people.all():
+          if not existing.get(person.id):
+            name = "Hotel for %s" % person.name
+            m = Hotel(
+              project=project,
+              weight=1/averageoccupancy,
+              name=name,
+              person=person,
+              starts_at=project.starts_at.date(),
+              ends_at=project.ends_at.date()
+            )
+            m.save()
 
       return Response({'status': 'ok'})
 

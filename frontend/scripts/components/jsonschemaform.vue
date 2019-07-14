@@ -11,8 +11,9 @@
     <slot name="pre_fields"></slot>
 
     <div v-for="(property, key) in schema.properties">
+
+
       <b-form-group
-        v-if="property.type=='string' || property.type=='number'"
         :label="property.title"
         :label-for="'_jsf_'+uuid+'_'+key"
       >
@@ -20,7 +21,7 @@
         <b-form-file
           v-if="(property.attrs||{}).type=='file'"
           :id="'_jsf_'+uuid+'_'+key"
-          @change="onFileChange"
+          @change="onFileChange($event, key)"
           :data-key="key"
           :required="(schema.required||[]).indexOf(key)>=0"
         />
@@ -73,7 +74,7 @@ export default {
       this.$emit('input', this.currentValue);
       this.$emit('submit', this.currentValue);
     },
-    onFileChange(evt) {
+    onFileChange(evt, key) {
       // We upload files right after they have been selected in the browser
 
       if (!evt.target.files || evt.target.files.length === 0) return;
@@ -85,7 +86,10 @@ export default {
             'Content-Type': 'multipart/form-data'
           }
       }).then((response) => {
-        this.currentValue[evt.target.getAttribute("data-key")] = response.data.file.id;
+        this.currentValue[key] = {
+          "id": response.data.file.id,
+          "url": response.data.file.url
+        };
       })
     }
   }

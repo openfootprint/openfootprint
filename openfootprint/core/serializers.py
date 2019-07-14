@@ -75,10 +75,15 @@ class ReportSerializer(serializers.ModelSerializer):
             "type": "object",
             "properties": {
                 "header_image": {
-                    "type": "number",
+                    "type": "object",
                     "title": "Header image",
                     "attrs": {
                         "type": "file"
+                    },
+                    "properties": {
+                        "id": {
+                            "type": "number"
+                        }
                     }
                 },
                 "website_url": {

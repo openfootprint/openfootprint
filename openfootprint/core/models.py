@@ -2,6 +2,7 @@ import datetime
 import time
 import json
 import sys
+import math
 from django.db import models
 from geopy.geocoders import Nominatim
 from geopy.distance import geodesic
@@ -65,6 +66,13 @@ class Project(models.Model):
             if person.home_address:
                 yield person.home_address
 
+    def get_days(self):
+        if self.starts_at and self.ends_at:
+            return math.ceil((self.ends_at - self.starts_at).seconds/86400)
+
+    def get_nights(self):
+        if self.starts_at and self.ends_at:
+            return (self.ends_at - self.starts_at).days
 
 class Tag(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -285,7 +293,7 @@ class Transport(models.Model):
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     project = models.ForeignKey(Project, db_index=True, related_name='transports', on_delete=models.CASCADE)
-    name = models.CharField("Name", max_length=200, blank=True)
+    name = models.CharField("Name", max_length=255, blank=True)
     from_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
     to_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
 
@@ -438,10 +446,11 @@ class Hotel(models.Model):
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     project = models.ForeignKey(Project, db_index=True, related_name='hotels', on_delete=models.CASCADE)
-    name = models.CharField("Name", max_length=200)
+    name = models.CharField("Name", max_length=255)
     tags = models.ManyToManyField(Tag, blank=True)
 
     address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='+', blank=True, null=True)
+    weight = models.FloatField(default=1.0)
 
     # TODO multiple?
     person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
@@ -458,7 +467,7 @@ class Meal(models.Model):
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     project = models.ForeignKey(Project, db_index=True, related_name='meals', on_delete=models.CASCADE)
-    name = models.CharField("Name", max_length=200)
+    name = models.CharField("Name", max_length=255)
     tags = models.ManyToManyField(Tag, blank=True)
 
     mass = models.BigIntegerField(default=0)  # In grams

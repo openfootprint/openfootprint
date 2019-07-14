@@ -58,7 +58,7 @@
       </div>
 
       <div class="main_content_right">
-        <router-view v-if="!loading_footprint" />
+        <router-view/>
       </div>
    </div>
   </div>
