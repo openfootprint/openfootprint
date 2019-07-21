@@ -2,8 +2,13 @@ import { mapState } from 'vuex'
 
 
 // https://vuejs.org/v2/guide/mixins.html
+var uuid = 0;
 
 var GlobalMixin = {
+  beforeCreate() {
+    this.uuid = uuid.toString();
+    uuid += 1;
+  },
   computed: mapState({
     project: "project"
   }),
@@ -11,6 +16,7 @@ var GlobalMixin = {
     refreshProject(callback) {
       // TODO loading
       this.$http.get("/api/project/"+this.project.id).then((response) => {
+
         response.data.locations.forEach((loc) => {
           loc.address_source_name = (loc.address||{}).source_name;
         });

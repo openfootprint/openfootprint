@@ -35,6 +35,7 @@
           <p>Import from attendees</p>
         </template>
 
+<<<<<<< HEAD
         <div class="full_width_upload_import import_field">
           <div class="icon_empty"><unicon name="down-arrow"></unicon></div>
           <p>Click here to import transports from your attendees</p>
@@ -43,6 +44,8 @@
 
         <br/>
 
+=======
+>>>>>>> 6a91fde67d7819dcfc57f5a11c423119bca7cde5
         <b-form-group
           label="Add waypoint for everyone:"
           label-for="transport_from_people_waypoint"
@@ -53,6 +56,7 @@
           />
         </b-form-group>
 
+        <b-button @click="addTransportsFromPeople()" variant="primary">Add transports from people <b-spinner v-if="loading_add_from_people" small type="grow" /></b-button>
 
       </b-tab>
 

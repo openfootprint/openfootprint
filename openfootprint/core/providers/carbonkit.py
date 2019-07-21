@@ -49,19 +49,19 @@ class FootprintProvider(BaseFootprintProvider):
         if emmission.get("status") == "OK":
             for amount in emmission["output"]["amounts"]:
                 if amount["type"] == "totalDirectCO2e":
-                    return amount["value"] * 1000
+                    return amount["value"] * 1000 * emission_source["weight"]
 
         return -1
 
     def compute_hotel_footprint(self, emission_source):
         # https://gitlab.com/carbonkit/datasets/blob/master/business/buildings/hotel/generic/algorithm.js
-        return 36.63 * 1000 * emission_source["nights"]
+        return 36.63 * 1000 * emission_source["nights"] * emission_source["weight"]
 
     def compute_meal_footprint(self, emission_source):
 
         # Just assume everything is cheese for now. (Also known as "the cheese method")
         # http://www.greeneatz.com/foods-carbon-footprint.html
-        return 13.5 * emission_source["mass"]
+        return 13.5 * emission_source["mass"] * emission_source["weight"]
 
     def compute_extra_footprint(self, emission_source):
         if emission_source["kind"] == "co2e":

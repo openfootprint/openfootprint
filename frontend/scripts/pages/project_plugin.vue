@@ -2,27 +2,16 @@
     <div v-if="!item">Loading...</div>
     <div v-else>
         <div class="btns_actions">
-            <h2><b-link :to='{"name": "project_reports"}'>Reports</b-link> / {{item.name}}</h2>
+            <h2><b-link :to='{"name": "project_plugins"}'>Plugins</b-link> / {{item.name}}</h2>
             <div class="btns">
-                <b-button :href="'/reports/'+item.id+'/'" target="_blank">View report</b-button>
+                <b-button variant="danger" target="_blank">Uninstall plugin</b-button>
             </div>
             <div class="clearfix"></div>
         </div>
 
         <div>
             <json-schema-form :value="item.config" :schema="item.config_schema" @submit="onSubmit" :submitting="submitting">
-                <template v-slot:pre_fields>
-                    <b-form-group
-                        label="Report name"
-                        label-for="_edit_report_name"
-                    >
-                        <b-form-input
-                            id="_edit_report_name"
-                            v-model="item.name"
-                            required
-                        />
-                    </b-form-group>
-                </template>
+
             </json-schema-form>
         </div>
     </div>
@@ -42,14 +31,14 @@ export default {
     },
     computed: {
         item() {
-            return pickById(this.project.reports, this.$route.params.report_id);
+            return pickById(this.project.plugins, this.$route.params.plugin_slug, "slug");
         }
     },
     methods: {
         onSubmit(newConfig) {
             this.submitting = true;
             this.item.config = newConfig;
-            this.$http.post("/api/project/"+this.project.id+"/set_reports", ["partial", this.item]).then((response) => {
+            this.$http.post("/api/project/"+this.project.id+"/set_plugins", ["partial", this.item]).then((response) => {
                 this.submitting = false;
             });
         }

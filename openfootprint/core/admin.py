@@ -30,3 +30,5 @@ admin.site.register(models.Address)
 admin.site.register(models.Meal)
 
 admin.site.register(models.Hotel)
+
+admin.site.register(models.File)

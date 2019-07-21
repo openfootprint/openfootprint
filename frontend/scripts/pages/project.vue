@@ -22,6 +22,7 @@
             </ul>
           </b-nav-item>
           <b-nav-item :to='{"name": "project_reports"}'><unicon name="chart-line" class="icon"></unicon>Reports</b-nav-item>
+          <b-nav-item :to='{"name": "project_reports"}'>Reports</b-nav-item>
           <b-nav-item :to='{"name": "project_settings"}'><unicon name="cog" class="icon"></unicon>Settings</b-nav-item>
       </ul>
 
@@ -48,8 +49,13 @@
             <b-button @click="computeFootprint()" variant="primary" v-if="!total_co2e">Compute footprint <b-spinner v-if="loading_footprint" small type="grow" /></b-button>
 
             <div v-if="total_co2e" class="computed_footprint">
+<<<<<<< HEAD
               <p>{{parseInt(total_co2e/100000,10)/10}} tons of CO2e <span @click="computeFootprint()" v-if="total_co2e"><unicon name="redo"></unicon></span></p>
               <a v-if="report_id" :href="'/report/'+report_id+'/'" target="_blank">View report</a>
+=======
+              <p>{{parseInt(total_co2e/100000,10)/10}} tons of CO2e <span @click="computeFootprint()" v-if="total_co2e"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21,11a1,1,0,0,0-1,1,8.05,8.05,0,1,1-2.22-5.5h-2.4a1,1,0,0,0,0,2h4.53a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4.77A10,10,0,1,0,22,12,1,1,0,0,0,21,11Z"/></svg></span></p>
+              <a v-if="report_id" :href="'/reports/'+report_id+'/'" target="_blank">View report</a>
+>>>>>>> 6a91fde67d7819dcfc57f5a11c423119bca7cde5
               |
               <a href="">Offset</a>
             </div>
@@ -57,7 +63,7 @@
       </div>
 
       <div class="main_content_right">
-        <router-view v-if="!loading_footprint" />
+        <router-view/>
       </div>
    </div>
   </div>

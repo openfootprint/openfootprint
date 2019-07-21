@@ -72,7 +72,7 @@
 
       <template slot="actions" slot-scope="row">
         <ul class="btn-action">
-          <li v-if="collection=='reports'"><a :href="'/report/'+row.item.id+'/'" target="_blank"><span class="icon icon-eye"><unicon name="eye"></unicon></span></a></li>
+          <li v-if="collection=='reports'"><a :href="'/reports/'+row.item.id+'/'" target="_blank"><span class="icon icon-eye"><unicon name="eye"></unicon></span></a></li>
           <li @click="deleteRow(row)"><span class="icon icon-trash"><unicon name="trash-alt"></unicon></span></li>
         </ul>
       </template>
@@ -93,6 +93,7 @@
 <script>
 import AddressField from "../components/addressfield"
 import Vue from 'vue'
+import { pickById } from '../utils'
 
 export default {
   props: ['collection', 'fields', 'newitemtemplate'],
@@ -138,7 +139,7 @@ export default {
       this.project[this.collection].splice(row.index,1);
     },
     deleteAll() {
-      this.$http.post("/api/project/"+this.project.id+"/delete_"+this.collection).then((response) => {
+      this.$http.post("/api/project/"+this.project.id+"/set_"+this.collection, []).then((response) => {
         this.refreshProject();
       });
     },
@@ -150,6 +151,13 @@ export default {
         });
       });
     },
+    saveOne(id) {
+      var obj = pickById(this.project[this.collection], id);
+      if (!obj) return;
+      this.$http.post("/api/project/"+this.project.id+"/set_"+this.collection, ["partial", obj]).then((response) => {
+
+      });
+    }
   },
   components: {
     AddressField
