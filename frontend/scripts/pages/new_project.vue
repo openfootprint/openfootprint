@@ -13,7 +13,7 @@
                                 <span class="label col-lg-12">Project type</span>
                                 <label class="col-xxs-12 col-xs-6 col-md-6 col-lg-4" id="event_project">
                                     <div :class='{"project_type": 1, "selected":kind=="event"}'>
-                                        <img src="https://unicons.iconscout.com/release/v0.0.4/svg/ticket.svg" class="icon"/>
+                                        <unicon name="ticket" class="icon"></unicon>
                                         <input type="radio" name="radio" value="event" v-model="kind">
                                         <span class="radiobtn"></span>
                                         <p>Event</p>
@@ -22,7 +22,7 @@
 
                                 <label class="col-xxs-12 col-xs-6 col-md-6 col-lg-4" id="company_project">
                                     <div :class='{"project_type": 1, "selected":kind=="company"}'>
-                                        <img src="https://unicons.iconscout.com/release/v0.0.4/svg/briefcase-alt.svg" class="icon"/>
+                                        <unicon name="briefcase-alt" class="icon"></unicon>
                                         <input type="radio" name="radio" value="company" v-model="kind">
                                         <span class="radiobtn"></span>
                                         <p>Company</p>
@@ -31,7 +31,7 @@
 
                                 <label class="col-xxs-12 col-xs-6 col-md-6 col-lg-4" id="household_project">
                                     <div :class='{"project_type": 1, "selected":kind=="household"}'>
-                                        <img src="https://unicons.iconscout.com/release/v0.0.4/svg/building.svg" class="icon"/>
+                                        <unicon name="building" class="icon"></unicon>
                                         <input type="radio" name="radio" value="household" v-model="kind">
                                         <span class="radiobtn"></span>
                                         <p>Household</p>
