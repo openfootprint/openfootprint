@@ -1,87 +1,89 @@
 <template>
   <div>
+    
+    <div class="datatable_block">
+      <b-table ref="table_main" sort-by="id" primary-key="id" v-if="project[collection]" :items="project[collection]" :fields="fields">
 
-    <b-table ref="table_main" sort-by="id" primary-key="id" v-if="project[collection]" :items="project[collection]" :fields="fields">
+        <template slot="name" slot-scope="row">
+          <div v-if="collection!='reports'">
+            <b-input v-model="row.item.name"/>
+          </div>
+          <div v-else>
+            <b-link :to="{'name':'project_report', 'params': {'report_id': row.item.id}}">{{row.item.name}}</b-link>
+          </div>
+        </template>
 
-      <template slot="name" slot-scope="row">
-        <div v-if="collection!='reports'">
-          <b-input v-model="row.item.name"/>
-        </div>
-        <div v-else>
-          <b-link :to="{'name':'project_report', 'params': {'report_id': row.item.id}}">{{row.item.name}}</b-link>
-        </div>
-      </template>
+        <template slot="home_address" slot-scope="row">
+          <AddressField v-model="row.item.home_address" />
+        </template>
 
-      <template slot="home_address" slot-scope="row">
-        <AddressField v-model="row.item.home_address" />
-      </template>
+        <template slot="address_source_name" slot-scope="row">
+          <b-input v-model="row.item.address_source_name" />
+        </template>
 
-      <template slot="address_source_name" slot-scope="row">
-        <b-input v-model="row.item.address_source_name" />
-      </template>
+        <template slot="mass" slot-scope="row">
+          <b-input v-model="row.item.mass" />
+        </template>
 
-      <template slot="mass" slot-scope="row">
-        <b-input v-model="row.item.mass" />
-      </template>
+        <template slot="starts_at" slot-scope="row">
+          <b-form-input type="date" v-model="row.item.starts_at" />
+        </template>
 
-      <template slot="starts_at" slot-scope="row">
-        <b-form-input type="date" v-model="row.item.starts_at" />
-      </template>
+        <template slot="ends_at" slot-scope="row">
+          <b-form-input type="date" v-model="row.item.ends_at" />
+        </template>
 
-      <template slot="ends_at" slot-scope="row">
-        <b-form-input type="date" v-model="row.item.ends_at" />
-      </template>
+        <template slot="is_default" slot-scope="row">
+          <label>
+            <input type="checkbox" class="check-custom toggle-switch" v-model="row.item.is_default">
+            <span class="check-toggle"></span>
+          </label>
+        </template>
 
-      <template slot="is_default" slot-scope="row">
-        <label>
-          <input type="checkbox" class="check-custom toggle-switch" v-model="row.item.is_default">
-          <span class="check-toggle"></span>
-        </label>
-      </template>
+        <template slot="mode" slot-scope="row">
+          <b-form-select v-model="row.item.mode" :options="$OPENFOOTPRINT_GLOBAL.transport_modes" />
+        </template>
 
-      <template slot="mode" slot-scope="row">
-        <b-form-select v-model="row.item.mode" :options="$OPENFOOTPRINT_GLOBAL.transport_modes" />
-      </template>
+        <template slot="roundtrip" slot-scope="row">
+          <label>
+            <input type="checkbox" class="check-custom toggle-switch" v-model="row.item.roundtrip">
+            <span class="check-toggle"></span>
+          </label>
+        </template>
 
-      <template slot="roundtrip" slot-scope="row">
-        <label>
-          <input type="checkbox" class="check-custom toggle-switch" v-model="row.item.roundtrip">
-          <span class="check-toggle"></span>
-        </label>
-      </template>
+        <template slot="address" slot-scope="row">
+          <AddressField v-model="row.item.address" />
+        </template>
 
-      <template slot="address" slot-scope="row">
-        <AddressField v-model="row.item.address" />
-      </template>
+        <template slot="from_address" slot-scope="row">
+          <AddressField v-model="row.item.from_address" />
+        </template>
 
-      <template slot="from_address" slot-scope="row">
-        <AddressField v-model="row.item.from_address" />
-      </template>
+        <template slot="to_address" slot-scope="row">
+          <AddressField v-model="row.item.to_address" />
+        </template>
 
-      <template slot="to_address" slot-scope="row">
-        <AddressField v-model="row.item.to_address" />
-      </template>
+        <template v-if="collection=='extras'" slot="kind" slot-scope="row">
+          <b-form-select v-model="row.item.kind" :options="extras_kinds"></b-form-select>
+        </template>
 
-      <template v-if="collection=='extras'" slot="kind" slot-scope="row">
-        <b-form-select v-model="row.item.kind" :options="extras_kinds"></b-form-select>
-      </template>
+        <template v-if="collection=='extras'" slot="params" slot-scope="row">
+          <b-input v-model="row.item.param_f1" />
+        </template>
 
-      <template v-if="collection=='extras'" slot="params" slot-scope="row">
-        <b-input v-model="row.item.param_f1" />
-      </template>
+        <template slot="actions" slot-scope="row">
+          <ul class="btn-action">
+            <li v-if="collection=='reports'"><a :href="'/reports/'+row.item.id+'/'" target="_blank"><span class="icon icon-eye"><unicon name="eye"></unicon></span></a></li>
+            <li @click="deleteRow(row)"><span class="icon icon-trash"><unicon name="trash-alt"></unicon></span></li>
+          </ul>
+        </template>
 
-      <template slot="actions" slot-scope="row">
-        <ul class="btn-action">
-          <li v-if="collection=='reports'"><a :href="'/reports/'+row.item.id+'/'" target="_blank"><span class="icon icon-eye"><unicon name="eye"></unicon></span></a></li>
-          <li @click="deleteRow(row)"><span class="icon icon-trash"><unicon name="trash-alt"></unicon></span></li>
-        </ul>
-      </template>
+        <template slot="report_name" slot-scope="row">
+          <p>Report name</p>
+        </template>
 
-      <template slot="report_name" slot-scope="row">
-        <p>Report name</p>
-      </template>
-
-    </b-table>
+      </b-table>
+    </div>
 
     <b-button @click="addRow()">Add new</b-button>
     <b-button @click="saveAll()" variant="primary">Save all <b-spinner v-if="loading_save" small type="grow" /></b-button>

@@ -1,33 +1,8 @@
-@font-face {
-    font-family: "Inter";
-    src:url('../fonts/inter/Inter-Regular.woff2') format('woff2'), 
-        url('../fonts/inter/Inter-Regular.woff') format('woff'),
-        url("../fonts/inter/Inter-Regular.otf") format("opentype"),
-        url('../fonts/inter/Inter-Regular.ttf') format('truetype');
-    font-weight: normal;
-}
-
-@font-face {
-    font-family: "Inter";
-    src:url('../fonts/inter/Inter-Medium.woff2') format('woff2'), 
-        url('../fonts/inter/Inter-Medium.woff') format('woff'),
-        url("../fonts/inter/Inter-Medium.otf") format("opentype"),
-        url('../fonts/inter/Inter-Medium.ttf') format('truetype');
-    font-weight: 500;
-}
-
-@font-face {
-    font-family: "Inter";
-    src:url('../fonts/inter/Inter-Bold.woff2') format('woff2'), 
-        url('../fonts/inter/Inter-Bold.woff') format('woff'),
-        url("../fonts/inter/Inter-Bold.otf") format("opentype"),
-        url('../fonts/inter/Inter-Bold.ttf') format('truetype');
-    font-weight: bold;
-}
-
 body {
-    font-family: "Inter", Arial, sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-weight: normal;
+    background-color: #F6F8FB;
+    color: $black;
 }
 
 h1 {
@@ -38,7 +13,7 @@ h1 {
 
 h2 {
     font-size:1.875rem;
-    margin-bottom:25px;
+    margin-bottom:20px;
     font-weight:bold;
 }
 
@@ -52,31 +27,32 @@ h4 {
     margin-bottom:10px;
 }
 
+.header_page_content {
+    p {
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+    }
+}
+
+
+.datatable_block {
+    background-color: $white;
+    border-radius: 14px;
+    padding:0px 30px;
+}
+
 .table {
     border-collapse:separate; 
-    border-spacing:0 15px; 
+    border-spacing: 0 15px;
 
     thead {
-        background-color:$gray-100;
-        border-radius:8px;
         border:0px;
-        text-transform: uppercase;
-        color:#9AA9BB;
-        font-size:14px;
+        font-size: 0.875rem;
+        font-weight: bold;
 
         th {
             border:0px;
-            padding: 15px 20px 15px 30px;
-
-            &:first-child {
-                border-top-left-radius: 8px;
-                border-bottom-left-radius: 8px;
-            }
-            
-            &:last-child {
-                border-top-right-radius: 8px;
-                border-bottom-right-radius: 8px;
-            }
+            padding: 0px 20px 0px 30px;
 
             &.th_actions {
                 width:100px;
@@ -93,20 +69,20 @@ h4 {
     tbody {
         
         td {
-            border-top:1px solid $gray-200;
-            border-bottom:1px solid $gray-200;
+            border-top:1px solid $gray1;
+            border-bottom:1px solid $gray1;
             padding: 12px 15px 12px 25px;
 
             &:first-child {
-                border-top-left-radius: 8px;
-                border-bottom-left-radius: 8px;
-                border-left:1px solid $gray-200;
+                border-top-left-radius: 10px;
+                border-bottom-left-radius: 10px;
+                border-left:1px solid $gray1;
             }
             
             &:last-child {
-                border-top-right-radius: 8px;
-                border-bottom-right-radius: 8px;
-                border-right:1px solid $gray-200;
+                border-top-right-radius: 10px;
+                border-bottom-right-radius: 10px;
+                border-right:1px solid $gray1;
             }
 
             input[type="text"] {
@@ -115,7 +91,7 @@ h4 {
                 -moz-appearance: none;
                 border:none;
                 border-bottom:1px solid transparent;
-                font-size:14px;
+                font-size:13px;
                 padding:0px 10px 0px 5px;
                 border-radius:0px;
 
@@ -123,7 +99,7 @@ h4 {
                     outline:none!important;
                     border:0px!important;
                     box-shadow:none!important;
-                    border-bottom:1px solid $gray-400!important;
+                    border-bottom:1px solid $gray2!important;
                 }
 
                 &.form-control {
@@ -138,7 +114,7 @@ h4 {
                 }
 
                 .btn-action {
-                    display: none;
+                    // display: none;
                     top: -3px;
                     position: relative;
                     cursor:pointer;
@@ -309,16 +285,6 @@ h4 {
 
     .btn {
         margin-top:10px;
-    }
-}
-
-.btns_actions {
-    h2 {
-        float:left;
-    }
-
-    .btns {
-        float: right;
     }
 }
 

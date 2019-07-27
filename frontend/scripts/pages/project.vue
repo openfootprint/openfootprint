@@ -5,9 +5,9 @@
       <b-link :to="{'name':'index'}" class="logo"><img src="../../images/logo_openfootprint_vertical.svg" alt="Logo OpenFootprint"></b-link>
 
         <ul>
-          <b-nav-item :to='{"name": "project_home"}'><unicon name="home-alt" class="icon"></unicon>Dashboard</b-nav-item>
-          <b-nav-item class="has_subcats">
-            <unicon name="chart" class="icon"></unicon>Estimate
+          <b-nav-item :to='{"name": "project_home"}'><unicon name="home-alt" class="icon"></unicon>Dashboard<div class="active_bar"></div></b-nav-item>
+          <div class="has_subcats" :class="{'router-link-active': subIsActive('estimate')}">
+            <span class="has_subcats_title"><unicon name="chart" class="icon"></unicon>Estimate<div class="active_bar"></div></span>
             <!--<span class="subtotal_item">10t</span>-->
             <ul class="ofp_siedebar_submenu">
               <b-nav-item :to='{"name": "estimate_locations"}'>Locations</b-nav-item>
@@ -20,10 +20,10 @@
               <b-nav-item :to='{"name": "estimate_hotels"}'>Hotels</b-nav-item>
               <b-nav-item :to='{"name": "estimate_extras"}' v-if="project.kind=='event'">Extras</b-nav-item>
             </ul>
-          </b-nav-item>
-          <b-nav-item :to='{"name": "project_reports"}'><unicon name="chart-line" class="icon"></unicon>Reports</b-nav-item>
-          <b-nav-item :to='{"name": "project_reports"}'>Reports</b-nav-item>
-          <b-nav-item :to='{"name": "project_settings"}'><unicon name="cog" class="icon"></unicon>Settings</b-nav-item>
+          </div>
+          <b-nav-item :to='{"name": "project_reports"}'><unicon name="chart-line" class="icon"></unicon>Reports<div class="active_bar"></div></b-nav-item>
+          <b-nav-item :to='{"name": "project_plugins"}'><unicon name="bolt-alt" class="icon"></unicon>Plugins<div class="active_bar"></div></b-nav-item>
+          <b-nav-item :to='{"name": "project_settings"}'><unicon name="cog" class="icon"></unicon>Settings<div class="active_bar"></div></b-nav-item>
       </ul>
 
       <div class="profile_block">
@@ -44,18 +44,14 @@
             <span class="icon" v-if="project.kind === 'company'"><unicon name="briefcase-alt"></unicon></span>
             <span class="icon" v-if="project.kind === 'household'"><unicon name="building"></unicon></span>
           </p>
+          <span class="saving_status">Autosaving...</span>
         </div>
         <div class="compute_block">
             <b-button @click="computeFootprint()" variant="primary" v-if="!total_co2e">Compute footprint <b-spinner v-if="loading_footprint" small type="grow" /></b-button>
 
             <div v-if="total_co2e" class="computed_footprint">
-<<<<<<< HEAD
               <p>{{parseInt(total_co2e/100000,10)/10}} tons of CO2e <span @click="computeFootprint()" v-if="total_co2e"><unicon name="redo"></unicon></span></p>
               <a v-if="report_id" :href="'/report/'+report_id+'/'" target="_blank">View report</a>
-=======
-              <p>{{parseInt(total_co2e/100000,10)/10}} tons of CO2e <span @click="computeFootprint()" v-if="total_co2e"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21,11a1,1,0,0,0-1,1,8.05,8.05,0,1,1-2.22-5.5h-2.4a1,1,0,0,0,0,2h4.53a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4.77A10,10,0,1,0,22,12,1,1,0,0,0,21,11Z"/></svg></span></p>
-              <a v-if="report_id" :href="'/reports/'+report_id+'/'" target="_blank">View report</a>
->>>>>>> 6a91fde67d7819dcfc57f5a11c423119bca7cde5
               |
               <a href="">Offset</a>
             </div>
@@ -95,6 +91,12 @@ export default {
         this.total_co2e = response.data.footprint || 0;
         this.report_id = response.data.report_id;
       });
+    },
+    subIsActive(input) {
+      const paths = Array.isArray(input) ? input : [input]
+      return paths.some(path => {
+        return this.$route.name.indexOf(path) === 0
+      })
     }
   },
   components: {
@@ -107,9 +109,8 @@ export default {
     width: 220px;
     height: 100%;
     position: fixed;
-    background: #fff;
     z-index: 2;
-    background-color: #F3F7FA;
+    background-color: $white;
 
     .logo {
       width:100%;
@@ -120,7 +121,7 @@ export default {
       img {
         width:60%;
         height:auto;
-        margin:0px auto 30px;
+        margin:0px auto 10px;
         display: block;
         padding:30px 0px;
       }
@@ -142,8 +143,8 @@ export default {
         list-style: none;
 
         a {
-          color:$gray-700;
-          padding:15px 20px 15px 30px;
+          color: $black;
+          padding:15px 30px;
           position: relative;
 
           .icon {
@@ -152,27 +153,24 @@ export default {
             position: relative;
             top:-2px;
             margin-right:10px;
-            fill:$gray-700;
+            fill: $black;
           }
 
           &.router-link-exact-active {
-            color:$blue;
-            font-weight: 500;
-            background-color:$white;
-
             svg {
               fill:$blue;
             }
 
-            // .active_bar {
-            //   position: absolute;
-            //   height:100%;
-            //   width:5px;
-            //   background-color:$blue;
-            //   display: block;
-            //   top:0px;
-            //   left:0px;
-            // }
+            .active_bar {
+              position: absolute;
+              height:90%;
+              width:3px;
+              background-color:$blue;
+              display: block;
+              top:5%;
+              left:0px;
+              padding:20px 0px;
+            }
           }
 
           &:hover {
@@ -189,29 +187,60 @@ export default {
             text-transform: initial;
           }
         }
+      }
 
-        .ofp_siedebar_submenu {
-          padding-bottom:0px;
-          li {
-            border:0px;
-            &:first-child {
-              margin-top:15px;
-            }
-            a {
-              text-transform: initial;
-              font-weight: normal;
-              font-size:14px;
-              padding:10px 0px 10px 10px;
-            }
+      .has_subcats {
+        .has_subcats_title {
+          padding: 15px 30px;
+          position: relative;
+          display: block;
+
+          svg {
+            width: 20px;
+            display: inline-block;
+            position: relative;
+            top: -2px;
+            margin-right: 10px;
+            fill: $black;
           }
         }
 
-        &.has_subcats {
-          ul li a.router-link-exact-active {
-            background-color:transparent;
+        &.router-link-active {
+          .active_bar {
+            position: absolute;
+            height:84%;
+            width:3px;
+            background-color:$blue;
+            display: block;
+            top:8%;
+            left:0px;
+            padding:20px 0px;
+          }
+          
+          svg {
+            fill:$blue;
+          }
+        }
 
-            &:hover {
-              background-color:transparent;
+        .ofp_siedebar_submenu {
+          padding-bottom:0px;
+
+          li {
+            padding:0px 12px;
+
+            a {
+              padding: 10px 15px 10px 48px;
+              font-size:14px;
+
+              &.router-link-exact-active {
+                color: $blue;
+                border-radius:8px;
+                background-color: rgba($blue, 0.06);
+              }
+
+              &:hover {
+                color: $blue;
+              }
             }
           }
         }
@@ -224,8 +253,8 @@ export default {
       left:0px;
       width:100%;
       padding:20px 30px;
-      background-color: #F3F7FA;
-      border-top:1px solid #FFF;
+      background-color: $white;
+      border-top:1px solid $gray1;
 
       a {
         color:$gray-700;
@@ -258,17 +287,17 @@ export default {
     .right_header {
       height: 70px;
       background-color: #fff;
-      border-bottom: 1px solid $gray-200;
+      border-bottom: 1px solid $gray2;
       display: table;
       width: 100%;
       position: fixed;
       z-index: 10;
-      width: -webkit-calc(100% - 2200px);
+      width: -webkit-calc(100% - 220px);
       width: -moz-calc(100% - 220px);
       width: calc(100% - 220px);
 
       .right_header_c {
-        width:90%;
+        width:92%;
         margin:0 auto;
         display: flex;
         align-items: center;
@@ -276,7 +305,7 @@ export default {
 
         p {
           margin:0px;
-          font-size:1.5rem;
+          font-size:1.25rem;
           font-weight: bold;
 
           a {
@@ -287,11 +316,22 @@ export default {
             display:inline-block;
             height:20px;
             width:30px;
+            margin-left:5px;
             svg {
               max-height:20px;
               width:auto;
-              fill:$gray-500;
+              fill: $black;
             }
+          }
+        }
+
+        .saving_status {
+          font-size: 0.75rem;
+          color: $gray3;
+          margin-left:30px;
+
+          &.saving {
+            color: $green;
           }
         }
       }
@@ -345,10 +385,9 @@ export default {
     }
 
     .main_content_right {
-      width: 90%;
+      width: 92%;
       margin: 0 auto;
       padding-top: 120px;
     }
-
   }
 </style>
