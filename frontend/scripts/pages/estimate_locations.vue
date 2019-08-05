@@ -32,6 +32,7 @@
 
 import DataTable from "../components/datatable"
 import Vue from 'vue'
+import L from "leaflet"
 
 export default {
   data () {
@@ -39,12 +40,12 @@ export default {
       loading_save: false,
       locations_fields: [
         {
-          "key": "name",
-          "label": "Name"
-        },
-        {
           "key": "address_source_name",
           "label": "Address"
+        },
+        {
+          "key": "name",
+          "label": "Name"
         },
         {
           "key": "is_default",
@@ -65,11 +66,11 @@ export default {
     DataTable
   },
   mounted() {
-    // var locationmap = L.map('map').setView([48.53, 2.14], 10);
-    // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //   maxZoom: 19,
-    //   attribution: ' <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    // }).addTo(locationmap);
+    var locationmap = L.map('map').setView([48.53, 2.14], 10);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: ' <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(locationmap);
   }
 }
 </script>
@@ -78,6 +79,7 @@ export default {
   #map {
     height:400px;
     width:100%;
+    border-radius:14px;
   }
 
   .location_map {

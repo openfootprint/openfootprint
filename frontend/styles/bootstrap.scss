@@ -126,27 +126,28 @@ $text-shadow: 0 1px 0 rgba(0, 0, 0, 0.05) !default;
 // Tabs ========================================================================
 
 .nav-tabs {
-  border-bottom: 1px solid $gray-200;
+  background-color: $white;
+  border-radius:14px;
+  overflow: hidden;
+  border:0px;
 
   .nav-link.active, .nav-item.show .nav-link {
     border:none;
-    color:$gray-700;
   }
 
   .nav-link {
-    padding:10px 20px;
+    padding:13px 25px;
     font-size:16px;
-    color:$gray-600;
     border:none;
     
     .icon-tab {
-      fill:$gray-600;
       position: relative;
       top:-1px;
 
       svg {
-        width:20px;
-        max-height:20px;
+        max-height:16px;
+        max-width:20px;
+        fill:$gray3;
       }
     }
 
@@ -161,15 +162,32 @@ $text-shadow: 0 1px 0 rgba(0, 0, 0, 0.05) !default;
 
     p {
       margin:0px;
+      color:$gray3;
     }
 
     &.active {
-      border-bottom:3px solid $blue;
-      color:$gray-700;
-      font-weight: 500;
+      font-weight: bold;
+      color:$blue;
+      position:relative;
 
-      .icon-tab {
-        fill:$gray-700;
+      &:after {
+        content: '';
+        position:absolute;
+        bottom:1px;
+        left:50%;
+        width:30px;
+        background-color: $blue;
+        height:2px;
+        border-radius:10px;
+        margin-left:-15px;
+      }
+
+      svg {
+        fill:$blue;
+      }
+
+      p {
+        color:$blue;
       }
     }
   }

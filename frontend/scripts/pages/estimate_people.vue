@@ -1,17 +1,14 @@
 <template>
   <div>
-    <div class="btns_actions">
+    <div class="header_page_content">
       <h2 v-if="project.kind=='event'">Attendees</h2>
-      <div class="btns">
-        <b-button @click="saveAll()" variant="save">Save<b-spinner v-if="loading_save" small type="grow" /></b-button>
-      </div>
-      <div class="clearfix"></div>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed suscipit est, in sollicitudin nisl. Vivamus vehicula eget est non vestibulum. Ut quam arcu, pharetra eu nibh id, sodales euismod ipsum.</p>
     </div>
 
     <b-tabs>
       <b-tab>
         <template slot="title">
-          <div class="icon-tab"><unicon name="edit-alt"></unicon></div>
+          <div class="icon-tab"><unicon name="file-alt"></unicon></div>
           <p>Data</p>
         </template>
 
@@ -21,7 +18,7 @@
 
       <b-tab :active="(project.people||[]).length==0">
         <template slot="title">
-          <div class="icon-tab"><unicon name="cloud-upload"></unicon></div>
+          <div class="icon-tab"><unicon name="upload"></unicon></div>
           <p>Upload a file</p>
         </template>
 
