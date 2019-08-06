@@ -1,23 +1,19 @@
 <template>
   <div>
-    <div class="btns_actions">
+    <div class="header_page_content">
       <h2>Transports</h2>
-      <div class="btns">
-        <b-button @click="saveAll()" variant="save">Save<b-spinner v-if="loading_save" small type="grow" /></b-button>
-      </div>
-      <div class="clearfix"></div>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed suscipit est, in sollicitudin nisl. Vivamus vehicula eget est non vestibulum. Ut quam arcu, pharetra eu nibh id, sodales euismod ipsum.</p>
     </div>
 
     <b-tabs>
 
       <b-tab active>
         <template slot="title">
-          <div class="icon-tab"><unicon name="edit-alt"></unicon></div>
+          <div class="icon-tab"><unicon name="file-alt"></unicon></div>
           <p>Data</p>
         </template>
 
         <DataTable ref="table_main" :fields="transports_fields" collection="transports" :newitemtemplate='{"from_address": {}, "to_address": {}}' />
-
       </b-tab>
 
       <b-tab ref="tab_map" v-show="project.transports && project.transports.length>0">
@@ -25,13 +21,45 @@
           <div class="icon-tab"><unicon name="map"></unicon></div>
           <p>Map</p>
         </template>
+        
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="standard_block">
+              <p class="block_title">Block title</p>
 
-        <div class="main_container_map"><div class="map_container"></div></div>
+              <article class="legend_item">
+                <div class="legend_data">
+                  <p class="legend_info">Paris to Corse</p>
+                  <span class="legend_details">123 attendees</span>
+                </div>
+                <p class="legend_total">789 tons</p>
+              </article>
+              <article class="legend_item">
+                <div class="legend_data">
+                  <p class="legend_info">Paris to Corse</p>
+                  <span class="legend_details">123 attendees</span>
+                </div>
+                <p class="legend_total">789 tons</p>
+              </article>
+              <article class="legend_item">
+                <div class="legend_data">
+                  <p class="legend_info">Paris to Corse</p>
+                  <span class="legend_details">123 attendees</span>
+                </div>
+                <p class="legend_total">789 tons</p>
+              </article>
+            </div>
+          </div>
+
+          <div class="col-lg-8">
+            <div class="main_container_map"><div id="map"></div></div>
+          </div>
+        </div>
       </b-tab>
 
       <b-tab :active="(project.people||[]).length>0 && (project.transports||[]).length==0">
         <template slot="title">
-          <div class="icon-tab"><unicon name="down-arrow"></unicon></div>
+          <div class="icon-tab"><unicon name="import"></unicon></div>
           <p>Import from attendees</p>
         </template>
 
@@ -51,7 +79,7 @@
 
       <b-tab :active="(project.people||[]).length==0 && (project.transports||[]).length==0">
         <template slot="title">
-          <div class="icon-tab"><unicon name="cloud-upload"></unicon></div>
+          <div class="icon-tab"><unicon name="upload"></unicon></div>
           <p>Upload a file</p>
         </template>
 
@@ -70,8 +98,9 @@
 import DataTable from "../components/datatable"
 import UploadSheet from "../components/uploadsheet"
 import AddressField from "../components/addressfield"
-import Plotly from 'plotly.js-dist'
 import Vue from 'vue'
+import L from "leaflet"
+import '@elfalem/leaflet-curve'
 
 export default {
   data () {
@@ -150,77 +179,31 @@ export default {
     },
     renderMap() {
 
-      var data = [];
+      var latlngs = [];
 
-      var latitudes = [];
-      var longitudes = [];
+      var map = L.map('map').setView([48.53, 2.14], 10);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: ' <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }).addTo(map);
 
       this.project.transports.forEach((transport) => {
-        data.push({
-          type: 'scattergeo',
-          lon: [ transport.from_address.longitude, transport.to_address.longitude ],
-          lat: [ transport.from_address.latitude, transport.to_address.latitude ],
-          mode: 'lines',
-          line: {
-              width: 3,
-              color: 'red'
-          },
-          opacity: 0.1
-        });
-        latitudes.push(transport.from_address.latitude);
-        latitudes.push(transport.to_address.latitude);
-        longitudes.push(transport.from_address.longitude);
-        longitudes.push(transport.to_address.longitude);
+        var line = [[transport.from_address.latitude, transport.from_address.longitude], [transport.to_address.latitude, transport.to_address.longitude]];
+        latlngs.push(line);
+        
+        var center = L.polyline([line]).getBounds().getCenter();
+        center.lat += (transport.from_address.latitude - center.lat) * 0.5
+        center.lng -= (transport.from_address.longitude - center.lng) * 0.5
+
+        
+        L.curve(['M', [transport.from_address.latitude, transport.from_address.longitude], 
+        'Q', [center.lat, center.lng], [transport.to_address.latitude, transport.to_address.longitude]]).addTo(map);
+
       });
-
-      // Find the bounding box
-      // TODO: test this with corner cases
-      var topleft = [Math.max(...latitudes), Math.min(...longitudes)];
-      var bottomright = [Math.min(...latitudes), Math.max(...longitudes)];
-
-      var center = [(topleft[0] + bottomright[0])/2, (topleft[1] + bottomright[1])/2];
-      var maxSize = Math.max(topleft[0] - bottomright[0], bottomright[1] - topleft[1]);
-
-      var layout = {
-          showlegend: false,
-          geo:{
-              scope: 'world',
-              projection: {
-                  type: 'mercator',
-                  scale: maxSize / 2
-              },
-              showland: true,
-              showframe: false,
-              showcountries: true,
-              showcoastlines: false,
-              showocean: true,
-              oceancolor: "#8acdec",
-              landcolor: "#f1ede8",
-              countrycolor: "#d9d4cd",
-              center: {
-                  lat: center[0] - (maxSize / 2), // Compensate for overflow position. TODO: should be done in CSS
-                  lon: center[1]
-              },
-          },
-          margin: {
-            l: 0,
-            r: 0,
-            b: 0,
-            t: 0,
-            pad: 0
-        },
-        autosize: true,
-        //width:900,
-        height: 1400 // TODO make this dynamic
-      };
-
-      var config = {
-        displayModeBar: false,
-        showLink: false,
-        responsive: true
-      };
-      Plotly.plot(this.$refs.tab_map.$el.querySelector(".map_container"), data, layout, config);
-
+      
+      var polyline = L.polyline(latlngs, {color: 'blue'});
+      map.fitBounds(polyline.getBounds());
     }
   },
   components: {
@@ -233,20 +216,14 @@ export default {
 
 <style lang="scss" scoped>
 
-  h2 {
-    float: left;
-  }
-
   .main_container_map {
     width:100%;
-    height:500px;
+    height:400px;
     overflow: hidden;
-    border-radius: 8px;
-    position:relative;
+    border-radius:14px;
 
-    .map_container {
-      position: absolute;
-      top:-50%;
+    #map {
+      height:400px;
       width:100%;
     }
   }

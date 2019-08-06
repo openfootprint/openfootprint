@@ -8,7 +8,7 @@
     </label>
 
     <label class="file-select full_width_upload_import" v-if="layout=='full_width_upload'">
-      <div class="icon_empty"><unicon name="cloud-upload"></unicon></div>
+      <div class="icon_empty"><unicon name="upload"></unicon></div>
       <p>Drag and drop file here</p>
       <p>or <span>browse your files</span></p>
 

@@ -131,6 +131,12 @@ $text-shadow: 0 1px 0 rgba(0, 0, 0, 0.05) !default;
   overflow: hidden;
   border:0px;
 
+  .v-spacer {
+    width:1px;
+    background-color:red;
+    height:80%;
+    top:10%;
+  }
   .nav-link.active, .nav-item.show .nav-link {
     border:none;
   }

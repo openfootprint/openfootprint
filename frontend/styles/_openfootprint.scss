@@ -27,6 +27,11 @@ h4 {
     margin-bottom:10px;
 }
 
+.block_title {
+    font-size: 0.875rem;
+    font-weight: bold;
+}
+
 .header_page_content {
     p {
         font-size: 1.125rem;
@@ -35,11 +40,15 @@ h4 {
 }
 
 
-.datatable_block {
+.datatable_block, .standard_block {
     background-color: $white;
     border-radius: 14px;
     padding:0px 30px;
     min-height:400px;
+}
+
+.standard_block {
+    padding:40px 30px;
 }
 
 .table {
@@ -73,7 +82,7 @@ h4 {
         td {
             border-top:1px solid $gray1;
             border-bottom:1px solid $gray1;
-            padding: 12px 15px 9px 25px;
+            padding: 15px 15px 12px 25px;
 
             &:first-child {
                 border-top-left-radius: 10px;
@@ -150,7 +159,7 @@ h4 {
 
                 label {
                     position: absolute;
-                    top:9px;
+                    top:11px;
                 }
             }
 
@@ -165,14 +174,18 @@ h4 {
             .custom-select {
                 -webkit-appearance: none;
                 -moz-appearance: none;
-                font-size: 14px;
-                height: 30px;
+                font-size: 12px;
+                height: 28px;
                 padding: 0px 8px;
-                line-height: 16px;
+                line-height: 15px;
                 position: absolute;
-                top: 8px;
+                top: 10px;
                 width:calc(100% - 40px);
-                background:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right 0.35rem center/8px 10px;
+                background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='6A7488' viewBox='0 0 24 24'%3E%3Cpath d='M9.71,10.21,12,7.91l2.29,2.3a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42l-3-3a1,1,0,0,0-1.42,0l-3,3a1,1,0,0,0,1.42,1.42Zm4.58,4.58L12,17.09l-2.29-2.3a1,1,0,0,0-1.42,1.42l3,3a1,1,0,0,0,1.42,0l3-3a1,1,0,0,0-1.42-1.42Z'/%3E%3C/svg%3E") no-repeat;
+                background-position: right 2px center;
+                background-size:16px;
+                border:1px solid $gray1;
+                border-radius:5px;
             }
         }
 
@@ -248,11 +261,12 @@ h4 {
 
 .full_width_upload_import {
     width:100%;
-    border-radius: 8px;
-    border:2px dashed $gray-200;
-    padding:60px 30px;
+    border-radius: 14px;
+    border:2px dashed $gray2;
+    padding:70px 30px;
     text-align: center;
-    background-color:rgba(8, 174, 234, 0.02);
+    background-color:$white;
+    font-size:14px;
     
     .file-select {
         width:100%;
@@ -260,7 +274,7 @@ h4 {
     }
 
     svg {
-        width:60px;
+        width:42px;
         height:auto;
         fill:$blue;
         margin-bottom:10px;
@@ -276,7 +290,6 @@ h4 {
     }
 
     &:hover {
-        background-color:rgba(8, 174, 234, 0.04);
         span {
             text-decoration: underline;
         }
@@ -308,5 +321,60 @@ h4 {
 
     input {
         padding: 0px 10px 0px 20px!important;
+    }
+}
+
+
+.legend_item {
+    width:100%;
+    padding:20px;
+    background-color:$white;
+    border-radius:8px;
+    border:1px solid $gray1;
+    margin-bottom:10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &:last-child {
+        margin-bottom:0px;
+    }
+
+    p {
+        margin-bottom:0px;
+    }
+
+    .legend_data {
+        justify-content: flex-start;
+        padding-left:20px;
+        position: relative;
+
+        p {
+            font-size:0.875rem;
+            line-height:0.75rem;
+        }
+
+        span {
+            color:$gray3;
+            font-size:0.75rem;
+        }
+
+        &:before {
+            content:'';
+            width:10px;
+            height:10px;
+            border-radius:10px;
+            background-color:#00E07C;
+            display:block;
+            position:absolute;
+            left:0px;
+            top:50%;
+            margin-top:-8px;
+        }
+    }
+
+    .legend_total {
+        font-size:0.875rem;
+        justify-content:flex-end;
     }
 }
