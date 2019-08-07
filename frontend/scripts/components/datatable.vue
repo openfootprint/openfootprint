@@ -1,8 +1,8 @@
 <template>
   <div>
-    
+
     <div class="datatable_block">
-      <b-table ref="table_main" sort-by="id" primary-key="id" v-if="project[collection]" :items="project[collection]" :fields="fields">
+      <b-table ref="table_main" sort-by="id" primary-key="id" v-show="project[collection]" :items="project[collection]" :fields="fields">
 
         <template slot="name" slot-scope="row">
           <div v-if="collection!='reports'">
@@ -17,8 +17,8 @@
           <AddressField v-model="row.item.home_address" />
         </template>
 
-        <template slot="address_source_name" slot-scope="row">
-          <b-input v-model="row.item.address_source_name" />
+        <template slot="address" slot-scope="row">
+          <AddressField v-model="row.item.address" />
         </template>
 
         <template slot="mass" slot-scope="row">
@@ -35,7 +35,7 @@
 
         <template slot="is_default" slot-scope="row">
           <label>
-            <input type="checkbox" class="check-custom toggle-switch" v-model="row.item.is_default">
+            <input data-bypass-autosave="1" @change="removeAllDefault(row.item.id)" type="checkbox" class="check-custom toggle-switch" v-model="row.item.is_default">
             <span class="check-toggle"></span>
           </label>
         </template>
@@ -98,7 +98,12 @@ import Vue from 'vue'
 import { pickById } from '../utils'
 
 export default {
-  props: ['collection', 'fields', 'newitemtemplate'],
+  props: {
+    'collection': String,
+    'fields': Array,
+    'newitemtemplate': Object,
+    'autosave': Boolean
+  },
   data() {
     return {
       loading_save: false,
@@ -118,6 +123,12 @@ export default {
   },
   mounted() {
     this.fieldkeys = this.fields.map((f) => { return f.key });
+    if (this.autosave) {
+      this.$refs.table_main.$el.addEventListener("change", (evt) => {
+        if (evt.target.getAttribute("data-bypass-autosave")) return;
+        this.saveAll();
+      });
+    }
   },
   methods: {
     addRow() {
@@ -159,6 +170,13 @@ export default {
       this.$http.post("/api/project/"+this.project.id+"/set_"+this.collection, ["partial", obj]).then((response) => {
 
       });
+    },
+    removeAllDefault(from_id) {
+      this.project[this.collection].forEach((elt) => {
+        if (elt.id == from_id) return;
+        elt.is_default = false;
+      });
+      this.saveAll();
     }
   },
   components: {

@@ -176,8 +176,11 @@ class ProjectViewSet(viewsets.ModelViewSet):
         for field, default in (("name", ""), ("is_default", False)):
           setattr(obj, field, row.get(field, default))
 
-        if row.get("address_source_name"):
-          obj.address = Address.objects.create_from_source(row["address_source_name"])
+        if (row.get("address") or {}):
+          if type(row["address"]) == dict:
+            row["country"] = row["address"].get("source_country")
+            row["address"] = row["address"]["source_name"]
+          obj.address = Address.objects.create_from_source(row["address"],row.get("country"))
 
         obj.save()
 

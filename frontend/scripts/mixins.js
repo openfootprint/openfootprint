@@ -17,9 +17,11 @@ var GlobalMixin = {
       // TODO loading
       this.$http.get("/api/project/"+this.project.id).then((response) => {
 
+        /*
         response.data.locations.forEach((loc) => {
           loc.address_source_name = (loc.address||{}).source_name;
         });
+        */
 
         // TODO use vuex mutation
         this.$store.state.project = response.data;

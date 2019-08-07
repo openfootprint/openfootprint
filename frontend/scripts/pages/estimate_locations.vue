@@ -2,7 +2,7 @@
   <div>
     <div class="header_page_content">
       <h2>Locations</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed suscipit est, in sollicitudin nisl. Vivamus vehicula eget est non vestibulum. Ut quam arcu, pharetra eu nibh id, sodales euismod ipsum.</p>
+      <p>Your event might have one or more locations (main venue, staff HQ, ...). You can enter their addresses here.</p>
     </div>
 
     <!-- <div class="btns_actions">
@@ -15,7 +15,7 @@
 
     <div class="row">
       <div class="col-lg-8">
-        <DataTable ref="table_main" :fields="locations_fields" collection="locations" :newitemtemplate='{}' />
+        <DataTable autosave ref="table_main" :fields="locations_fields" collection="locations" :newitemtemplate='{}' />
       </div>
 
       <div class="col-lg-4">
@@ -40,7 +40,7 @@ export default {
       loading_save: false,
       locations_fields: [
         {
-          "key": "address_source_name",
+          "key": "address",
           "label": "Address"
         },
         {
@@ -61,16 +61,35 @@ export default {
     };
   },
   methods: {
+    redrawMap() {
+      if (!this.project["locations"]) return;
+      var markers = [];
+      this.project["locations"].forEach((location) => {
+        if (!(location.address||{}).latitude && !(location.address||{}).longitude) return;
+        markers.push(L.marker([location.address.latitude, location.address.longitude]));
+      });
+
+      var group = new L.featureGroup(markers);
+
+      var locationmap = L.map('map').fitBounds(group.getBounds());
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: ' <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }).addTo(locationmap);
+
+      group.addTo(locationmap);
+
+
+    }
   },
   components: {
     DataTable
   },
   mounted() {
-    var locationmap = L.map('map').setView([48.53, 2.14], 10);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: ' <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(locationmap);
+    this.redrawMap();
+    this.$watch("project", (evt) => {
+      this.redrawMap();
+    });
   }
 }
 </script>

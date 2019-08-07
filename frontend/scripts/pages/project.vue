@@ -2,7 +2,7 @@
   <div class="admin_project_page">
 
     <nav class="ofp_sidebar">
-      <b-link :to="{'name':'index'}" class="logo"><img src="../../images/logo_openfootprint_vertical.svg" alt="Logo OpenFootprint"></b-link>
+      <b-link :to="{'name':'index'}" class="logo"><img src="/static/images/logo/logo_openfootprint_vertical.svg" alt="Logo OpenFootprint"></b-link>
 
         <ul>
           <b-nav-item :to='{"name": "project_home"}'><unicon name="home-alt" class="icon"></unicon>Dashboard<div class="active_bar"></div></b-nav-item>
@@ -29,7 +29,7 @@
       <div class="profile_block">
         <!-- TODO -->
         <a href="#">
-          <img src="../../images/logo_openfootprint_icon.svg" />
+          <img src="/static/images/logo/logo_openfootprint_icon.svg" />
           <p>Log in to save</p>
         </a>
       </div>
@@ -216,7 +216,7 @@ export default {
             left:0px;
             padding:20px 0px;
           }
-          
+
           svg {
             fill:$blue;
           }

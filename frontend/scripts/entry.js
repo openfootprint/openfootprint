@@ -7,7 +7,7 @@ import axios from 'axios'
 import '../styles/bootstrap.scss'
 
 import 'leaflet/dist/leaflet.css';
-
+import L from "leaflet"
 
 import {GlobalMixin} from "./mixins"
 
@@ -20,6 +20,7 @@ import { uniHomeAlt, uniChart, uniChartLine, uniBoltAlt, uniCog, uniTicket, uniB
 
 Unicon.add([uniHomeAlt, uniChart, uniChartLine, uniBoltAlt, uniCog, uniTicket, uniBriefcaseAlt, uniBuilding, uniTrashAlt, uniFileAlt, uniUpload, uniMap, uniImport])
 
+L.Icon.Default.prototype.options.imagePath="/static/images/leaflet/";
 
 // import { uniTicket, uniBriefcaseAlt, uniBuilding, uniHomeAlt, uniChart, uniChartLine, uniCog, uniRedo, uniTimesCircle, uniEditAlt, uniCloudUpload, uniMap, uniDownArrow, uniListUl, uniCheck, uniEye, uniTrashAlt, uniBoltAlt } from 'vue-unicons/src/icons'
 // Unicon.add([uniTicket, uniBriefcaseAlt, uniBuilding, uniHomeAlt, uniChart, uniChartLine, uniCog, uniRedo, uniTimesCircle, uniEditAlt, uniCloudUpload, uniMap, uniDownArrow, uniListUl, uniCheck, uniEye, uniTrashAlt, uniBoltAlt])

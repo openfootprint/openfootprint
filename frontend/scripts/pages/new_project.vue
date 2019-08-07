@@ -3,7 +3,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <b-link :to="{'name':'index'}"><img src="../../images/logo_openfootprint.svg" alt="OpenFootprint" class="logo_create_project"/></b-link>
+                    <b-link :to="{'name':'index'}"><img src="/static/images/logo/logo_openfootprint.svg" alt="OpenFootprint" class="logo_create_project"/></b-link>
                     <!--<h1>Welcome to OpenFootprint, the footprint calculator</h1>-->
                     <div class="create_project_wrapper">
                         <h1>Create your project in 2 clicks! Select what applies:</h1>
@@ -11,7 +11,7 @@
                         <b-col lg="10" offset-lg="1">
                             <b-form class="row">
                                 <span class="label col-lg-12">Project type</span>
-                                <label class="col-xxs-12 col-xs-6 col-md-6 col-lg-4" id="event_project">
+                                <label @click="$refs.project_name.focus()" class="col-xxs-12 col-xs-6 col-md-6 col-lg-4" id="event_project">
                                     <div :class='{"project_type": 1, "selected":kind=="event"}'>
                                         <unicon name="ticket" class="icon"></unicon>
                                         <input type="radio" name="radio" value="event" v-model="kind">
@@ -20,7 +20,7 @@
                                     </div>
                                 </label>
 
-                                <label class="col-xxs-12 col-xs-6 col-md-6 col-lg-4" id="company_project">
+                                <label @click="$refs.project_name.focus()" class="col-xxs-12 col-xs-6 col-md-6 col-lg-4" id="company_project">
                                     <div :class='{"project_type": 1, "selected":kind=="company"}'>
                                         <unicon name="briefcase-alt" class="icon"></unicon>
                                         <input type="radio" name="radio" value="company" v-model="kind">
@@ -29,7 +29,7 @@
                                     </div>
                                 </label>
 
-                                <label class="col-xxs-12 col-xs-6 col-md-6 col-lg-4" id="household_project">
+                                <label @click="$refs.project_name.focus()" class="col-xxs-12 col-xs-6 col-md-6 col-lg-4" id="household_project">
                                     <div :class='{"project_type": 1, "selected":kind=="household"}'>
                                         <unicon name="building" class="icon"></unicon>
                                         <input type="radio" name="radio" value="household" v-model="kind">
@@ -40,7 +40,7 @@
 
                                 <b-form-group class="col-lg-12">
                                     <span class="label">Project name</span>
-                                    <b-input required v-model="name" placeholder="ex: OpenFootprint 2019"></b-input>
+                                    <b-input ref="project_name" required v-model="name" placeholder="ex: OpenFootprint 2019"></b-input>
                                 </b-form-group>
 
                                 <b-button variant="success" @click="createProject()">Create {{kind}} project</b-button>
@@ -63,6 +63,9 @@ export default {
       kind: "event",
       name: ""
     }
+  },
+  mounted() {
+      this.$refs.project_name.focus();
   },
   methods: {
       createProject() {
