@@ -60,6 +60,16 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
       return Response(resp)
 
+    @action(detail=True, methods=['POST'], name='Generic delete row')
+    def generic_delete_row(self, request, pk=None):
+      project = self.get_object()
+
+      row_id = request.data["id"]
+      collection = request.data["collection"]
+
+      getattr(project, collection).filter(pk=row_id).delete()
+
+      return Response({'status': 'ok'})
 
     @action(detail=True, methods=['POST'], name='Set Extras')
     def set_extras(self, request, pk=None):

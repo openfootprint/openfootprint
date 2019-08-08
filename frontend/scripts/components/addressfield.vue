@@ -1,5 +1,8 @@
 <template>
-  <b-input :class='{"geocoding":!(value||{latitude:1}).latitude}' :value="(value||{}).source_name||''" @input="onInput" />
+  <div :class='"status-"+((value||{}).status||"empty")'>
+    <!-- {{(value||{}).country}} -->
+    <b-input :value="(value||{}).source_name||''" @input="onInput" />
+  </div>
 </template>
 
 <script>
@@ -18,7 +21,12 @@ export default {
    padding-left:30px;
    // TODO add location icon
  }
- input.geocoding {
+ .status-new input {
    border:1px solid red !important;
+ }
+ .status-empty input {
+   border:1px solid blue !important;
+ }
+ .status-geocoded {
  }
 </style>

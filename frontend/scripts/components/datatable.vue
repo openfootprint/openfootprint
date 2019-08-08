@@ -95,7 +95,7 @@
 <script>
 import AddressField from "../components/addressfield"
 import Vue from 'vue'
-import { pickById } from '../utils'
+import { pickById, deleteById } from '../utils'
 
 export default {
   props: {
@@ -148,8 +148,12 @@ export default {
       });
     },
     deleteRow(row) {
-      // TODO: investigate why splice doesn't behave correctly
-      this.project[this.collection].splice(row.index,1);
+
+      // TODO: there must be a better way to do this but splice() wasn't behaving correctly.
+      Vue.set(this.project, this.collection, deleteById(this.project[this.collection], row.item.id));
+
+      this.$http.post("/api/project/"+this.project.id+"/generic_delete_row", {id:row.item.id, collection:this.collection}).then((response) => {
+      });
     },
     deleteAll() {
       this.$http.post("/api/project/"+this.project.id+"/set_"+this.collection, []).then((response) => {

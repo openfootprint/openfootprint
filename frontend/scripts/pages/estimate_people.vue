@@ -12,7 +12,7 @@
           <p>Data</p>
         </template>
 
-        <DataTable ref="table_main" :fields="people_fields" collection="people" :newitemtemplate='{"home_address": {}}' />
+        <DataTable autosave ref="table_main" :fields="people_fields" collection="people" :newitemtemplate='{"home_address": {}}' />
 
       </b-tab>
 

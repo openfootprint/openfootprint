@@ -25,7 +25,7 @@ class FileSerializer(serializers.ModelSerializer):
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = ("source_name", "source_country", "id", "latitude", "longitude", "country")
+        fields = ("source_name", "source_country", "id", "latitude", "longitude", "country", "status")
 
 
 class LocationSerializer(serializers.ModelSerializer):

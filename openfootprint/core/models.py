@@ -239,6 +239,12 @@ class Address(models.Model):
     source_name = models.CharField("Name", max_length=250, db_index=True)
     source_country = models.CharField("Country", max_length=2, db_index=True, blank=True)
 
+    status = models.CharField("Status", max_length=10, blank=True, null=True, default="new", choices=[
+        ("new", "New"),
+        ("unknown", "Unknown"),
+        ("geocoded", "Geocoded")
+    ])
+
     # Computed fields
     latitude = models.FloatField("Latitude", blank=True, null=True)
     longitude = models.FloatField("Longitude", blank=True, null=True)
@@ -248,7 +254,7 @@ class Address(models.Model):
 
     def geocode(self, force=False):
 
-        if self.latitude is not None and not force:
+        if self.status != "new" and not force:
             return
 
         time.sleep(1)  # simple rate limit
@@ -261,13 +267,16 @@ class Address(models.Model):
             return False
 
         if not geo:
+            self.status = "unknown"
+            self.save(update_fields=["status"])
             return False
 
         self.latitude = geo.latitude
         self.longitude = geo.longitude
         self.country = geo.raw["address"]["country_code"]
+        self.status = "geocoded"
 
-        self.save(update_fields=["latitude", "longitude", "country"])
+        self.save(update_fields=["status", "latitude", "longitude", "country"])
 
     def __str__(self):
         return "%s [%s]" % (self.source_name, self.source_country)

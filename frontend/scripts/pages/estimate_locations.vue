@@ -62,23 +62,37 @@ export default {
   },
   methods: {
     redrawMap() {
+
       if (!this.project["locations"]) return;
+
+      if (this.mapMarkers) {
+        this.map.removeLayer(this.mapMarkers)
+      }
+
       var markers = [];
       this.project["locations"].forEach((location) => {
         if (!(location.address||{}).latitude && !(location.address||{}).longitude) return;
         markers.push(L.marker([location.address.latitude, location.address.longitude]));
       });
 
-      var group = new L.featureGroup(markers);
+      this.mapMarkers = new L.featureGroup(markers);
 
-      var locationmap = L.map('map').fitBounds(group.getBounds());
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: ' <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-      }).addTo(locationmap);
+      var justcreated = false;
+      if (!this.map) {
+        this.map = L.map('map');
+        justcreated = true;
+      }
 
-      group.addTo(locationmap);
+      this.map.fitBounds(this.mapMarkers.getBounds());
 
+      if (justcreated) {
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: ' <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(this.map);
+      }
+
+      this.mapMarkers.addTo(this.map);
 
     }
   },
@@ -90,6 +104,10 @@ export default {
     this.$watch("project", (evt) => {
       this.redrawMap();
     });
+    this.$watch("project.locations", (evt) => {
+      this.redrawMap();
+    });
+    // TODO: refresh if some un-geolocated addresses
   }
 }
 </script>
