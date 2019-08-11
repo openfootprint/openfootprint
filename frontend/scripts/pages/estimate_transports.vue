@@ -21,7 +21,7 @@
           <div class="icon-tab"><unicon name="map"></unicon></div>
           <p>Map</p>
         </template>
-        
+
         <div class="row">
           <div class="col-lg-4">
             <div class="standard_block">
@@ -52,14 +52,14 @@
           </div>
 
           <div class="col-lg-8">
-            <div class="main_container_map"><div id="map"></div></div>
+            <Map class="transports_map" ref="map" :transports="project.transports" />
           </div>
         </div>
       </b-tab>
 
       <b-tab :active="(project.people||[]).length>0 && (project.transports||[]).length==0">
         <template slot="title">
-          <div class="icon-tab"><unicon name="import"></unicon></div>
+          <div class="icon-tab"><unicon name="map"></unicon></div>
           <p>Import from attendees</p>
         </template>
 
@@ -98,9 +98,8 @@
 import DataTable from "../components/datatable"
 import UploadSheet from "../components/uploadsheet"
 import AddressField from "../components/addressfield"
+import Map from "../components/map"
 import Vue from 'vue'
-import L from "leaflet"
-import '@elfalem/leaflet-curve'
 
 export default {
   data () {
@@ -156,12 +155,14 @@ export default {
         this.$parent.refreshProject();
       });
     });
+
     this.$refs.tab_map.$on("click", () => {
       // TODO proper event on tab show, with width set already
       setTimeout(() => {
-        this.renderMap();
+        this.$refs.map.reDraw();
       }, 200);
     });
+
   },
   methods: {
     addTransportsFromPeople() {
@@ -176,56 +177,23 @@ export default {
           this.loading_add_from_people = false;
         });
       });
-    },
-    renderMap() {
-
-      var latlngs = [];
-
-      var map = L.map('map').setView([48.53, 2.14], 10);
-
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: ' <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-      }).addTo(map);
-
-      this.project.transports.forEach((transport) => {
-        var line = [[transport.from_address.latitude, transport.from_address.longitude], [transport.to_address.latitude, transport.to_address.longitude]];
-        latlngs.push(line);
-        
-        var center = L.polyline([line]).getBounds().getCenter();
-        center.lat += (transport.from_address.latitude - center.lat) * 0.5
-        center.lng -= (transport.from_address.longitude - center.lng) * 0.5
-
-        
-        L.curve(['M', [transport.from_address.latitude, transport.from_address.longitude], 
-        'Q', [center.lat, center.lng], [transport.to_address.latitude, transport.to_address.longitude]]).addTo(map);
-
-      });
-      
-      var polyline = L.polyline(latlngs, {color: 'blue'});
-      map.fitBounds(polyline.getBounds());
     }
   },
   components: {
     UploadSheet,
     AddressField,
-    DataTable
+    DataTable,
+    Map
   }
 }
 </script>
 
 <style lang="scss" scoped>
 
-  .main_container_map {
+  .transports_map {
     width:100%;
     height:400px;
-    overflow: hidden;
     border-radius:14px;
-
-    #map {
-      height:400px;
-      width:100%;
-    }
   }
 
 </style>

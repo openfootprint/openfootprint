@@ -44,7 +44,7 @@
             <span class="icon" v-if="project.kind === 'company'"><unicon name="briefcase-alt"></unicon></span>
             <span class="icon" v-if="project.kind === 'household'"><unicon name="building"></unicon></span>
           </p>
-          <span class="saving_status">Autosaving...</span>
+          <span class="saving_status" v-show="requests_inflight > 0"><b-spinner small type="grow" /></span>
         </div>
         <div class="compute_block">
             <b-button @click="computeFootprint()" variant="primary" v-if="!total_co2e">Compute footprint <b-spinner v-if="loading_footprint" small type="grow" /></b-button>
@@ -73,15 +73,34 @@ export default {
     return {
       loading_footprint: false,
       total_co2e: null,
-      report_id: null
+      report_id: null,
+      requests_inflight: 0
     };
   },
   created() {
+
+    this.$http.interceptors.request.use((config) => {
+      this.requests_inflight++;
+      return config;
+    }, (error) => {
+      this.requests_inflight--;
+      return Promise.reject(error);
+    });
+
+    this.$http.interceptors.response.use((response) => {
+      this.requests_inflight--;
+      return response;
+    }, (error) => {
+      this.requests_inflight--;
+      return Promise.reject(error);
+    });
+
     // TODO use vuex mutation
     this.$store.state.project = {
       "id": this.$route.params.project_id
     };
     this.refreshProject();
+
   },
   methods: {
     computeFootprint() {

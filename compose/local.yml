@@ -7,7 +7,7 @@ volumes:
 services:
   django: &django
     build:
-      context: .
+      context: ../
       dockerfile: ./compose/local/django/Dockerfile
     image: openfootprint_local_django
     depends_on:
@@ -15,24 +15,24 @@ services:
       - mailhog
       - webpack
     volumes:
-      - .:/app
+      - ../:/app
     env_file:
-      - ./.envs/.local/.django
-      - ./.envs/.local/.postgres
+      - ../.envs/.local/.django
+      - ../.envs/.local/.postgres
     ports:
       - "8000:8000"
     command: /start
 
   postgres:
     build:
-      context: .
+      context: ../
       dockerfile: ./compose/production/postgres/Dockerfile
     image: openfootprint_production_postgres
     volumes:
-      - local_postgres_data:/var/lib/postgresql/data
-      - local_postgres_data_backups:/backups
+      - ../local_postgres_data:/var/lib/postgresql/data
+      - ../local_postgres_data_backups:/backups
     env_file:
-      - ./.envs/.local/.postgres
+      - ../.envs/.local/.postgres
 
   mailhog:
     image: mailhog/mailhog:v1.0.0
@@ -71,12 +71,12 @@ services:
 
   webpack:
     build:
-      context: .
+      context: ../
       dockerfile: ./compose/local/webpack/Dockerfile
     image: openfootprint_local_webpack
     ports:
       - "8001:8001"
       - "8002:8002"
     volumes:
-      - ./frontend:/app/frontend:rw
+      - ../frontend:/app/frontend:rw
     command: /start-webpack

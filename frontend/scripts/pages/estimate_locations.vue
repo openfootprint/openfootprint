@@ -19,9 +19,7 @@
       </div>
 
       <div class="col-lg-4">
-        <div class="location_map">
-           <div id="map"></div>
-        </div>
+        <Map class="location_map" ref="map" :locations="project.locations" />
       </div>
     </div>
  </div>
@@ -31,8 +29,8 @@
 <script>
 
 import DataTable from "../components/datatable"
+import Map from "../components/map"
 import Vue from 'vue'
-import L from "leaflet"
 
 export default {
   data () {
@@ -61,67 +59,24 @@ export default {
     };
   },
   methods: {
-    redrawMap() {
 
-      if (!this.project["locations"]) return;
-
-      if (this.mapMarkers) {
-        this.map.removeLayer(this.mapMarkers)
-      }
-
-      var markers = [];
-      this.project["locations"].forEach((location) => {
-        if (!(location.address||{}).latitude && !(location.address||{}).longitude) return;
-        markers.push(L.marker([location.address.latitude, location.address.longitude]));
-      });
-
-      this.mapMarkers = new L.featureGroup(markers);
-
-      var justcreated = false;
-      if (!this.map) {
-        this.map = L.map('map');
-        justcreated = true;
-      }
-
-      this.map.fitBounds(this.mapMarkers.getBounds());
-
-      if (justcreated) {
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19,
-          attribution: ' <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(this.map);
-      }
-
-      this.mapMarkers.addTo(this.map);
-
-    }
   },
   components: {
-    DataTable
+    DataTable,
+    Map
   },
   mounted() {
-    this.redrawMap();
-    this.$watch("project", (evt) => {
-      this.redrawMap();
-    });
-    this.$watch("project.locations", (evt) => {
-      this.redrawMap();
-    });
     // TODO: refresh if some un-geolocated addresses
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  #map {
-    height:400px;
-    width:100%;
-    border-radius:14px;
-  }
 
   .location_map {
     height:400px;
     width:100%;
+    border-radius:14px;
   }
 
 </style>
