@@ -3,8 +3,9 @@
     <div v-else>
         <div class="btns_actions">
             <h2><b-link :to='{"name": "project_plugins"}'>Plugins</b-link> / {{item.name}}</h2>
+
             <div class="btns">
-                <b-button variant="danger" target="_blank">Uninstall plugin</b-button>
+                <b-button @click="removePlugin" variant="danger" target="_blank">Uninstall plugin</b-button>
             </div>
             <div class="clearfix"></div>
         </div>
@@ -21,7 +22,7 @@
 <script>
 
 import JsonSchemaForm from "../components/jsonschemaform"
-import { pickById } from '../utils'
+import { pickById, updateById } from '../utils'
 
 export default {
     data() {
@@ -35,6 +36,14 @@ export default {
         }
     },
     methods: {
+        removePlugin: function() {
+            this.submitting = true;
+            this.$http.post("/api/project/"+this.project.id+"/remove_plugins", [this.item.slug]).then((response) => {
+                this.submitting = false;
+                this.project.plugins = updateById(this.project.plugins, this.$route.params.plugin_slug, "slug", {"installed": false})
+                this.$router.push({name: 'project_plugins'});
+            });
+        },
         onSubmit(newConfig) {
             this.submitting = true;
             this.item.config = newConfig;

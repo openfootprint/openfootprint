@@ -4,8 +4,8 @@
 
     <div class="row template_list">
 
-        <article :class="{'col-lg-4':1,'template_selected': installed.indexOf(plugin.slug)>=0}" v-for="plugin in available_plugins">
-          <b-link v-if="installed.indexOf(plugin.slug)>=0" :to="{'name':'project_plugin', 'params': {'plugin_slug': plugin.slug}}">
+        <article :class="{'col-lg-4':1,'template_selected': plugin.installed}" v-for="(plugin, index) in this.project.plugins">
+          <b-link v-if="plugin.installed" :to="{'name':'project_plugin', 'params': {'plugin_slug': plugin.slug}}">
             <div class="template_block">
                 <div class="template_preview">
                     <img src="/openfootprint/templates/reports/event1/preview.jpg" />
@@ -25,7 +25,7 @@
               <div class="template_details">
                   <p>{{plugin.name}}</p>
               </div>
-              <b-button style="margin:10px;">Install</b-button>
+              <b-button @click="installPlugin(index)" style="margin:10px;">Install</b-button>
           </div>
 
         </article>
@@ -39,17 +39,22 @@
 export default {
   data () {
     return {
-      available_plugins: [
-        {"name": "Default event report template", "id": 1, "slug": "template_report_event_2019"},
-        {"name": "Carbonkit.net estimates", "id": 2, "slug": "carbonkit"}
-      ],
-      installed:["template_report_event_2019"]
     };
   },
   mounted() {
+        this.$http.post("/api/project/"+this.project.id+"/footprint").then((response) => {
+        this.loading_footprint = false;
+        this.total_co2e = response.data.footprint || 0;
+        this.report_id = response.data.report_id;
+        });
   },
   methods: {
-
+        installPlugin: function(index) {
+            this.$http.post("/api/project/"+this.project.id+"/set_plugins", [this.project.plugins[index]]).then((response) => {
+                this.submitting = false;
+                this.$router.push("plugins/" + this.project.plugins[index]["slug"]);
+            });
+        }
   },
   components: {
   }
