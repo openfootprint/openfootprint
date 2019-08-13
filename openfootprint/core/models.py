@@ -74,6 +74,13 @@ class Project(models.Model):
         if self.starts_at and self.ends_at:
             return (self.ends_at - self.starts_at).days
 
+class ActivePlugins(models.Model):
+    name = models.CharField("Name", max_length=200)
+    slug = models.CharField("Slug", max_length=200)
+    project = models.ForeignKey(Project, db_index=True, related_name='active_plugins', on_delete=models.CASCADE)
+    config = models.TextField("JSON settings", blank=True, null=True)
+
+
 class Tag(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)

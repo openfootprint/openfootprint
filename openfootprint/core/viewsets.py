@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
-from .models import Project, Transport, Location, Person, Report, Extra, Address, Hotel, Meal, File
+from django.http import HttpResponseRedirect
+from .models import Project, Transport, Location, Person, Report, Extra, Address, Hotel, Meal, File, ActivePlugins
 from .serializers import ProjectSerializerFull, ProjectSerializerList, TransportSerializer, ExtraSerializer, FileSerializer
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -43,7 +44,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['POST', 'GET'], name='Estimate footprint')
     def footprint(self, request, pk=None):
       project = self.get_object()
-
       # Create a default report if it doesn't exist
       report_count = project.reports.count()
       if report_count == 0:
@@ -297,6 +297,41 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
       return Response({'status': 'ok'})
 
+    @action(detail=True, methods=['POST'], name='Remove Plugins')
+    def remove_plugins(self, request, pk=None):
+      ActivePlugins.objects.filter(slug=request.data[0]).delete()
+      return Response({'status': 'ok'})
+
+    @action(detail=True, methods=['POST'], name='Set Plugins')
+    def set_plugins(self, request, pk=None):
+      project = self.get_object()
+
+      partial = False
+      for row in request.data:
+        if row == "partial":
+          partial = True
+        elif row.get("id") and str(row["id"]).startswith("new"):
+          row.pop("id")
+
+      report_count = project.active_plugins.count()
+
+      for i, row in enumerate(request.data):
+        if partial and i == 0:
+          continue
+        obj = None
+        try:
+          if row.get("slug"):
+            obj = ActivePlugins.objects.get(slug=row["slug"])
+        except ActivePlugins.DoesNotExist:
+            obj = ActivePlugins(project=project)
+            if row.get("slug"):
+              obj.slug = row["slug"]
+            if row.get("name"):
+              obj.name = row["name"]
+
+        obj.config = json.dumps(row.get("config") or {})
+        obj.save()
+      return Response({'status': 'ok'})
 
     @action(detail=True, methods=['POST'], name='Set Reports')
     def set_reports(self, request, pk=None):
@@ -428,7 +463,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
       # TODO hotel address + transports (!)
 
       nights = project.get_nights() or 1
-      print(nights)
       if nights > 0:
         for person in project.people.all():
           if not existing.get(person.id):
@@ -470,4 +504,3 @@ class ProjectViewSet(viewsets.ModelViewSet):
           'url': f.file.url
         }
       })
-

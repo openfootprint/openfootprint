@@ -2,7 +2,7 @@ import os
 import json
 
 
-class FootprintProvider():
+class Plugin():
     name = ""
 
     def __init__(self):
