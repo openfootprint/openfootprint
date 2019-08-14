@@ -59,7 +59,7 @@
 
       <b-tab :active="(project.people||[]).length>0 && (project.transports||[]).length==0">
         <template slot="title">
-          <div class="icon-tab"><unicon name="map"></unicon></div>
+          <div class="icon-tab"><unicon name="import"></unicon></div>
           <p>Import from attendees</p>
         </template>
 
@@ -112,6 +112,11 @@ export default {
 
       transports_fields: [
         {
+          "key": "checkbox",
+          "label": "",
+          "class": "th_checkbox"
+        },
+        {
           "key": "name",
           "label": "Name"
         },
@@ -131,7 +136,7 @@ export default {
         {
           "key": "roundtrip",
           "label": "Roundtrip?",
-          "class": "th_checkbox"
+          "class": "th_checkbox_toggle"
         },
         {
           "key": "actions",

@@ -1,8 +1,26 @@
 <template>
   <div>
 
-    <div class="datatable_block">
+    <div class="datatable_block" :class="collection">
+      <div class="table_actions">
+        <div class="table_actions_buttons">
+          <b-button @click="addRow()" variant="secondary">Add new</b-button>
+          <b-dropdown right variant="outline-secondary">
+            <b-dropdown-item @click="saveAll()"><unicon name="sync"></unicon>Save all <b-spinner v-if="loading_save" small type="grow" /></b-dropdown-item>
+            <b-dropdown-item @click="deleteAll()"><unicon name="trash-alt"></unicon>Delete all</b-dropdown-item>
+          </b-dropdown>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+
       <b-table ref="table_main" sort-by="id" primary-key="id" v-show="project[collection]" :items="project[collection]" :fields="fields">
+
+        <template slot="checkbox" slot-scope="row">
+          <label class="checkbox_label">
+            <input type="checkbox">
+            <span class="checkmark"></span>
+          </label>
+        </template>
 
         <template slot="name" slot-scope="row">
           <div v-if="collection!='reports'">
@@ -83,12 +101,15 @@
         </template>
 
       </b-table>
+
+      <div class="pagination" v-if="collection!='locations'">
+        <p><span class="cp_pagination">1 – 100</span> of <span class="total_pagination">19,154</span></p>
+        <ul>
+          <li><unicon name="angle-left"></unicon></li>
+          <li><unicon name="angle-right"></unicon></li>
+        </ul>
+      </div>
     </div>
-
-    <b-button @click="addRow()">Add new</b-button>
-    <b-button @click="saveAll()" variant="primary">Save all <b-spinner v-if="loading_save" small type="grow" /></b-button>
-    <b-button @click="deleteAll()" variant="danger">Delete all</b-button>
-
   </div>
 </template>
 

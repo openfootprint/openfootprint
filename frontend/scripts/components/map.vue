@@ -43,9 +43,15 @@ export default {
 
       if ((this.locations||[]).length > 0) {
         var markers = [];
+        var customMarker = L.icon({
+          iconUrl: '/static/images/leaflet/custom-marker.png',
+
+          iconSize:     [32, 40], // size of the icon
+          iconAnchor:   [16, 40], // point of the icon which will correspond to marker's location
+        });
         this.locations.forEach((location) => {
           if ((location.address||{}).status != "geocoded") return;
-          markers.push(L.marker([location.address.latitude, location.address.longitude]));
+          markers.push(L.marker([location.address.latitude, location.address.longitude], {icon: customMarker}));
         });
         this.drawMarkers(markers);
       }

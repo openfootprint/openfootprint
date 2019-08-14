@@ -13,9 +13,9 @@ import App from './app'
 // Icons
 
 import Unicon from 'vue-unicons'
-import { uniHomeAlt, uniChart, uniChartLine, uniBoltAlt, uniCog, uniTicket, uniBriefcaseAlt, uniBuilding, uniTrashAlt, uniFileAlt, uniUpload, uniMap, uniImport } from 'vue-unicons/src/icons'
+import { uniHomeAlt, uniChart, uniChartLine, uniBoltAlt, uniCog, uniTicket, uniBriefcaseAlt, uniBuilding, uniTrashAlt, uniFileAlt, uniUpload, uniMap, uniImport, uniSync} from 'vue-unicons/src/icons'
 
-Unicon.add([uniHomeAlt, uniChart, uniChartLine, uniBoltAlt, uniCog, uniTicket, uniBriefcaseAlt, uniBuilding, uniTrashAlt, uniFileAlt, uniUpload, uniMap, uniImport])
+Unicon.add([uniHomeAlt, uniChart, uniChartLine, uniBoltAlt, uniCog, uniTicket, uniBriefcaseAlt, uniBuilding, uniTrashAlt, uniFileAlt, uniUpload, uniMap, uniImport, uniSync])
 
 // import { uniTicket, uniBriefcaseAlt, uniBuilding, uniHomeAlt, uniChart, uniChartLine, uniCog, uniRedo, uniTimesCircle, uniEditAlt, uniCloudUpload, uniMap, uniDownArrow, uniListUl, uniCheck, uniEye, uniTrashAlt, uniBoltAlt } from 'vue-unicons/src/icons'
 // Unicon.add([uniTicket, uniBriefcaseAlt, uniBuilding, uniHomeAlt, uniChart, uniChartLine, uniCog, uniRedo, uniTimesCircle, uniEditAlt, uniCloudUpload, uniMap, uniDownArrow, uniListUl, uniCheck, uniEye, uniTrashAlt, uniBoltAlt])

@@ -48,7 +48,7 @@ export default {
         {
           "key": "is_default",
           "label": "Default",
-          "class": "th_checkbox"
+          "class": "th_checkbox_toggle"
         },
         {
           "key": "actions",

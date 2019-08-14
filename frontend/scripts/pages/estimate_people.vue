@@ -44,6 +44,11 @@ export default {
       loading_save: false,
       people_fields: [
         {
+          "key": "checkbox",
+          "label": "",
+          "class": "th_checkbox"
+        },
+        {
           "key": "name",
           "label": "Name"
         },

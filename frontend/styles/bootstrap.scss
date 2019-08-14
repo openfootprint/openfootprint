@@ -50,10 +50,6 @@ $text-shadow: 0 1px 0 rgba(0, 0, 0, 0.05) !default;
   padding:8px 20px!important;
 }
 
-.btn-secondary {
-  color: $gray-700;
-}
-
 .btn-save {
   color:$white!important;
   background-color:$green!important;
@@ -201,4 +197,24 @@ $text-shadow: 0 1px 0 rgba(0, 0, 0, 0.05) !default;
 
 .tab-pane {
   margin-top:30px;
+}
+
+
+// Buttons =====================================================================
+
+.btn-secondary {
+  background-color:$green;
+  color:$white;
+  border:1px solid $green;
+
+  &:hover {
+    background-color:darken($green, 2%);
+    color:$white;
+    border:1px solid darken($green, 2%);
+  }
+}
+
+.btn-outline-secondary {
+  background-color:$white;
+  border:1px solid $gray1;
 }
