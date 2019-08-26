@@ -1,0 +1,14 @@
+{
+    "types": ["footprint"],
+    "name": "Carbonkit",
+    "config_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+            "config_file": {
+                "type": "string",
+                "title": "Event config file path"
+            }
+        }
+    }
+}

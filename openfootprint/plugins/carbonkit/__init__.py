@@ -1,29 +1,18 @@
-from openfootprint.plugins.footprint import Plugin as BasePlugin
+from openfootprint.core.ofplib.plugins import FootPrint
 from django.core.cache import caches
 import requests
 import os
 
 
-class Plugin(BasePlugin):
-    name = "Carbonkit"
-    config_schema = {
-        "$schema": "http://json-schema.org/draft-07/schema#",
-        "type": "object",
-        "properties": {
-            "config_file": {
-                "type": "string",
-                "title": "Event config file path",
-                # "format": "uri"
-            }
-        }
-    }
+class Plugin(FootPrint):
 
     def __init__(self):
-        BasePlugin.__init__(self)
         if "CARBONKIT_USERNAME" in os.environ:
             self.config["USERNAME"] = os.environ["CARBONKIT_USERNAME"]
         if "CARBONKIT_PASSWORD" in os.environ:
             self.config["PASSWORD"] = os.environ["CARBONKIT_PASSWORD"]
+        self.config_path = os.path.join(__loader__.path.rsplit("/", 1)[0], "plugin.json")
+        FootPrint.__init__(self)
 
     def _do_requests(self, path):
 

@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Project, Extra, Transport, Report, Person, Tag, Location, Address, Hotel, Meal, File, ActivePlugins
+from openfootprint.core.models import Project, Extra, Transport, Report, Person, Tag, Location, Address, Hotel, Meal, File, ActivePlugins
+from openfootprint.core.ofplib.plugins import BasePlugin
 import json
 import os
 import importlib
@@ -117,7 +118,6 @@ class PersonSerializer(serializers.ModelSerializer):
 class ProjectSerializerFull(serializers.ModelSerializer):
     extras = ExtraSerializer(many=True, read_only=True)
     transports = TransportSerializer(many=True, read_only=True)
-    active_plugins = ActivePluginsSerializer(many=True, read_only=True)
     reports = ReportSerializer(many=True, read_only=True)
     people = PersonSerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
@@ -134,25 +134,7 @@ class ProjectSerializerFull(serializers.ModelSerializer):
 
     def to_representation(self, obj):
         data = super().to_representation(obj)
-        installed_plugins = {plugin["slug"]: plugin for plugin in data["active_plugins"]}
-        data.setdefault("plugins", [])
-        for plugin_type in [d for d in os.listdir("/app/openfootprint/plugins/") if os.path.isdir(os.path.join("/app/openfootprint/plugins/", d))]:
-            for plugin_slug in [d for d in os.listdir(os.path.join("/app/openfootprint/plugins/", plugin_type)) if os.path.isdir(os.path.join("/app/openfootprint/plugins/", plugin_type, d))]:
-                if plugin_type in ["__pycache__", "templates"] or plugin_slug == "__pycache__":
-                    continue
-                imported_plugin = importlib.import_module("openfootprint.plugins.%s.%s" % (plugin_type, plugin_slug)).Plugin()
-                plugin_data = {
-                    "slug": plugin_slug,
-                    "type": plugin_type,
-                    "config_schema": imported_plugin.config_schema,
-                    "name": imported_plugin.name
-                }
-                if plugin_slug in installed_plugins:
-                    plugin_data["installed"] = True
-                    plugin_data["config"] = json.loads(installed_plugins[plugin_slug].get("config", "{}")) or {}
-
-                data['plugins'].append(plugin_data)
-
+        data["plugins"] = BasePlugin.get_all_plugins()
         return data
 
 
