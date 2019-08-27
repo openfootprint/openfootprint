@@ -7,22 +7,45 @@ import openfootprint.core.models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0001_initial'),
-    ]
+    dependencies = [("core", "0001_initial")]
 
     operations = [
         migrations.CreateModel(
-            name='File',
+            name="File",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('file', models.FileField(upload_to=openfootprint.core.models.file_upload_directory_path)),
-                ('name', models.CharField(max_length=200, verbose_name='File name')),
-                ('size', models.PositiveIntegerField(verbose_name='File size')),
-                ('mimetype', models.CharField(blank=True, max_length=255, null=True, verbose_name='Mime type')),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='files', to='core.Project')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                (
+                    "file",
+                    models.FileField(
+                        upload_to=openfootprint.core.models.file_upload_directory_path
+                    ),
+                ),
+                ("name", models.CharField(max_length=200, verbose_name="File name")),
+                ("size", models.PositiveIntegerField(verbose_name="File size")),
+                (
+                    "mimetype",
+                    models.CharField(
+                        blank=True, max_length=255, null=True, verbose_name="Mime type"
+                    ),
+                ),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="files",
+                        to="core.Project",
+                    ),
+                ),
             ],
-        ),
+        )
     ]

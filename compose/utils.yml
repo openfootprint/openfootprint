@@ -3,9 +3,9 @@ version: '3'
 services:
   webpack_build_prod:
     build:
-      context: .
+      context: ../
       dockerfile: ./compose/local/webpack/Dockerfile
     image: openfootprint_local_webpack
     volumes:
-      - ./frontend:/app/frontend:rw
+      - ../frontend:/app/frontend:rw
     command: "./build.sh"

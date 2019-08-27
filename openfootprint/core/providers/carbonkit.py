@@ -22,28 +22,27 @@ class FootprintProvider(BaseFootprintProvider):
             return caches["default"].get(path)
 
         r = requests.get(
-        "https://api.carbonkit.net/3.6/%s" % path,
-        headers={
-            "Accept": "application/json"
-        },
-        auth=(self.config["USERNAME"], self.config["PASSWORD"])
+            "https://api.carbonkit.net/3.6/%s" % path,
+            headers={"Accept": "application/json"},
+            auth=(self.config["USERNAME"], self.config["PASSWORD"]),
         )
         # TODO handle errors
 
         resp = r.json()
-        caches["default"].set(path, resp, timeout=24*3600)
+        caches["default"].set(path, resp, timeout=24 * 3600)
         return resp
 
-
-
     def compute_transport_footprint(self, emission_source):
-        path = "categories/Great_Circle_flight_methodology/calculation"\
-               "?type=great+circle+route&values.isReturn=false&values.journeys=1"\
-               "&values.lat1=%f&values.lat2=%f&values.long1=%f&values.long2=%f&values.passengers=1" % (
-            emission_source["from_address"]["latitude"],
-            emission_source["to_address"]["latitude"],
-            emission_source["from_address"]["longitude"],
-            emission_source["to_address"]["longitude"]
+        path = (
+            "categories/Great_Circle_flight_methodology/calculation"
+            "?type=great+circle+route&values.isReturn=false&values.journeys=1"
+            "&values.lat1=%f&values.lat2=%f&values.long1=%f&values.long2=%f&values.passengers=1"
+            % (
+                emission_source["from_address"]["latitude"],
+                emission_source["to_address"]["latitude"],
+                emission_source["from_address"]["longitude"],
+                emission_source["to_address"]["longitude"],
+            )
         )
         emmission = self._do_requests(path)
         if emmission.get("status") == "OK":

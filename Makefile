@@ -13,6 +13,15 @@ createsuperuser:
 	echo "Create your admin user:"
 	docker-compose -f compose/local.yml run --rm django python manage.py createsuperuser
 
+lint: eslint
+	docker-compose -f compose/local.yml run --rm --no-deps --entrypoint flake8 django openfootprint
+	docker-compose -f compose/local.yml run --rm --no-deps --entrypoint black django openfootprint
+
+eslint:
+	docker-compose -f compose/utils.yml run --rm --no-deps --entrypoint node webpack_build_prod ../node_modules/eslint/bin/eslint.js --fix scripts/ scripts/**/*.*
+
+pylint:
+	docker-compose -f compose/local.yml run --rm --no-deps --entrypoint pylint django openfootprint
 
 local_setup: docker_build migrate createsuperuser
 

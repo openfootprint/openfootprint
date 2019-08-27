@@ -2,7 +2,7 @@ import os
 import json
 
 
-class FootprintProvider():
+class FootprintProvider:
     name = ""
 
     def __init__(self):
@@ -10,7 +10,7 @@ class FootprintProvider():
         # Load configs
         if os.path.exists(config_path):
             with open(config_path, "r") as json_file:
-                cwd = os.getcwd()
+                # cwd = os.getcwd()
                 self.config = json.load(json_file)
 
     def compute_transport_footprint(self, emission_source):

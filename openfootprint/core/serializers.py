@@ -1,31 +1,52 @@
 from rest_framework import serializers
-from .models import Project, Extra, Transport, Report, Person, Tag, Location, Address, Hotel, Meal, File
+from .models import (
+    Project,
+    Extra,
+    Transport,
+    Report,
+    Person,
+    Tag,
+    Location,
+    Address,
+    Hotel,
+    Meal,
+    File,
+)
 import json
 
 # TODO: filter fields properly
 
+
 class ExtraSerializer(serializers.ModelSerializer):
     class Meta:
         model = Extra
-        fields = '__all__'
+        fields = "__all__"
 
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = '__all__'
+        fields = "__all__"
 
 
 class FileSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
-        fields = '__all__'
+        fields = "__all__"
 
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = ("source_name", "source_country", "id", "latitude", "longitude", "country", "status")
+        fields = (
+            "source_name",
+            "source_country",
+            "id",
+            "latitude",
+            "longitude",
+            "country",
+            "status",
+        )
 
 
 class LocationSerializer(serializers.ModelSerializer):
@@ -33,7 +54,7 @@ class LocationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Location
-        fields = '__all__'
+        fields = "__all__"
 
 
 class HotelSerializer(serializers.ModelSerializer):
@@ -41,13 +62,13 @@ class HotelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Hotel
-        fields = '__all__'
+        fields = "__all__"
 
 
 class MealSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meal
-        fields = '__all__'
+        fields = "__all__"
 
 
 class TransportSerializer(serializers.ModelSerializer):
@@ -56,13 +77,13 @@ class TransportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transport
-        fields = '__all__'
+        fields = "__all__"
 
 
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
-        fields = '__all__'
+        fields = "__all__"
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)
@@ -77,21 +98,15 @@ class ReportSerializer(serializers.ModelSerializer):
                 "header_image": {
                     "type": "object",
                     "title": "Header image",
-                    "attrs": {
-                        "type": "file"
-                    },
-                    "properties": {
-                        "id": {
-                            "type": "number"
-                        }
-                    }
+                    "attrs": {"type": "file"},
+                    "properties": {"id": {"type": "number"}},
                 },
                 "website_url": {
                     "type": "string",
                     "title": "Event website URL",
-                    "format": "uri"
-                }
-            }
+                    "format": "uri",
+                },
+            },
         }
 
         return rep
@@ -103,7 +118,7 @@ class PersonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Person
-        fields = '__all__'
+        fields = "__all__"
 
 
 class ProjectSerializerFull(serializers.ModelSerializer):
@@ -121,10 +136,10 @@ class ProjectSerializerFull(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = '__all__'
+        fields = "__all__"
+
 
 class ProjectSerializerList(serializers.ModelSerializer):
-
     class Meta:
         model = Project
-        fields = ('id', 'name', 'kind')
+        fields = ("id", "name", "kind")

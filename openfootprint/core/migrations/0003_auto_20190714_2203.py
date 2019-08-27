@@ -5,44 +5,44 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0002_file'),
-    ]
+    dependencies = [("core", "0002_file")]
 
     operations = [
         migrations.AddField(
-            model_name='hotel',
-            name='weight',
-            field=models.FloatField(default=1.0),
+            model_name="hotel", name="weight", field=models.FloatField(default=1.0)
         ),
         migrations.AlterField(
-            model_name='file',
-            name='name',
-            field=models.CharField(blank=True, max_length=200, null=True, verbose_name='File name'),
+            model_name="file",
+            name="name",
+            field=models.CharField(
+                blank=True, max_length=200, null=True, verbose_name="File name"
+            ),
         ),
         migrations.AlterField(
-            model_name='file',
-            name='size',
-            field=models.PositiveIntegerField(blank=True, null=True, verbose_name='File size'),
+            model_name="file",
+            name="size",
+            field=models.PositiveIntegerField(
+                blank=True, null=True, verbose_name="File size"
+            ),
         ),
         migrations.AlterField(
-            model_name='hotel',
-            name='name',
-            field=models.CharField(max_length=255, verbose_name='Name'),
+            model_name="hotel",
+            name="name",
+            field=models.CharField(max_length=255, verbose_name="Name"),
         ),
         migrations.AlterField(
-            model_name='meal',
-            name='name',
-            field=models.CharField(max_length=255, verbose_name='Name'),
+            model_name="meal",
+            name="name",
+            field=models.CharField(max_length=255, verbose_name="Name"),
         ),
         migrations.AlterField(
-            model_name='report',
-            name='config',
-            field=models.TextField(blank=True, null=True, verbose_name='Config JSON'),
+            model_name="report",
+            name="config",
+            field=models.TextField(blank=True, null=True, verbose_name="Config JSON"),
         ),
         migrations.AlterField(
-            model_name='transport',
-            name='name',
-            field=models.CharField(blank=True, max_length=255, verbose_name='Name'),
+            model_name="transport",
+            name="name",
+            field=models.CharField(blank=True, max_length=255, verbose_name="Name"),
         ),
     ]

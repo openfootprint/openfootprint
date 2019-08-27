@@ -2,51 +2,48 @@
   <div>
     <h2>Extras</h2>
 
-    <DataTable ref="table_main" :fields="extras_fields" collection="extras" :newitemtemplate='{"kind": "co2e"}' />
-
+    <DataTable
+      ref="table_main"
+      :fields="extras_fields"
+      collection="extras"
+      :newitemtemplate="{ kind: 'co2e' }"
+    />
   </div>
 </template>
 
-
 <script>
-
-import DataTable from "../components/datatable"
-import Vue from 'vue'
+import DataTable from "../components/datatable";
 
 export default {
-  data () {
+  components: {
+    DataTable
+  },
+  data() {
     return {
-
       extras_fields: [
         {
-          "key": "name",
-          "label": "Name"
+          key: "name",
+          label: "Name"
         },
         {
-          "key": "kind",
-          "label": "Type",
-          "class": "th_dropdown"
+          key: "kind",
+          label: "Type",
+          class: "th_dropdown"
         },
         {
-          "key": "params",
-          "label": "Parameters"
+          key: "params",
+          label: "Parameters"
         },
         {
-          "key": "actions",
-          "label": "",
-          "class": "th_actions"
+          key: "actions",
+          label: "",
+          class: "th_actions"
         }
       ]
     };
   },
-  methods: {
-  },
-  components: {
-    DataTable
-  }
-}
+  methods: {}
+};
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

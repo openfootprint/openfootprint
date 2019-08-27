@@ -4,28 +4,15 @@
   </div>
 </template>
 
-
 <script>
-
-import Vue from 'vue'
-
 export default {
-  data () {
-    return {
-
-    };
+  components: {},
+  data() {
+    return {};
   },
-  mounted() {
-
-  },
-  methods: {
-
-  },
-  components: {
-  }
-}
+  mounted() {},
+  methods: {}
+};
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

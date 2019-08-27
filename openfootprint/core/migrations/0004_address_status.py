@@ -5,14 +5,23 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0003_auto_20190714_2203'),
-    ]
+    dependencies = [("core", "0003_auto_20190714_2203")]
 
     operations = [
         migrations.AddField(
-            model_name='address',
-            name='status',
-            field=models.CharField(blank=True, choices=[('new', 'New'), ('unknown', 'Unknown'), ('geocoded', 'Geocoded')], default='new', max_length=10, null=True, verbose_name='Status'),
-        ),
+            model_name="address",
+            name="status",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("new", "New"),
+                    ("unknown", "Unknown"),
+                    ("geocoded", "Geocoded"),
+                ],
+                default="new",
+                max_length=10,
+                null=True,
+                verbose_name="Status",
+            ),
+        )
     ]

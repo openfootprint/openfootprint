@@ -7,16 +7,16 @@ volumes:
 services:
   django: &django
     build:
-      context: .
+      context: ../
       dockerfile: ./compose/production/django/Dockerfile
     image: openfootprint_production_django
     depends_on:
       - postgres
     volumes:
-      - .:/app
+      - ../:/app
     env_file:
-      - ./.envs/.production/.django
-      - ./.envs/.production/.postgres
+      - ../.envs/.production/.django
+      - ../.envs/.production/.postgres
     environment:
       - USE_DOCKER=yes
       - DJANGO_ALLOWED_HOSTS=0.0.0.0,localhost,127.0.0.1
@@ -27,14 +27,14 @@ services:
 
   postgres:
     build:
-      context: .
+      context: ../
       dockerfile: ./compose/production/postgres/Dockerfile
     image: openfootprint_production_postgres
     volumes:
-      - local_postgres_data:/var/lib/postgresql/data
-      - local_postgres_data_backups:/backups
+      - ../local_postgres_data:/var/lib/postgresql/data
+      - ../local_postgres_data_backups:/backups
     env_file:
-      - ./.envs/.production/.postgres
+      - ../.envs/.production/.postgres
 
   redis:
     image: redis:5.0

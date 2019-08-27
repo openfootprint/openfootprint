@@ -1,65 +1,68 @@
 <template>
-    <div v-if="!item">Loading...</div>
-    <div v-else>
-        <div class="btns_actions">
-            <h2><b-link :to='{"name": "project_reports"}'>Reports</b-link> / {{item.name}}</h2>
-            <div class="btns">
-                <b-button :href="'/reports/'+item.id+'/'" target="_blank">View report</b-button>
-            </div>
-            <div class="clearfix"></div>
-        </div>
-
-        <div>
-            <json-schema-form :value="item.config" :schema="item.config_schema" @submit="onSubmit" :submitting="submitting">
-                <template v-slot:pre_fields>
-                    <b-form-group
-                        label="Report name"
-                        label-for="_edit_report_name"
-                    >
-                        <b-form-input
-                            id="_edit_report_name"
-                            v-model="item.name"
-                            required
-                        />
-                    </b-form-group>
-                </template>
-            </json-schema-form>
-        </div>
+  <div v-if="!item">
+    Loading...
+  </div>
+  <div v-else>
+    <div class="btns_actions">
+      <h2>
+        <b-link :to="{ name: 'project_reports' }">
+          Reports
+        </b-link>
+        / {{ item.name }}
+      </h2>
+      <div class="btns">
+        <b-button :href="'/reports/' + item.id + '/'" target="_blank">
+          View report
+        </b-button>
+      </div>
+      <div class="clearfix" />
     </div>
+
+    <div>
+      <json-schema-form
+        :value="item.config"
+        :schema="item.config_schema"
+        :submitting="submitting"
+        @submit="onSubmit"
+      >
+        <template v-slot:pre_fields>
+          <b-form-group label="Report name" label-for="_edit_report_name">
+            <b-form-input id="_edit_report_name" v-model="item.name" required />
+          </b-form-group>
+        </template>
+      </json-schema-form>
+    </div>
+  </div>
 </template>
 
-
 <script>
-
-import JsonSchemaForm from "../components/jsonschemaform"
-import { pickById } from '../utils'
+import JsonSchemaForm from "../components/jsonschemaform";
+import { pickById } from "../utils";
 
 export default {
-    data() {
-        return {
-            submitting: false
-        }
-    },
-    computed: {
-        item() {
-            return pickById(this.project.reports, this.$route.params.report_id);
-        }
-    },
-    methods: {
-        onSubmit(newConfig) {
-            this.submitting = true;
-            this.item.config = newConfig;
-            this.$http.post("/api/project/"+this.project.id+"/set_reports", ["partial", this.item]).then((response) => {
-                this.submitting = false;
-            });
-        }
-    },
-    components: {
-        JsonSchemaForm
+  components: {
+    JsonSchemaForm
+  },
+  data() {
+    return {
+      submitting: false
+    };
+  },
+  computed: {
+    item() {
+      return pickById(this.project.reports, this.$route.params.report_id);
     }
-}
-
+  },
+  methods: {
+    onSubmit(newConfig) {
+      this.submitting = true;
+      this.item.config = newConfig;
+      this.$http.post(this.project_api_root + "/set_reports", ["partial", this.item]).then(() => {
+        this.submitting = false;
+      });
+    }
+  }
+};
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
