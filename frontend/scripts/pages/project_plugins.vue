@@ -42,11 +42,6 @@ export default {
     };
   },
   mounted() {
-        this.$http.post("/api/project/"+this.project.id+"/footprint").then((response) => {
-        this.loading_footprint = false;
-        this.total_co2e = response.data.footprint || 0;
-        this.report_id = response.data.report_id;
-        });
   },
   methods: {
         installPlugin: function(index) {
