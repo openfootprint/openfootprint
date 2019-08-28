@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from openfootprint.core.models import Project, Extra, Transport, Report, Person, Tag, Location, Address, Hotel, Meal, File, ActivePlugins
+from openfootprint.core.models import Project, Extra, Transport, Report, Person, Tag, Location, Address, Hotel, Meal, File, ActivePlugin
 from openfootprint.core.ofplib.plugins import BasePlugin
 import json
 import os
@@ -62,9 +62,9 @@ class TransportSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ActivePluginsSerializer(serializers.ModelSerializer):
+class ActivePluginSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ActivePlugins
+        model = ActivePlugin
         fields = '__all__'
 
 

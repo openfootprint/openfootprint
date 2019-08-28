@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
 from django.http import HttpResponseRedirect
-from .models import Project, Transport, Location, Person, Report, Extra, Address, Hotel, Meal, File, ActivePlugins
+from .models import Project, Transport, Location, Person, Report, Extra, Address, Hotel, Meal, File, ActivePlugin
 from .serializers import ProjectSerializerFull, ProjectSerializerList, TransportSerializer, ExtraSerializer, FileSerializer
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -299,7 +299,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['POST'], name='Remove Plugins')
     def remove_plugins(self, request, pk=None):
-      ActivePlugins.objects.filter(slug=request.data[0]).delete()
+      ActivePlugin.objects.filter(slug=request.data[0]).delete()
       return Response({'status': 'ok'})
 
     @action(detail=True, methods=['POST'], name='Set Plugins')
@@ -321,9 +321,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
         obj = None
         try:
           if row.get("slug"):
-            obj = ActivePlugins.objects.get(slug=row["slug"])
-        except ActivePlugins.DoesNotExist:
-            obj = ActivePlugins(project=project)
+            obj = ActivePlugin.objects.get(slug=row["slug"])
+        except ActivePlugin.DoesNotExist:
+            obj = ActivePlugin(project=project)
             if row.get("slug"):
               obj.slug = row["slug"]
             if row.get("name"):

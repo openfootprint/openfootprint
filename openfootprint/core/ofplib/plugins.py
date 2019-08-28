@@ -1,4 +1,4 @@
-from openfootprint.core.models import ActivePlugins
+from openfootprint.core.models import ActivePlugin
 import json
 import os
 
@@ -15,7 +15,7 @@ class BasePlugin():
     @staticmethod
     def get_all_plugins():
         plugins = []
-        installed_plugins = {plugin["slug"]: plugin for plugin in ActivePlugins.objects.values("slug", "config")}
+        installed_plugins = {plugin["slug"]: plugin for plugin in ActivePlugin.objects.values("slug", "config")}
         for plugin_slug in [d for d in os.listdir("/app/openfootprint/plugins/") if os.path.isdir(os.path.join("/app/openfootprint/plugins/", d))]:
             if plugin_slug == "__pycache__":
                 continue
@@ -23,7 +23,7 @@ class BasePlugin():
                 plugin_config = json.load(json_file)
                 plugin_data = {
                     "slug": plugin_slug,
-                    "types": plugin_config["types"],
+                    "features": plugin_config["features"],
                     "config_schema": plugin_config["config_schema"],
                     "name": plugin_config["name"]
                 }
