@@ -11,6 +11,7 @@ from .models import (
     Hotel,
     Meal,
     File,
+    ActivePlugin
 )
 from .serializers import (
     ProjectSerializerFull,
