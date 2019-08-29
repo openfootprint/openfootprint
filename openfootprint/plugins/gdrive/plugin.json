@@ -1,0 +1,5 @@
+{
+    "features": ["attendees"],
+    "name": "Google drive",
+    "config_schema": {}
+}

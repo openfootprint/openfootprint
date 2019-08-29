@@ -11,7 +11,7 @@
         / {{ item.name }}
       </h2>
       <div class="btns">
-        <b-button variant="danger" target="_blank">
+        <b-button @click="removePlugin" variant="danger" target="_blank">
           Uninstall plugin
         </b-button>
       </div>
@@ -45,6 +45,23 @@ export default {
   computed: {
     item() {
       return pickById(this.project.plugins, this.$route.params.plugin_slug, "slug");
+    },
+    methods: {
+        removePlugin: function() {
+            this.submitting = true;
+            this.$http.post("/api/project/"+this.project.id+"/remove_plugins", [this.item.slug]).then((response) => {
+                this.submitting = false;
+                this.project.plugins = updateById(this.project.plugins, this.$route.params.plugin_slug, "slug", {"installed": false})
+                this.$router.push({name: 'project_plugins'});
+            });
+        },
+        onSubmit(newConfig) {
+            this.submitting = true;
+            this.item.config = newConfig;
+            this.$http.post("/api/project/"+this.project.id+"/set_plugins", ["partial", this.item]).then((response) => {
+                this.submitting = false;
+            });
+        }
     }
   },
   methods: {

@@ -11,8 +11,12 @@ from .models import (
     Hotel,
     Meal,
     File,
+    ActivePlugin
 )
+from openfootprint.core.ofplib.plugins import BasePlugin
 import json
+import os
+import importlib
 
 # TODO: filter fields properly
 
@@ -80,6 +84,12 @@ class TransportSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ActivePluginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActivePlugin
+        fields = '__all__'
+
+
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
@@ -137,6 +147,12 @@ class ProjectSerializerFull(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = "__all__"
+
+
+    def to_representation(self, obj):
+        data = super().to_representation(obj)
+        data["plugins"] = BasePlugin.get_all_plugins()
+        return data
 
 
 class ProjectSerializerList(serializers.ModelSerializer):

@@ -22,6 +22,7 @@
             <div class="template_details">
               <p>{{ plugin.name }}</p>
             </div>
+            <b-button @click="installPlugin(index)" style="margin:10px;">Install</b-button>
             <div class="template_selected_label">
               <span class="icon"
                 ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -53,21 +54,21 @@
 export default {
   components: {},
   data() {
-    return {
-      available_plugins: [
-        {
-          name: "Default event report template",
-          id: 1,
-          slug: "template_report_event_2019"
-        },
-        { name: "Carbonkit.net estimates", id: 2, slug: "carbonkit" }
-      ],
-      installed: ["template_report_event_2019"]
-    };
+    return {}
   },
-  mounted() {},
-  methods: {}
-};
+  mounted() {
+  },
+  methods: {
+        installPlugin: function(index) {
+            this.$http.post("/api/project/"+this.project.id+"/set_plugins", [this.project.plugins[index]]).then((response) => {
+                this.submitting = false;
+                this.$router.push("plugins/" + this.project.plugins[index]["slug"]);
+            });
+        }
+  },
+  components: {
+  }
+}
 </script>
 
 <style lang="scss" scoped>

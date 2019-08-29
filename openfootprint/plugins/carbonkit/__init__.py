@@ -1,18 +1,18 @@
-from openfootprint.core.providers import FootprintProvider as BaseFootprintProvider
+from openfootprint.core.ofplib.plugins import FootPrint
 from django.core.cache import caches
 import requests
 import os
 
 
-class FootprintProvider(BaseFootprintProvider):
-    name = "carbonkit"
+class Plugin(FootPrint):
 
     def __init__(self):
-        BaseFootprintProvider.__init__(self)
         if "CARBONKIT_USERNAME" in os.environ:
             self.config["USERNAME"] = os.environ["CARBONKIT_USERNAME"]
         if "CARBONKIT_PASSWORD" in os.environ:
             self.config["PASSWORD"] = os.environ["CARBONKIT_PASSWORD"]
+        self.config_path = os.path.join(__loader__.path.rsplit("/", 1)[0], "plugin.json")
+        FootPrint.__init__(self)
 
     def _do_requests(self, path):
 

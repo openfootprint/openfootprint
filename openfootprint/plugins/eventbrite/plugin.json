@@ -1,0 +1,5 @@
+{
+    "features": ["attendees"],
+    "name": "eventbrite",
+    "config_schema": {}
+}

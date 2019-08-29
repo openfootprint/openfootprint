@@ -18,4 +18,21 @@ function deleteById(array, id, id_key) {
   return newArray;
 }
 
-export { pickById, deleteById };
+function updateById(array, id, id_key, update) {
+  if (!array || array.length === 0) return [];
+  var newArray = [];
+  for (var i=0;i<array.length;i++) {
+    if (array[i][id_key||"id"] != id) {
+      newArray.push(array[i]);
+    } else {
+      newArray.push(Object.assign(array[i], update));
+    }
+  }
+  return newArray;
+}
+
+export {
+  pickById,
+  deleteById,
+  updateById
+}

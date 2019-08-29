@@ -16,6 +16,8 @@ admin.site.register(models.Report)
 
 admin.site.register(models.Tag)
 
+admin.site.register(models.ActivePlugin)
+
 admin.site.register(models.Location)
 
 admin.site.register(models.Person)
