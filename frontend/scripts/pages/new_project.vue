@@ -7,7 +7,7 @@
             <img
               src="/static/images/logo/logo_openfootprint.svg"
               alt="OpenFootprint"
-              class="logo_create_project"
+              class="openfootprint_logo"
             />
           </b-link>
           <!--<h1>Welcome to OpenFootprint, the footprint calculator</h1>-->
@@ -112,7 +112,7 @@ export default {
   padding: 0px;
   text-align: center;
 
-  .logo_create_project {
+  .openfootprint_logo {
     width: 300px;
     margin: 40px auto;
     display: block;

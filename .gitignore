@@ -282,3 +282,5 @@ openfootprint/media/
 # OpenFootprint
 frontend/webpack/
 config.*.json
+local_postgres_data
+local_postgres_data_backups

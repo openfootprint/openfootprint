@@ -1,30 +1,26 @@
-from openfootprint.core.ofplib.plugins import FootPrint
+from openfootprint.plugin import FootprintPlugin
 from django.core.cache import caches
 import requests
 import os
 
 
-class Plugin(FootPrint):
+class Plugin(FootprintPlugin):
 
-    def __init__(self):
-        if "CARBONKIT_USERNAME" in os.environ:
-            self.config["USERNAME"] = os.environ["CARBONKIT_USERNAME"]
-        if "CARBONKIT_PASSWORD" in os.environ:
-            self.config["PASSWORD"] = os.environ["CARBONKIT_PASSWORD"]
-        self.config_path = os.path.join(__loader__.path.rsplit("/", 1)[0], "plugin.json")
-        FootPrint.__init__(self)
+    def init(self):
+        self.config.setdefault("username", os.getenv("CARBONKIT_USERNAME"))
+        self.config.setdefault("password", os.getenv("CARBONKIT_PASSWORD"))
 
-    def _do_requests(self, path):
+    def _do_request(self, path):
 
         # TODO cache could be compressed and store only arguments+precise result
-        # TODO prefix
+        # TODO have a self.cache scoped for the plugin
         if caches["default"].get(path):
             return caches["default"].get(path)
 
         r = requests.get(
             "https://api.carbonkit.net/3.6/%s" % path,
             headers={"Accept": "application/json"},
-            auth=(self.config["USERNAME"], self.config["PASSWORD"]),
+            auth=(self.config["username"], self.config["password"]),
         )
         # TODO handle errors
 
@@ -44,7 +40,7 @@ class Plugin(FootPrint):
                 emission_source["to_address"]["longitude"],
             )
         )
-        emmission = self._do_requests(path)
+        emmission = self._do_request(path)
         if emmission.get("status") == "OK":
             for amount in emmission["output"]["amounts"]:
                 if amount["type"] == "totalDirectCO2e":

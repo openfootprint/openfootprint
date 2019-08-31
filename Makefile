@@ -7,6 +7,7 @@ test_coverage:
 
 docker_build:
 	docker-compose -f compose/local.yml build
+	docker-compose -f compose/local.yml pull mailhog redis
 
 createsuperuser:
 	echo
@@ -14,8 +15,8 @@ createsuperuser:
 	docker-compose -f compose/local.yml run --rm django python manage.py createsuperuser
 
 lint: eslint
-	docker-compose -f compose/local.yml run --rm --no-deps --entrypoint flake8 django openfootprint
 	docker-compose -f compose/local.yml run --rm --no-deps --entrypoint black django openfootprint
+	docker-compose -f compose/local.yml run --rm --no-deps --entrypoint flake8 django openfootprint
 
 eslint:
 	docker-compose -f compose/utils.yml run --rm --no-deps --entrypoint node webpack_build_prod ../node_modules/eslint/bin/eslint.js --fix scripts/ scripts/**/*.*

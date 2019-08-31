@@ -1,0 +1,24 @@
+{
+  "type": "theme",
+  "name": "SimpleEvent",
+  "description": "SimpleEvent is the default event report theme.",
+  "thumbnail": "preview.jpg",
+  "version": "0.1",
+  "config_schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "header_image": {
+        "type": "object",
+        "title": "Header image",
+        "attrs": {"type": "file"},
+        "properties": {"id": {"type": "number"}}
+      },
+      "website_url": {
+          "type": "string",
+          "title": "Event website URL",
+          "format": "uri"
+      }
+    }
+  }
+}

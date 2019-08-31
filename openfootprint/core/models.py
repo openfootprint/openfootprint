@@ -82,12 +82,22 @@ class Project(models.Model):
         if self.starts_at and self.ends_at:
             return (self.ends_at - self.starts_at).days
 
+
 class ActivePlugin(models.Model):
     name = models.CharField("Name", max_length=200)
     slug = models.CharField("Slug", max_length=200)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    project = models.ForeignKey(Project, db_index=True, related_name='active_plugins', on_delete=models.CASCADE)
+    project = models.ForeignKey(
+        Project, db_index=True, related_name="active_plugins", on_delete=models.CASCADE
+    )
     config = models.TextField("JSON settings", blank=True, null=True)
+    enabled = models.BooleanField(default=True)
+    type = models.CharField("Type", max_length=50)
+    # TODO unique (project, slug)
+
+    def __str__(self):
+        return self.name
+
 
 class Tag(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -158,7 +168,8 @@ class Report(models.Model):
     starts_at = models.DateTimeField(blank=True, null=True)
     ends_at = models.DateTimeField(blank=True, null=True)
 
-    config = models.TextField("Config JSON", blank=True, null=True)
+    theme_slug = models.CharField("Theme slug", max_length=200)
+    theme_config = models.TextField("Theme config JSON", blank=True, null=True)
 
     def get_flat_items(self):
 

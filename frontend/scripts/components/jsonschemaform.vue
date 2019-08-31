@@ -1,7 +1,7 @@
 <template>
   <b-form @submit.prevent.stop="submit">
-    <b-alert  v-for="(error, i) in errors" :key="i" show dismissible variant="danger">
-      {{ error.dataPath }}: {{error.message}}
+    <b-alert v-for="(error, i) in errors" :key="i" show dismissible variant="danger">
+      {{ error.dataPath }}: {{ error.message }}
     </b-alert>
 
     <slot name="pre_fields" />
@@ -22,6 +22,7 @@
           v-model="currentValue[key]"
           :type="{ uri: 'text' }[property.format] || property.format || 'text'"
           :required="(schema.required || []).indexOf(key) >= 0"
+          autocomplete="off"
         />
       </b-form-group>
     </div>

@@ -25,10 +25,7 @@
       @ok="handleOk"
     >
       <b-table striped hover :items="tableData">
-        <template
-          slot="HEAD[]"
-          slot-scope="data"
-        >
+        <template slot="HEAD[]" slot-scope="data">
           {{ data.label }}
           <span style="cursor:pointer;" @click.stop="deleteColumn(data.label)">(x)</span><br />
           <select v-model="mapping[data.label]">

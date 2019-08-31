@@ -21,8 +21,8 @@ function deleteById(array, id, id_key) {
 function updateById(array, id, id_key, update) {
   if (!array || array.length === 0) return [];
   var newArray = [];
-  for (var i=0;i<array.length;i++) {
-    if (array[i][id_key||"id"] != id) {
+  for (var i = 0; i < array.length; i++) {
+    if (array[i][id_key || "id"] != id) {
       newArray.push(array[i]);
     } else {
       newArray.push(Object.assign(array[i], update));
@@ -31,8 +31,4 @@ function updateById(array, id, id_key, update) {
   return newArray;
 }
 
-export {
-  pickById,
-  deleteById,
-  updateById
-}
+export { pickById, deleteById, updateById };

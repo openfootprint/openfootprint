@@ -89,7 +89,9 @@
               {{ parseInt(total_co2e / 100000, 10) / 10 }} tons of CO2e
               <span v-if="total_co2e" @click="computeFootprint()"><unicon name="redo"/></span>
             </p>
-            <a v-if="report_id" :href="'/reports/' + report_id + '/'" target="_blank">View report</a>
+            <a v-if="report_id" :href="'/reports/' + report_id + '/'" target="_blank"
+              >View report</a
+            >
             |
             <a href="">Offset</a>
           </div>

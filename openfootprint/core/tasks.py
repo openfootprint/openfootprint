@@ -32,16 +32,12 @@ def geocode_address(self, address_id):
 
 
 @celery_app.task(bind=True)
-def compute_footprint(
-    self, report_id, provider="openfootprint.core.providers.carbonkit"
-):
+def compute_footprint(self, report_id, provider="plugins.carbonkit"):
     report = Report.objects.get(pk=int(report_id))
 
     project_json = report.get_flat_items()
 
-    footprint_provider = importlib.import_module(
-        provider
-    ).FootprintProvider()  # type: ignore
+    footprint_provider = importlib.import_module(provider).Plugin()  # type: ignore
 
     for emission_source in project_json["items"]:
         co2e = getattr(

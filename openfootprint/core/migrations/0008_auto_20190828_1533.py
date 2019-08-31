@@ -6,23 +6,39 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0007_auto_20190812_2315'),
-    ]
+    dependencies = [("core", "0007_auto_20190812_2315")]
 
     operations = [
         migrations.CreateModel(
-            name='ActivePlugin',
+            name="ActivePlugin",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200, verbose_name='Name')),
-                ('slug', models.CharField(max_length=200, verbose_name='Slug')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('config', models.TextField(blank=True, null=True, verbose_name='JSON settings')),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='active_plugins', to='core.Project')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200, verbose_name="Name")),
+                ("slug", models.CharField(max_length=200, verbose_name="Slug")),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "config",
+                    models.TextField(
+                        blank=True, null=True, verbose_name="JSON settings"
+                    ),
+                ),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="active_plugins",
+                        to="core.Project",
+                    ),
+                ),
             ],
         ),
-        migrations.DeleteModel(
-            name='ActivePlugins',
-        ),
+        migrations.DeleteModel(name="ActivePlugins"),
     ]

@@ -3,29 +3,33 @@
     <h2>Plugins</h2>
 
     <div class="row template_list">
-      <article :class="{'col-lg-4':1,'template_selected': plugin.installed}" v-for="(plugin, index) in this.project.plugins">
-          <b-link v-if="plugin.installed" :to="{'name':'project_plugin', 'params': {'plugin_slug': plugin.slug}}">
-            <div class="template_block">
-                <div class="template_preview">
-                    <img src="/openfootprint/templates/reports/event1/preview.jpg" />
-                </div>
-                <div class="template_details">
-                    <p>{{plugin.name}}</p>
-                </div>
-                <div class="template_selected_label"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.71,7.21a1,1,0,0,0-1.42,0L9.84,14.67,6.71,11.53A1,1,0,1,0,5.29,13l3.84,3.84a1,1,0,0,0,1.42,0l8.16-8.16A1,1,0,0,0,18.71,7.21Z"/></svg></span>Installed</div>
-
+      <article
+        :class="{ 'col-lg-4': 1, template_selected: plugin.enabled }"
+        v-for="(plugin, index) in this.project.plugins"
+        :key="plugin.slug"
+      >
+        <div class="template_block">
+          <!--<div class="template_preview">
+                  <img src="/openfootprint/templates/reports/event1/preview.jpg" />
+              </div>-->
+          <b-link :to="{ name: 'project_plugin', params: { plugin_slug: plugin.slug } }">
+            <div class="template_details">
+              <p>{{ plugin.name }}</p>
             </div>
           </b-link>
 
-          <div v-else class="template_block">
-              <div class="template_preview">
-                  <img src="/openfootprint/templates/reports/event1/preview.jpg" />
-              </div>
-              <div class="template_details">
-                  <p>{{plugin.name}}</p>
-              </div>
-              <b-button @click="installPlugin(index)" style="margin:10px;">Install</b-button>
-          </div>
+          <!--<div v-if="plugin.enabled" class="template_selected_label"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.71,7.21a1,1,0,0,0-1.42,0L9.84,14.67,6.71,11.53A1,1,0,1,0,5.29,13l3.84,3.84a1,1,0,0,0,1.42,0l8.16-8.16A1,1,0,0,0,18.71,7.21Z"/></svg></span>Enabled</div>-->
+          <b-button v-if="!plugin.enabled" @click="enablePlugin(index)" style="margin:10px;"
+            >Enable</b-button
+          >
+          <b-button
+            v-else
+            style="margin:10px;"
+            :to="{ name: 'project_plugin', params: { plugin_slug: plugin.slug } }"
+            variant="info"
+            >Configure</b-button
+          >
+        </div>
       </article>
     </div>
   </div>
@@ -33,23 +37,23 @@
 
 <script>
 export default {
-  components: {},
   data() {
-    return {}
+    return {};
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
-        installPlugin: function(index) {
-            this.$http.post("/api/project/"+this.project.id+"/set_plugins", [this.project.plugins[index]]).then((response) => {
-                this.submitting = false;
-                this.$router.push("plugins/" + this.project.plugins[index]["slug"]);
-            });
-        }
+    enablePlugin: function(index) {
+      this.$http
+        .post(this.project_api_root + "/set_plugins", [this.project.plugins[index]])
+        .then(() => {
+          this.submitting = false;
+          this.project.plugins[index].enabled = true;
+          this.$router.push("plugins/" + this.project.plugins[index]["slug"]);
+        });
+    }
   },
-  components: {
-  }
-}
+  components: {}
+};
 </script>
 
 <style lang="scss" scoped>

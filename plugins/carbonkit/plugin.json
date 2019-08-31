@@ -1,0 +1,22 @@
+{
+    "type": "footprint",
+    "name": "CarbonKit",
+    "description": "CarbonKit is an open source library implementing many emission models. This plugin queries the API hosted at carbonkit.net",
+    "url": "https://www.carbonkit.net/",
+    "version": "0.1",
+    "config_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+            "username": {
+                "type": "string",
+                "title": "CarbonKit username"
+            },
+            "password": {
+                "type": "string",
+                "format": "password",
+                "title": "CarbonKit password"
+            }
+        }
+    }
+}

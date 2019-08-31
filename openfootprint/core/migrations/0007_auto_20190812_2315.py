@@ -5,14 +5,10 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0006_activeplugins_slug'),
-    ]
+    dependencies = [("core", "0006_activeplugins_slug")]
 
     operations = [
         migrations.RenameField(
-            model_name='activeplugins',
-            old_name='settings',
-            new_name='config',
-        ),
+            model_name="activeplugins", old_name="settings", new_name="config"
+        )
     ]

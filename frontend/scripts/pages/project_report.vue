@@ -3,16 +3,16 @@
     Loading...
   </div>
   <div v-else>
-    <div class="btns_actions">
+    <div>
       <h2>
         <b-link :to="{ name: 'project_reports' }">
           Reports
         </b-link>
         / {{ item.name }}
       </h2>
-      <div class="btns">
+      <div>
         <b-button :href="'/reports/' + item.id + '/'" target="_blank">
-          View report
+          Open report
         </b-button>
       </div>
       <div class="clearfix" />
@@ -20,8 +20,8 @@
 
     <div>
       <json-schema-form
-        :value="item.config"
-        :schema="item.config_schema"
+        :value="item.theme_config||{}"
+        :schema="item.theme_config_schema"
         :submitting="submitting"
         @submit="onSubmit"
       >

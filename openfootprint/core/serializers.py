@@ -11,12 +11,10 @@ from .models import (
     Hotel,
     Meal,
     File,
-    ActivePlugin
+    ActivePlugin,
 )
-from openfootprint.core.ofplib.plugins import BasePlugin
+from openfootprint.core.ofplib.plugins import discover_available_plugins
 import json
-import os
-import importlib
 
 # TODO: filter fields properly
 
@@ -87,7 +85,7 @@ class TransportSerializer(serializers.ModelSerializer):
 class ActivePluginSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActivePlugin
-        fields = '__all__'
+        fields = "__all__"
 
 
 class ReportSerializer(serializers.ModelSerializer):
@@ -98,26 +96,16 @@ class ReportSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         rep = super().to_representation(instance)
 
-        rep["config"] = json.loads(rep.get("config") or "{}") or {}
+        rep["theme_config"] = json.loads(rep.get("theme_config") or "{}") or {}
 
-        # TODO: move to a proper plugin
-        rep["config_schema"] = {
-            "$schema": "http://json-schema.org/draft-07/schema#",
-            "type": "object",
-            "properties": {
-                "header_image": {
-                    "type": "object",
-                    "title": "Header image",
-                    "attrs": {"type": "file"},
-                    "properties": {"id": {"type": "number"}},
-                },
-                "website_url": {
-                    "type": "string",
-                    "title": "Event website URL",
-                    "format": "uri",
-                },
-            },
+        # Load the plugin
+        plugins = {
+            p["slug"]: p
+            for p in discover_available_plugins(instance.project.id)
         }
+        plugin = plugins[rep["theme_slug"]]
+
+        rep["theme_config_schema"] = plugin["config_schema"]
 
         return rep
 
@@ -148,10 +136,9 @@ class ProjectSerializerFull(serializers.ModelSerializer):
         model = Project
         fields = "__all__"
 
-
     def to_representation(self, obj):
         data = super().to_representation(obj)
-        data["plugins"] = BasePlugin.get_all_plugins()
+        data["plugins"] = discover_available_plugins(obj.id)
         return data
 
 

@@ -122,8 +122,8 @@
           <ul class="btn-action">
             <li v-if="collection == 'reports'">
               <a :href="'/reports/' + row.item.id + '/'" target="_blank"
-                ><span class="icon icon-eye"><!--<unicon name="eye"/>--></span
-              ></a>
+                ><span class="icon icon-eye"><!--<unicon name="eye"/>--></span></a
+              >
             </li>
             <li @click="deleteRow(row)">
               <span class="icon icon-trash"><unicon name="trash-alt"/></span>

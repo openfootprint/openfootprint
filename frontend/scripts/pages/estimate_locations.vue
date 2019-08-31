@@ -8,14 +8,6 @@
       </p>
     </div>
 
-    <!-- <div class="btns_actions">
-      <h2>Locations</h2>
-      <div class="btns">
-        <b-button @click="saveAll()" variant="save">Save <b-spinner v-if="loading_save" small type="grow" /></b-button>
-      </div>
-      <div class="clearfix"></div>
-    </div> -->
-
     <div class="row">
       <div class="col-lg-8">
         <DataTable

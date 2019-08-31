@@ -142,16 +142,18 @@
 
     <script src="scripts/vue.min.js" integrity="sha256-chlNFSVx3TdcQ2Xlw7SvnbLAavAQLO0Y/LBiWX04viY="></script>
     <script>
-        var FOOTPRINT_DATA = {{report.raw_json|safe}};
+        var FOOTPRINT_DATA = {{report.raw_json|safe|default:"{}"}};
 
-        FOOTPRINT_DATA["config"] = {
-            "website_url": "{{report.config.website_url}}",
-            "header_image": "{{report.config.header_image.url|default:""}}",
+        FOOTPRINT_DATA["theme_config"] = {
+            "website_url": "{{report.theme_config.website_url}}",
+            "header_image": "{{report.theme_config.header_image.url|default:""}}",
         };
 
         console.log(FOOTPRINT_DATA);
 
         (function() {
+
+            if (!FOOTPRINT_DATA.project) return window.alert("This report hasn't been generated yet.");
 
             // Translations
             Vue.prototype.__ = function(key) {

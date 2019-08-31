@@ -1,77 +1,49 @@
 <template>
   <div>
-    <div class="btns_actions">
+    <div>
       <h2>Reports</h2>
-      <div class="btns">
-        <b-button v-b-modal.modal-template>
-          New report
-        </b-button>
-      </div>
-      <div class="clearfix" />
     </div>
 
-    <b-tabs>
-      <b-tab active>
-        <template slot="title">
-          <div class="icon-tab">
-            <!--<unicon name="list-ul" />-->
+
+    <div class="report_list">
+
+        <b-card v-for="report in project.reports" :key="report.id">
+          <b-card-text>
+            <b-link :to="{ name: 'project_report', params: { report_id: report.id } }">{{report.name}}</b-link>
+          </b-card-text>
+        </b-card>
+
+    </div>
+
+    <br/>
+
+    <b-button v-b-modal.modal-template>
+      New report
+    </b-button>
+
+    <b-modal
+      id="modal-template"
+      ref="modal_template"
+      scrollable
+      size="xl"
+      title="Please select a theme"
+    >
+      <div class="row template_list">
+
+        <article @click="selectTheme(plugin)" v-for="plugin in available_themes" :key="plugin.slug" class="col-lg-4">
+          <div class="template_block">
+            <div class="template_preview">
+              <img src="/openfootprint/templates/reports/event1/preview.jpg" />
+            </div>
+            <div class="template_details">
+              <p>{{plugin.name}}</p>
+            </div>
+            <!--<div class="template_selected_label">Active</div>-->
           </div>
-          <p>Reports</p>
-        </template>
+        </article>
+      </div>
+    </b-modal>
 
-        <DataTable
-          ref="table_main"
-          :fields="reports_fields"
-          collection="reports"
-          :newitemtemplate="{ name: 'New report' }"
-        />
-
-        <b-modal
-          id="modal-template"
-          ref="modal_template"
-          scrollable
-          size="xl"
-          title="Please select a template"
-        >
-          <p>Help text if needed</p>
-          <div class="row template_list">
-            <article class="col-lg-4 template_selected">
-              <div class="template_block">
-                <div class="template_preview">
-                  <img src="/openfootprint/templates/reports/event1/preview.jpg" />
-                </div>
-                <div class="template_details">
-                  <p>Template name</p>
-                </div>
-                <div class="template_selected_label"><!--<unicon name="check" />-->Active</div>
-              </div>
-            </article>
-
-            <article class="col-lg-4">
-              <div class="template_block">
-                <div class="template_preview">
-                  <img src="/openfootprint/templates/reports/event1/preview.jpg" />
-                </div>
-                <div class="template_details">
-                  <p>Template name</p>
-                </div>
-              </div>
-            </article>
-
-            <article class="col-lg-4">
-              <div class="template_block">
-                <div class="template_preview">
-                  <img src="/openfootprint/templates/reports/event1/preview.jpg" />
-                </div>
-                <div class="template_details">
-                  <p>Template name</p>
-                </div>
-              </div>
-            </article>
-          </div>
-        </b-modal>
-      </b-tab>
-    </b-tabs>
   </div>
 </template>
 
@@ -105,8 +77,34 @@ export default {
       ]
     };
   },
-  mounted() {},
-  methods: {}
+  computed: {
+    available_themes() {
+      var themes = [];
+      (this.project.plugins||[]).forEach((plugin) => {
+        if (plugin.type == "theme") {
+          themes.push(plugin);
+        }
+      });
+      return themes;
+    }
+  },
+  methods: {
+    selectTheme(plugin) {
+      this.loading_save = true;
+      this.project.reports.push({
+        name: "New report",
+        theme_slug: plugin.slug
+      });
+      this.$http
+        .post(this.project_api_root + "/set_reports", this.project.reports)
+        .then(() => {
+          this.refreshProject(() => {
+            this.loading_save = false;
+            this.$router.push("reports/" + this.project.reports[this.project.reports.length-1]["id"]);
+          });
+        });
+    }
+  }
 };
 </script>
 

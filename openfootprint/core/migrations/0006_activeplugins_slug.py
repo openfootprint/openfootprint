@@ -5,15 +5,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0005_activeplugins'),
-    ]
+    dependencies = [("core", "0005_activeplugins")]
 
     operations = [
         migrations.AddField(
-            model_name='activeplugins',
-            name='slug',
-            field=models.CharField(default=1, max_length=200, verbose_name='Slug'),
+            model_name="activeplugins",
+            name="slug",
+            field=models.CharField(default=1, max_length=200, verbose_name="Slug"),
             preserve_default=False,
-        ),
+        )
     ]

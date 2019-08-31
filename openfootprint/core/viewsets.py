@@ -11,7 +11,7 @@ from .models import (
     Hotel,
     Meal,
     File,
-    ActivePlugin
+    ActivePlugin,
 )
 from .serializers import (
     ProjectSerializerFull,
@@ -103,7 +103,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
             "report_id": report.id,
             "footprint": report.footprint,
         }
-
 
         return Response(resp)
 
@@ -365,41 +364,39 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
         return Response({"status": "ok"})
 
-    @action(detail=True, methods=['POST'], name='Remove Plugins')
+    @action(detail=True, methods=["POST"], name="Remove Plugins")
     def remove_plugins(self, request, pk=None):
-      ActivePlugin.objects.filter(slug=request.data[0]).delete()
-      return Response({'status': 'ok'})
+        ActivePlugin.objects.filter(slug=request.data[0]).delete()
+        return Response({"status": "ok"})
 
-    @action(detail=True, methods=['POST'], name='Set Plugins')
+    @action(detail=True, methods=["POST"], name="Set Plugins")
     def set_plugins(self, request, pk=None):
-      project = self.get_object()
+        project = self.get_object()
 
-      partial = False
-      for row in request.data:
-        if row == "partial":
-          partial = True
-        elif row.get("id") and str(row["id"]).startswith("new"):
-          row.pop("id")
+        partial = False
+        for row in request.data:
+            if row == "partial":
+                partial = True
+            elif row.get("id") and str(row["id"]).startswith("new"):
+                row.pop("id")
 
-      report_count = project.active_plugins.count()
+        for i, row in enumerate(request.data):
+            if partial and i == 0:
+                continue
+            obj = None
+            try:
+                if row.get("slug"):
+                    obj = ActivePlugin.objects.get(slug=row["slug"])
+            except ActivePlugin.DoesNotExist:
+                obj = ActivePlugin(project=project)
+                if row.get("slug"):
+                    obj.slug = row["slug"]
+                if row.get("name"):
+                    obj.name = row["name"]
 
-      for i, row in enumerate(request.data):
-        if partial and i == 0:
-          continue
-        obj = None
-        try:
-          if row.get("slug"):
-            obj = ActivePlugin.objects.get(slug=row["slug"])
-        except ActivePlugin.DoesNotExist:
-            obj = ActivePlugin(project=project)
-            if row.get("slug"):
-              obj.slug = row["slug"]
-            if row.get("name"):
-              obj.name = row["name"]
-
-        obj.config = json.dumps(row.get("config") or {})
-        obj.save()
-      return Response({'status': 'ok'})
+            obj.config = json.dumps(row.get("config") or {})
+            obj.save()
+        return Response({"status": "ok"})
 
     @action(detail=True, methods=["POST"], name="Set Reports")
     def set_reports(self, request, pk=None):
@@ -433,7 +430,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
             else:
                 obj.name = "Report #%s" % (i + report_count)
 
-            obj.config = json.dumps(row.get("config") or {})
+            obj.theme_slug = row["theme_slug"]
+            obj.theme_config = json.dumps(row.get("theme_config") or {})
 
             obj.save()
 
@@ -509,7 +507,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
                         name = "Meal for %s" % person.name
                         if days > 1:
                             name += " on day %s" % day
-                        m = Meal(project=project, mass=massperday, name=name, person=person)
+                        m = Meal(
+                            project=project, mass=massperday, name=name, person=person
+                        )
                         m.save()
 
         return Response({"status": "ok"})
@@ -558,10 +558,4 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
         f = File.objects.get(id=file.data["id"])
 
-        return Response({
-            'status': 'ok',
-            'file': {
-            'id': f.id,
-            'url': f.file.url
-            }
-        })
+        return Response({"status": "ok", "file": {"id": f.id, "url": f.file.url}})
