@@ -32,10 +32,16 @@ def discover_available_plugins(project_id):
             # TODO better error reporting
             print("Couldn't load plugin %s : %s" % (plugin_slug, e))
 
-        plugin_data = {
-            "slug": plugin_slug
-        }
-        for whitelisted_key in ("type", "name", "url", "description", "config_schema", "thumbnail", "version"):
+        plugin_data = {"slug": plugin_slug}
+        for whitelisted_key in (
+            "type",
+            "name",
+            "url",
+            "description",
+            "config_schema",
+            "thumbnail",
+            "version",
+        ):
             if plugin_metadata.get(whitelisted_key):
                 plugin_data[whitelisted_key] = plugin_metadata[whitelisted_key]
 

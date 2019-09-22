@@ -1,35 +1,19 @@
 <template>
   <div>
     <div class="datatable_block" :class="collection">
-      <div class="table_actions">
-        <div class="table_actions_buttons">
-          <b-button variant="secondary" @click="addRow()">
-            Add new
-          </b-button>
-          <b-dropdown right variant="outline-secondary">
-            <b-dropdown-item @click="saveAll()">
-              Save all
-              <b-spinner v-if="loading_save" small type="grow" />
-            </b-dropdown-item>
-            <b-dropdown-item @click="deleteAll()">
-              <unicon name="trash-alt" />Delete all
-            </b-dropdown-item>
-          </b-dropdown>
-        </div>
-        <div class="clearfix" />
-      </div>
-
       <b-table
         v-show="project[collection]"
         ref="table_main"
         sort-by="id"
         primary-key="id"
+        :per-page="perpage"
+        :current-page="currentPage"
         :items="project[collection]"
         :fields="fields"
       >
         <template slot="checkbox">
           <label class="checkbox_label">
-            <input type="checkbox" />
+            <input type="checkbox" data-bypass-autosave="1" />
             <span class="checkmark" />
           </label>
         </template>
@@ -136,15 +120,29 @@
         </template>
       </b-table>
 
-      <div v-if="collection != 'locations'" class="pagination">
-        <p>
-          <span class="cp_pagination">1 - 100</span> of
-          <span class="total_pagination">19,154</span>
-        </p>
-        <ul>
-          <li>&lt;<!--<unicon name="angle-left" />--></li>
-          <li>&gt;<!--<unicon name="angle-right" />--></li>
-        </ul>
+      <b-pagination
+        v-model="currentPage"
+        :total-rows="(project[collection] || []).length"
+        :per-page="perpage"
+        v-if="(project[collection] || []).length / perpage > 1"
+      ></b-pagination>
+
+      <div class="table_actions">
+        <div class="table_actions_buttons">
+          <b-button variant="secondary" @click="addRow()">
+            Add new
+          </b-button>
+          <b-dropdown right variant="outline-secondary">
+            <b-dropdown-item @click="saveAll()">
+              Save all
+              <b-spinner v-if="loading_save" small type="grow" />
+            </b-dropdown-item>
+            <b-dropdown-item @click="deleteAll()">
+              <unicon name="trash-alt" />Delete all
+            </b-dropdown-item>
+          </b-dropdown>
+        </div>
+        <div class="clearfix" />
       </div>
     </div>
   </div>
@@ -163,11 +161,16 @@ export default {
     collection: String,
     fields: Array,
     newitemtemplate: Object,
-    autosave: Boolean
+    autosave: Boolean,
+    perpage: {
+      type: Number,
+      default: 25
+    }
   },
   data() {
     return {
       loading_save: false,
+      currentPage: 1,
 
       // TODO get these values directly from the Django model?
       extras_kinds: [

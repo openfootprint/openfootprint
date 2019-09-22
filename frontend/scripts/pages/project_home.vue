@@ -1,6 +1,9 @@
 <template>
   <div>
-    Welcome to your project!
+    <p>
+      Welcome to your project!
+    </p>
+    <p>Please start adding location, attendees &amp; other data in the sidebar.</p>
   </div>
 </template>
 

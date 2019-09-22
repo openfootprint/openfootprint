@@ -40,6 +40,7 @@
                     <input v-model="kind" type="radio" name="radio" value="company" />
                     <span class="radiobtn" />
                     <p>Company</p>
+                    <p style="color:#AAAAAA;font-style:italic;font-size:11px;">(Available soon)</p>
                   </div>
                 </label>
 
@@ -53,6 +54,7 @@
                     <input v-model="kind" type="radio" name="radio" value="household" />
                     <span class="radiobtn" />
                     <p>Household</p>
+                    <p style="color:#AAAAAA;font-style:italic;font-size:11px;">(Available soon)</p>
                   </div>
                 </label>
 
@@ -61,12 +63,12 @@
                   <b-input
                     ref="project_name"
                     v-model="name"
-                    required
+                    required="1"
                     placeholder="ex: OpenFootprint 2019"
                   />
                 </b-form-group>
 
-                <b-button variant="success" @click="createProject()">
+                <b-button type="submit" variant="success" :disabled="this.kind != 'event'">
                   Create {{ kind }} project
                 </b-button>
               </b-form>
@@ -91,11 +93,13 @@ export default {
   },
   methods: {
     createProject(evt) {
-      evt.preventDefault();
+      if (evt) evt.preventDefault();
+      if (!this.name) return false;
       var project = {
         kind: this.kind,
         name: this.name
       };
+
       this.$http.post("/api/project", project).then(response => {
         //TODO catch errors
         if (response.data && response.data.id) {

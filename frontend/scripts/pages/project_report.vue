@@ -20,7 +20,7 @@
 
     <div>
       <json-schema-form
-        :value="item.theme_config||{}"
+        :value="item.theme_config || {}"
         :schema="item.theme_config_schema"
         :submitting="submitting"
         @submit="onSubmit"

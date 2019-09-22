@@ -2,11 +2,6 @@
   <div>
     <div class="header_page_content">
       <h2>Transports</h2>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed suscipit est, in
-        sollicitudin nisl. Vivamus vehicula eget est non vestibulum. Ut quam arcu, pharetra eu nibh
-        id, sodales euismod ipsum.
-      </p>
     </div>
 
     <b-tabs>
@@ -35,6 +30,7 @@
         </template>
 
         <div class="row">
+          <!--
           <div class="col-lg-4">
             <div class="standard_block">
               <p class="block_title">
@@ -76,8 +72,8 @@
               </article>
             </div>
           </div>
-
-          <div class="col-lg-8">
+          -->
+          <div class="col-lg-12">
             <Map ref="map" class="transports_map" :transports="project.transports" />
           </div>
         </div>

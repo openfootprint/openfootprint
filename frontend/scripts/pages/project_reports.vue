@@ -4,18 +4,17 @@
       <h2>Reports</h2>
     </div>
 
-
     <div class="report_list">
-
-        <b-card v-for="report in project.reports" :key="report.id">
-          <b-card-text>
-            <b-link :to="{ name: 'project_report', params: { report_id: report.id } }">{{report.name}}</b-link>
-          </b-card-text>
-        </b-card>
-
+      <b-card v-for="report in project.reports" :key="report.id">
+        <b-card-text>
+          <b-link :to="{ name: 'project_report', params: { report_id: report.id } }">{{
+            report.name
+          }}</b-link>
+        </b-card-text>
+      </b-card>
     </div>
 
-    <br/>
+    <br />
 
     <b-button v-b-modal.modal-template>
       New report
@@ -29,31 +28,29 @@
       title="Please select a theme"
     >
       <div class="row template_list">
-
-        <article @click="selectTheme(plugin)" v-for="plugin in available_themes" :key="plugin.slug" class="col-lg-4">
+        <article
+          @click="selectTheme(plugin)"
+          v-for="plugin in available_themes"
+          :key="plugin.slug"
+          class="col-lg-4"
+        >
           <div class="template_block">
             <div class="template_preview">
               <img src="/openfootprint/templates/reports/event1/preview.jpg" />
             </div>
             <div class="template_details">
-              <p>{{plugin.name}}</p>
+              <p>{{ plugin.name }}</p>
             </div>
             <!--<div class="template_selected_label">Active</div>-->
           </div>
         </article>
       </div>
     </b-modal>
-
   </div>
 </template>
 
 <script>
-import DataTable from "../components/datatable";
-
 export default {
-  components: {
-    DataTable
-  },
   data() {
     return {
       reports_fields: [
@@ -80,7 +77,7 @@ export default {
   computed: {
     available_themes() {
       var themes = [];
-      (this.project.plugins||[]).forEach((plugin) => {
+      (this.project.plugins || []).forEach(plugin => {
         if (plugin.type == "theme") {
           themes.push(plugin);
         }
@@ -95,14 +92,14 @@ export default {
         name: "New report",
         theme_slug: plugin.slug
       });
-      this.$http
-        .post(this.project_api_root + "/set_reports", this.project.reports)
-        .then(() => {
-          this.refreshProject(() => {
-            this.loading_save = false;
-            this.$router.push("reports/" + this.project.reports[this.project.reports.length-1]["id"]);
-          });
+      this.$http.post(this.project_api_root + "/set_reports", this.project.reports).then(() => {
+        this.refreshProject(() => {
+          this.loading_save = false;
+          this.$router.push(
+            "reports/" + this.project.reports[this.project.reports.length - 1]["id"]
+          );
         });
+      });
     }
   }
 };

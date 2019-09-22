@@ -1,7 +1,9 @@
 <template>
   <div>
     <h2>Extras</h2>
-
+    <p>
+      Use this section to account for emission factors that were not modeled in other pages.
+    </p>
     <DataTable
       ref="table_main"
       :fields="extras_fields"

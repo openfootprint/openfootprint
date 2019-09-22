@@ -5,9 +5,8 @@
         Attendees
       </h2>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed suscipit est, in
-        sollicitudin nisl. Vivamus vehicula eget est non vestibulum. Ut quam arcu, pharetra eu nibh
-        id, sodales euismod ipsum.
+        We need data about your attendees (most importantly, their origin location) in order to
+        compute a footprint.
       </p>
     </div>
 

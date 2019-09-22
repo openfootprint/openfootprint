@@ -100,8 +100,7 @@ class ReportSerializer(serializers.ModelSerializer):
 
         # Load the plugin
         plugins = {
-            p["slug"]: p
-            for p in discover_available_plugins(instance.project.id)
+            p["slug"]: p for p in discover_available_plugins(instance.project.id)
         }
         plugin = plugins[rep["theme_slug"]]
 

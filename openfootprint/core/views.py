@@ -3,14 +3,13 @@ from django.views.generic import TemplateView
 from django.http import HttpResponse
 from .models import Report, TransportModeField
 from openfootprint.core.ofplib.plugins import PLUGIN_DIRECTORY
-from django.views import static, View
-from django.template import engines, Context
+from django.views import static
+from django.template import engines
 import json
 import os
 
 
 class ReportView(TemplateView):
-
     def get(self, request, *args, **kwargs):
 
         report = get_object_or_404(Report, id=kwargs["report_id"])
@@ -19,12 +18,10 @@ class ReportView(TemplateView):
         template_file = os.path.join(PLUGIN_DIRECTORY, report.theme_slug, "index.html")
         with open(template_file, "r") as f:
             template_string = f.read()
-        template = engines['django'].from_string(template_string)
+        template = engines["django"].from_string(template_string)
 
         print(report.project)
-        out = template.render({
-            "report": report
-        })
+        out = template.render({"report": report})
 
         return HttpResponse(out)
 

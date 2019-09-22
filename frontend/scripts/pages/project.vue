@@ -54,7 +54,7 @@
 
       <div class="profile_block">
         <!-- TODO -->
-        <a href="#">
+        <a>
           <img src="/static/images/logo/logo_openfootprint_icon.svg" />
           <p>Log in to save</p>
         </a>
