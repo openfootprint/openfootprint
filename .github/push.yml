@@ -1,0 +1,13 @@
+name: Docker Compose Actions Workflow
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Mypy
+      run: sh tests/mypy.sh
+    - name: Black
+      run: sh tests/black.sh
+    - name: Pytest
+      run: sh tests/pytest.sh
