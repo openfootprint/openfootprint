@@ -29,8 +29,8 @@ services:
       dockerfile: ./compose/production/postgres/Dockerfile
     image: openfootprint_production_postgres
     volumes:
-      - $GITHUB_WORKSPACE/local_postgres_data:/var/lib/postgresql/data
-      - $GITHUB_WORKSPACE/local_postgres_data_backups:/backups
+      - ../local_postgres_data:/var/lib/postgresql/data
+      - ../local_postgres_data_backups:/backups
     env_file:
       - ../.envs/.local/.postgres
 
