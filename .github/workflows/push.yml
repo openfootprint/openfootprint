@@ -5,6 +5,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
+    - name: Debug
+      run: ls -l
+    - name: Debug
+      run: pwd
+    - name: Debug
+      run: whoami
     - name: Mypy
       run: sh tests/mypy.sh
     - name: Black
