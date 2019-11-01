@@ -117,6 +117,12 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
         return Response({"status": "ok"})
 
+    @action(detail=True, methods=["POST"], name="Delete project")
+    def delete(self, request, pk=None):
+        project = self.get_object()
+        project.delete()
+        return Response({"status": "ok"})
+
     @action(detail=True, methods=["POST"], name="Set Extras")
     def set_extras(self, request, pk=None):
         project = self.get_object()

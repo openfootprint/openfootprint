@@ -11,6 +11,16 @@
         @submit="onSubmit"
       />
     </div>
+
+    <b-card
+      border-variant="danger"
+      header="Danger zone"
+      header-border-variant="danger"
+      header-text-variant="danger"
+      style="margin-top:30px;"
+    >
+      <b-button variant="danger" @click="deleteProject">Delete project</b-button>
+    </b-card>
   </div>
 </template>
 
@@ -72,6 +82,15 @@ export default {
         this.submitting = false;
         this.$parent.refreshProject();
       });
+    },
+    deleteProject() {
+      this.submitting = true;
+      if (window.confirm("Are you sure you want to permanently delete this project?")) {
+        this.$http.post(this.project_api_root + "/delete").then(() => {
+          this.submitting = false;
+          this.$router.push("/");
+        });
+      }
     }
   }
 };
