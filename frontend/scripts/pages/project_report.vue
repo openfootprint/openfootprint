@@ -56,7 +56,7 @@ export default {
   methods: {
     onSubmit(newConfig) {
       this.submitting = true;
-      this.item.config = newConfig;
+      this.item.theme_config = newConfig;
       this.$http.post(this.project_api_root + "/set_reports", ["partial", this.item]).then(() => {
         this.submitting = false;
       });

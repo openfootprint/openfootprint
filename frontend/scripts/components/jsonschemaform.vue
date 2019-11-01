@@ -8,13 +8,21 @@
 
     <div v-for="(property, key) in schema.properties" :key="key">
       <b-form-group :label="property.title" :label-for="'_jsf_' + uuid + '_' + key">
+
         <b-form-file
-          v-if="(property.attrs || {}).type == 'file'"
+          v-if="(property.attrs || {}).type == 'file' && !currentValue[key]"
           :id="'_jsf_' + uuid + '_' + key"
           :data-key="key"
           :required="(schema.required || []).indexOf(key) >= 0"
           @change="onFileChange($event, key)"
         />
+
+        <div
+          v-else-if="(property.attrs || {}).type == 'file' && currentValue[key]"
+        >
+          {{currentValue[key].url.replace(/^.*\//, "")}}
+          <b-link @click="$delete(currentValue, key)">[Remove]</b-link>
+        </div>
 
         <b-form-input
           v-else
