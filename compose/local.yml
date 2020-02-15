@@ -20,7 +20,7 @@ services:
       - ../.envs/.local/.django
       - ../.envs/.local/.postgres
     ports:
-      - "10001:10001"
+      - "8700:8700"
     command: /start
 
   postgres:
@@ -37,7 +37,7 @@ services:
   mailhog:
     image: mailhog/mailhog:v1.0.0
     ports:
-      - "8025:8025"
+      - "8707:8025"
 
   redis:
     image: redis:5.0
@@ -66,7 +66,7 @@ services:
     <<: *django
     image: openfootprint_local_flower
     ports:
-      - "5555:5555"
+      - "8701:5555"
     command: /start-flower
 
   webpack:
@@ -75,8 +75,7 @@ services:
       dockerfile: ./compose/local/webpack/Dockerfile
     image: openfootprint_local_webpack
     ports:
-      - "8001:8001"
-      - "8002:8002"
+      - "8709:8709"
     volumes:
       - ../frontend:/app/frontend:rw
     command: /start-webpack

@@ -16,7 +16,7 @@ module.exports = {
 
   output: {
       filename: "[name]-[hash].js",
-      publicPath:"http://localhost:8001/"
+      publicPath:"http://localhost:8709/"
   },
 
   devServer: {
@@ -24,7 +24,7 @@ module.exports = {
     headers: {
       "Access-Control-Allow-Origin": "\*",
     },
-    port:8001,
+    port:8709,
     //hot:true,
     host: '0.0.0.0'
   },

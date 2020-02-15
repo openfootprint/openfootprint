@@ -77,7 +77,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
         )
 
     def get_serializer_class(self):
-        if getattr(self, "action") == "list":
+        print("action:", self.action)
+        if getattr(self, "action") in ("list", "create"):
             return ProjectSerializerList
         return ProjectSerializerFull
 

@@ -63,13 +63,18 @@
                   <b-input
                     ref="project_name"
                     v-model="name"
-                    required="1"
-                    placeholder="ex: OpenFootprint 2019"
+                    required
+                    placeholder="ex: MyConference 2020"
                   />
                 </b-form-group>
 
+                <b-form-group class="col-lg-12">
+                  <span class="label">Location</span>
+                  <b-input v-model="default_address" placeholder="ex: Paris, France" />
+                </b-form-group>
+
                 <b-button type="submit" variant="success" :disabled="this.kind != 'event'">
-                  Create {{ kind }} project
+                  Create {{ kind }}
                 </b-button>
               </b-form>
             </b-col>
@@ -81,12 +86,18 @@
 </template>
 
 <script>
+// import AddressField from "../components/addressfield";
+
 export default {
   data() {
     return {
       kind: "event",
-      name: ""
+      name: "",
+      default_address: null
     };
+  },
+  components: {
+    // AddressField
   },
   mounted() {
     this.$refs.project_name.focus();
@@ -97,7 +108,10 @@ export default {
       if (!this.name) return false;
       var project = {
         kind: this.kind,
-        name: this.name
+        name: this.name,
+        default_address: this.default_address
+        // when using AddressField:
+        // default_address: ((this.default_address || {}).source_name||"")
       };
 
       this.$http.post("/api/project", project).then(response => {

@@ -14,7 +14,7 @@ License: Apache Software License 2.0
 
 ## Install
 
-You must have Docker installed (https://docs.docker.com/install/).
+You must have Docker installed (https://docs.docker.com/install/). This is the only local dependency!
 
 Then:
 
@@ -22,3 +22,19 @@ Then:
 make local_setup
 make devserver
 ```
+
+Once the server is running, you can access your brand new install from your browser:
+ - http://localhost:8700/ to start creating your first project
+ - http://localhost:8700/admin/ to log into the Django admin panel (username: `admin`, password: `admin`)
+ - http://localhost:8700/api/ for the REST API reference
+
+echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', 'admin')" | python manage.py shell
+
+## How to contribute
+
+### Understand the architecture
+
+OpenFootprint has a few main components:
+ - A Django app for the backend.
+ - A Vue.js frontend
+ - Plugins

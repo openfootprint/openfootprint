@@ -142,6 +142,24 @@ class ProjectSerializerFull(serializers.ModelSerializer):
 
 
 class ProjectSerializerList(serializers.ModelSerializer):
+    default_address = serializers.CharField(allow_blank=True, write_only=True)
+
     class Meta:
         model = Project
-        fields = ("id", "name", "kind")
+        fields = ("id", "name", "kind", "default_address")
+        extra_kwargs = {"default_address": {"write_only": True}}
+
+    def create(self, validated_data):
+        default_address = validated_data.pop("default_address", None)
+
+        project = super().create(validated_data)
+
+        if default_address:
+            location = Location(
+                project=project,
+                is_default=True,
+                address=Address.objects.create_from_source(default_address),
+            )
+            location.save()
+
+        return project

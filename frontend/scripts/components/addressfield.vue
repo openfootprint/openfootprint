@@ -1,13 +1,18 @@
 <template>
   <div :class="'status-' + ((value || {}).status || 'empty')">
     <!-- {{(value||{}).country}} -->
-    <b-input :value="(value || {}).source_name || ''" @input="onInput" />
+    <b-input
+      :value="(value || {}).source_name || ''"
+      @input="onInput"
+      :placeholder="placeholder || ''"
+      data-lpignore="true"
+    />
   </div>
 </template>
 
 <script>
 export default {
-  props: ["value"],
+  props: ["value", "placeholder"],
   methods: {
     onInput(value) {
       this.$emit("input", { source_name: value });

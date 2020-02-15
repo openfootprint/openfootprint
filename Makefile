@@ -10,9 +10,7 @@ docker_build:
 	docker-compose -f compose/local.yml pull mailhog redis
 
 createsuperuser:
-	echo
-	echo "Create your admin user:"
-	docker-compose -f compose/local.yml run --rm django python manage.py createsuperuser
+	docker-compose -f compose/local.yml run --rm django python manage.py shell -c "exec('from django.contrib.auth import get_user_model\nUser = get_user_model()\nif not User.objects.filter(username=\"admin\").exists():\n User.objects.create_superuser(\"admin\", \"admin@example.com\", \"admin\")')"
 
 lint: eslint
 	docker-compose -f compose/local.yml run --rm --no-deps --entrypoint black django openfootprint

@@ -23,6 +23,12 @@ matrix:
       script: sh tests/pytest.sh
 
 notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/5b6d28ed838bbdd5216a
+    on_success: change
+    on_failure: always
+    on_start: never
   email:
     on_success: change
     on_failure: always
